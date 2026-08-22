@@ -1,0 +1,33 @@
+# Python / IDE
+__pycache__/
+.idea/
+.vscode/
+*.py[cod]
+
+# Large archives
+*.rar
+*.zip
+*.7z
+*.tar
+*.tar.gz
+
+# Training outputs
+artifacts/
+checkpoints/
+models/
+weights/
+outputs/
+results/
+runs/
+logs/
+wandb/
+
+# Model files
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+*.pkl
+*.npy
+*.npz

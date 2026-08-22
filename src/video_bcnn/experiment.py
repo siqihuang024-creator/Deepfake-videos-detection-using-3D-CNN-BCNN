@@ -1,0 +1,340 @@
+"""Dataset selection, balanced sampling, clip scoring, and grouped evaluation."""
+
+import hashlib
+import math
+
+import numpy as np
+import torch
+from torch.utils.data import Sampler
+from tqdm import tqdm
+
+from .data import VideoClipDataset
+from .metrics import calibrate_threshold, detection_metrics
+
+
+def active_records(records, config):
+    active = set(config["data"].get("active_datasets", []))
+    return [row for row in records if not active or row["dataset"] in active]
+
+
+def select_records(records, split, label=None):
+    selected = [row for row in records if row["split"] == split]
+    if label is not None:
+        selected = [row for row in selected if int(row["label"]) == int(label)]
+    return selected
+
+
+def make_dataset(records, config, training, clips_per_video=None):
+    data_config = dict(config["data"])
+    data_config.update({
+        "input_resize": config["model"]["input_resize"],
+        "center_crop": config["model"]["center_crop"],
+    })
+    return VideoClipDataset(
+        records,
+        config["data"]["dataset_roots"],
+        data_config,
+        training=training,
+        clips_per_video=clips_per_video,
+    )
+
+
+class DatasetBalancedEpochSampler(Sampler):
+    """Use every large-domain item and resample smaller domains with fresh clips."""
+
+    def __init__(self, records, seed, samples_per_dataset="max"):
+        self.indices = {}
+        for index, row in enumerate(records):
+            self.indices.setdefault(row["dataset"], []).append(index)
+        if not self.indices:
+            raise ValueError("Cannot sample an empty training record list.")
+        if samples_per_dataset == "max":
+            self.samples_per_dataset = max(len(values) for values in self.indices.values())
+        else:
+            self.samples_per_dataset = int(samples_per_dataset)
+        if self.samples_per_dataset < 1:
+            raise ValueError("samples_per_dataset must be positive or 'max'.")
+        self.generator = torch.Generator()
+        self.generator.manual_seed(int(seed))
+
+    def __len__(self):
+        return self.samples_per_dataset * len(self.indices)
+
+    def _domain_epoch_indices(self, values):
+        result = []
+        while len(result) < self.samples_per_dataset:
+            order = torch.randperm(len(values), generator=self.generator).tolist()
+            remaining = self.samples_per_dataset - len(result)
+            result.extend(values[position] for position in order[:remaining])
+        return result
+
+    def __iter__(self):
+        combined = []
+        for dataset in sorted(self.indices):
+            combined.extend(self._domain_epoch_indices(self.indices[dataset]))
+        order = torch.randperm(len(combined), generator=self.generator).tolist()
+        return iter(combined[position] for position in order)
+
+
+def dataset_balanced_sampler(records, seed, samples_per_dataset="max"):
+    return DatasetBalancedEpochSampler(records, seed, samples_per_dataset)
+
+
+def _stable_rng(seed, *parts):
+    key = ":".join([str(seed)] + [str(part) for part in parts]).encode("utf-8")
+    value = int(hashlib.sha256(key).hexdigest()[:8], 16)
+    return np.random.RandomState(value)
+
+
+def _update_feature_stat(stats, key, vector):
+    if key not in stats:
+        stats[key] = {
+            "count": 0,
+            "sum": torch.zeros_like(vector, dtype=torch.float64),
+            "square_sum": torch.zeros_like(vector, dtype=torch.float64),
+            "norm_sum": 0.0,
+        }
+    item = stats[key]
+    item["count"] += 1
+    item["sum"] += vector
+    item["square_sum"] += vector.square()
+    item["norm_sum"] += float(vector.norm().item())
+
+
+def _feature_diagnostics(stats):
+    groups, centroids = {}, {}
+    for key, item in stats.items():
+        count = float(item["count"])
+        centroid = item["sum"] / count
+        variance = item["square_sum"] / count - centroid.square()
+        centroids[key] = centroid
+        groups[key] = {
+            "count": int(item["count"]),
+            "mean_norm": float(item["norm_sum"] / count),
+            "within_group_variance_mean": float(variance.clamp_min(0.0).mean().item()),
+        }
+    separations = {}
+    prefixes = [""] + sorted({key.rsplit("/", 1)[0] for key in stats if "/" in key})
+    for prefix in prefixes:
+        real_key = "{}/real".format(prefix) if prefix else "real"
+        fake_key = "{}/fake".format(prefix) if prefix else "fake"
+        if real_key not in centroids or fake_key not in centroids:
+            continue
+        real, fake = centroids[real_key], centroids[fake_key]
+        denominator = float(real.norm().item() * fake.norm().item())
+        cosine_distance = 0.0 if denominator == 0.0 else 1.0 - float(torch.dot(real, fake).item()) / denominator
+        separations[prefix or "overall"] = {
+            "centroid_l2_distance": float((real - fake).norm().item()),
+            "centroid_cosine_distance": float(cosine_distance),
+        }
+    return {"groups": groups, "real_fake_separation": separations}
+
+
+def capped_validation_records(records, seed, max_fakes_per_dataset):
+    """Keep all real videos and a deterministic method-stratified fake subset."""
+    if max_fakes_per_dataset is None:
+        return list(records)
+    selected = [row for row in records if int(row["label"]) == 1]
+    for dataset in sorted({row["dataset"] for row in records}):
+        groups = {}
+        for row in records:
+            if row["dataset"] == dataset and int(row["label"]) == 0:
+                groups.setdefault(row["method"], []).append(row)
+        shuffled = {}
+        for method, values in groups.items():
+            order = _stable_rng(seed, dataset, method).permutation(len(values))
+            shuffled[method] = [values[int(index)] for index in order]
+        chosen, position = [], 0
+        methods = sorted(shuffled)
+        while len(chosen) < int(max_fakes_per_dataset):
+            added = False
+            for method in methods:
+                if position < len(shuffled[method]):
+                    chosen.append(shuffled[method][position])
+                    added = True
+                    if len(chosen) >= int(max_fakes_per_dataset):
+                        break
+            if not added:
+                break
+            position += 1
+        selected.extend(chosen)
+    return selected
+
+
+@torch.no_grad()
+def score_loader(bayesian_model, loader, device, mc_samples=0, collect_embeddings=False):
+    bayesian_model.feature_extractor.eval()
+    labels, scores, means, stds = [], [], [], []
+    paths, datasets, methods, target_ids, donor_ids = [], [], [], [], []
+    embedding_norms, exported_embeddings = [], []
+    fps_values, face_any_miss, face_miss_fraction = [], [], []
+    center_x_jitter, center_y_jitter, width_jitter, height_jitter = [], [], [], []
+    feature_stats = {}
+    feature_sum = None
+    feature_square_sum = None
+    feature_count = 0
+    for batch in tqdm(loader, desc="Scoring clips", leave=False):
+        clips = batch["clips"].to(device, non_blocking=True)
+        batch_size, clip_count, channels, frame_count, height, width = clips.shape
+        if bayesian_model.feature_extractor.input_mode == "clip":
+            model_inputs = clips.flatten(0, 1)
+            units_per_video = clip_count
+        else:
+            model_inputs = clips.permute(0, 1, 3, 2, 4, 5).reshape(
+                batch_size * clip_count * frame_count, channels, height, width
+            )
+            units_per_video = clip_count * frame_count
+        features = bayesian_model.feature_extractor(model_inputs)
+        posterior_loc = bayesian_model.posterior_loc_from_features(features)
+        if int(mc_samples) > 0:
+            _, posterior_std = bayesian_model.posterior_from_features(features, mc_samples)
+        else:
+            posterior_std = torch.zeros_like(posterior_loc)
+        video_features = features.reshape(batch_size, units_per_video, -1).mean(dim=1)
+        cpu_features = video_features.detach().double().cpu()
+        batch_labels = batch["label"].cpu().tolist()
+        for index in range(batch_size):
+            class_name = "real" if int(batch_labels[index]) == 1 else "fake"
+            dataset_name = batch["dataset"][index]
+            for key in ("all", class_name, dataset_name, "{}/{}".format(dataset_name, class_name)):
+                _update_feature_stat(feature_stats, key, cpu_features[index])
+        current_sum = cpu_features.sum(dim=0)
+        current_square_sum = cpu_features.square().sum(dim=0)
+        feature_sum = current_sum if feature_sum is None else feature_sum + current_sum
+        feature_square_sum = current_square_sum if feature_square_sum is None else feature_square_sum + current_square_sum
+        feature_count += batch_size
+        embedding_norms.extend(video_features.norm(dim=1).cpu().tolist())
+        if collect_embeddings:
+            exported_embeddings.append(video_features.float().cpu().numpy())
+        unit_anomaly = -posterior_loc.reshape(batch_size, units_per_video)
+        scores.extend(unit_anomaly.mean(dim=1).cpu().tolist())
+        means.extend(posterior_loc.reshape(batch_size, units_per_video).mean(dim=1).cpu().tolist())
+        stds.extend(posterior_std.reshape(batch_size, units_per_video).mean(dim=1).cpu().tolist())
+        labels.extend(batch_labels)
+        paths.extend(batch["path"])
+        datasets.extend(batch["dataset"])
+        methods.extend(batch["method"])
+        target_ids.extend(batch["target_id"])
+        donor_ids.extend(batch["donor_id"])
+        fps_values.extend(batch["fps"].cpu().tolist())
+        face_any_miss.extend(batch["clip_face_any_miss"].max(dim=1).values.cpu().tolist())
+        face_miss_fraction.extend(batch["clip_face_miss_fraction"].mean(dim=1).cpu().tolist())
+        center_x_jitter.extend(batch["clip_box_center_x_jitter"].mean(dim=1).cpu().tolist())
+        center_y_jitter.extend(batch["clip_box_center_y_jitter"].mean(dim=1).cpu().tolist())
+        width_jitter.extend(batch["clip_box_width_jitter"].mean(dim=1).cpu().tolist())
+        height_jitter.extend(batch["clip_box_height_jitter"].mean(dim=1).cpu().tolist())
+    feature_mean = feature_sum / float(max(1, feature_count))
+    feature_variance = feature_square_sum / float(max(1, feature_count)) - feature_mean.square()
+    result = {
+        "labels": np.asarray(labels),
+        "scores": np.asarray(scores),
+        "means": np.asarray(means),
+        "stds": np.asarray(stds),
+        "paths": paths,
+        "datasets": np.asarray(datasets),
+        "methods": np.asarray(methods),
+        "target_ids": target_ids,
+        "donor_ids": donor_ids,
+        "embedding_norms": np.asarray(embedding_norms),
+        "embedding_variance_mean": float(feature_variance.clamp_min(0.0).mean().item()),
+        "embedding_norm_mean": float(np.mean(embedding_norms)),
+        "embedding_diagnostics": _feature_diagnostics(feature_stats),
+        "fps": np.asarray(fps_values),
+        "face_any_miss": np.asarray(face_any_miss),
+        "face_miss_fraction": np.asarray(face_miss_fraction),
+        "center_x_jitter": np.asarray(center_x_jitter),
+        "center_y_jitter": np.asarray(center_y_jitter),
+        "width_jitter": np.asarray(width_jitter),
+        "height_jitter": np.asarray(height_jitter),
+    }
+    if collect_embeddings:
+        result["embeddings"] = np.concatenate(exported_embeddings, axis=0)
+    return result
+
+
+def per_dataset_metrics(values, global_threshold, false_positive_rate):
+    result = {}
+    for dataset in sorted(set(values["datasets"].tolist())):
+        mask = values["datasets"] == dataset
+        labels, scores = values["labels"][mask], values["scores"][mask]
+        metrics = detection_metrics(labels, scores, global_threshold)
+        real_scores = scores[labels == 1]
+        local_threshold = calibrate_threshold(real_scores, false_positive_rate)
+        local = detection_metrics(labels, scores, local_threshold)
+        metrics.update({
+            "num_videos": int(mask.sum()),
+            "num_real_videos": int((labels == 1).sum()),
+            "num_fake_videos": int((labels == 0).sum()),
+            "mean_real_anomaly": float(scores[labels == 1].mean()),
+            "mean_fake_anomaly": float(scores[labels == 0].mean()),
+            "domain_calibrated_threshold": float(local_threshold),
+            "domain_calibrated_accuracy": local["accuracy"],
+            "domain_calibrated_balanced_accuracy": local["balanced_accuracy"],
+        })
+        result[dataset] = metrics
+    return result
+
+
+def per_method_metrics(values, threshold):
+    result = {}
+    for dataset in sorted(set(values["datasets"].tolist())):
+        dataset_mask = values["datasets"] == dataset
+        real_mask = dataset_mask & (values["labels"] == 1)
+        fake_methods = sorted(set(values["methods"][dataset_mask & (values["labels"] == 0)].tolist()))
+        for method in fake_methods:
+            fake_mask = dataset_mask & (values["methods"] == method) & (values["labels"] == 0)
+            mask = real_mask | fake_mask
+            metrics = detection_metrics(values["labels"][mask], values["scores"][mask], threshold)
+            metrics["num_real_videos"] = int(real_mask.sum())
+            metrics["num_fake_videos"] = int(fake_mask.sum())
+            result["{}/{}".format(dataset, method)] = metrics
+    return result
+
+
+def preprocessing_diagnostics(values):
+    result = {}
+    groups = [("overall", np.ones(len(values["labels"]), dtype=bool))]
+    for dataset in sorted(set(values["datasets"].tolist())):
+        dataset_mask = values["datasets"] == dataset
+        groups.append((dataset, dataset_mask))
+        groups.append(("{}/real".format(dataset), dataset_mask & (values["labels"] == 1)))
+        groups.append(("{}/fake".format(dataset), dataset_mask & (values["labels"] == 0)))
+    for name, mask in groups:
+        if not mask.any():
+            continue
+        valid_fps = values["fps"][mask]
+        valid_fps = valid_fps[valid_fps > 0.0]
+        result[name] = {
+            "num_videos": int(mask.sum()),
+            "fps_mean": float(valid_fps.mean()) if len(valid_fps) else 0.0,
+            "fps_std": float(valid_fps.std()) if len(valid_fps) else 0.0,
+            "clip_any_face_detection_failure_rate": float(values["face_any_miss"][mask].mean()),
+            "frame_face_detection_failure_fraction": float(values["face_miss_fraction"][mask].mean()),
+            "box_center_x_jitter_mean": float(values["center_x_jitter"][mask].mean()),
+            "box_center_y_jitter_mean": float(values["center_y_jitter"][mask].mean()),
+            "box_width_jitter_mean": float(values["width_jitter"][mask].mean()),
+            "box_height_jitter_mean": float(values["height_jitter"][mask].mean()),
+        }
+    return result
+
+
+def evaluate_values(values, false_positive_rate, threshold=None, include_methods=False):
+    if threshold is None:
+        threshold = calibrate_threshold(
+            values["scores"][values["labels"] == 1], false_positive_rate
+        )
+    metrics = detection_metrics(values["labels"], values["scores"], threshold)
+    metrics["mean_real_anomaly"] = float(values["scores"][values["labels"] == 1].mean())
+    metrics["mean_fake_anomaly"] = float(values["scores"][values["labels"] == 0].mean())
+    metrics["mean_real_posterior"] = float(values["means"][values["labels"] == 1].mean())
+    metrics["mean_fake_posterior"] = float(values["means"][values["labels"] == 0].mean())
+    metrics["embedding_variance_mean"] = float(values["embedding_variance_mean"])
+    metrics["embedding_norm_mean"] = float(values["embedding_norm_mean"])
+    metrics["embedding_diagnostics"] = values["embedding_diagnostics"]
+    metrics["preprocessing_diagnostics"] = preprocessing_diagnostics(values)
+    metrics["per_dataset"] = per_dataset_metrics(values, threshold, false_positive_rate)
+    auc_values = [item["auroc"] for item in metrics["per_dataset"].values() if not math.isnan(item["auroc"])]
+    metrics["macro_dataset_auroc"] = float(np.mean(auc_values))
+    if include_methods:
+        metrics["per_method"] = per_method_metrics(values, threshold)
+    return metrics, float(threshold)

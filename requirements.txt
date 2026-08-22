@@ -1,0 +1,9 @@
+# Install a CUDA-enabled torch/torchvision pair for the target GPU separately.
+numpy==1.21.6
+opencv-python-headless==4.5.4.60
+Pillow>=8.4,<10
+PyYAML==6.0.1
+scikit-learn==1.0.2
+tqdm==4.64.1
+matplotlib==3.5.3
+pyro-ppl==1.8.6
