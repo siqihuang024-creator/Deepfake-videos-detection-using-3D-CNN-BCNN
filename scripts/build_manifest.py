@@ -3,10 +3,16 @@
 import argparse
 import csv
 import json
+import os
 import random
 import re
+import sys
 from collections import Counter
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from video_bcnn.utils import DATASET_ROOT_ENV_VARS
 
 
 DFD_REAL_DIR = "DFD_original sequences"
@@ -180,13 +186,31 @@ def write_manifest(path, rows):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dfd-root", required=True)
-    parser.add_argument("--celeb-root", required=True)
+    # Default to the environment so a git-synced checkout needs no local edits.
+    parser.add_argument(
+        "--dfd-root",
+        default=os.environ.get(DATASET_ROOT_ENV_VARS["DFD"]),
+        help="Defaults to $DFD_ROOT.",
+    )
+    parser.add_argument(
+        "--celeb-root",
+        default=os.environ.get(DATASET_ROOT_ENV_VARS["CelebDFv3"]),
+        help="Defaults to $CELEBDFV3_ROOT.",
+    )
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--train-ratio", type=float, default=0.70)
     parser.add_argument("--val-ratio", type=float, default=0.15)
     args = parser.parse_args()
+    missing = [
+        flag for flag, value in (("--dfd-root", args.dfd_root), ("--celeb-root", args.celeb_root))
+        if not value
+    ]
+    if missing:
+        parser.error(
+            "{} not given and the matching environment variable is unset. Either pass the "
+            "flags or export DFD_ROOT / CELEBDFV3_ROOT.".format(" and ".join(missing))
+        )
 
     dfd_root, celeb_root = Path(args.dfd_root).resolve(), Path(args.celeb_root).resolve()
     dfd, dfd_assignments = dfd_rows(dfd_root, args.seed, args.train_ratio, args.val_ratio)

@@ -11,8 +11,14 @@ __pycache__/
 *.tar
 *.tar.gz
 
-# Training outputs
-artifacts/
+# Training outputs. Manifests are tracked on purpose: they define the identity
+# split, and rebuilding them on another machine would silently change the
+# protocol if that machine's dataset copy differs by even one file.
+artifacts/*
+!artifacts/manifests/
+artifacts/manifests/*
+!artifacts/manifests/*.csv
+!artifacts/manifests/*.json
 checkpoints/
 models/
 weights/
@@ -31,3 +37,7 @@ wandb/
 *.pkl
 *.npy
 *.npz
+
+# Local machine paths (copy remote_env.example.sh and edit)
+remote_env.sh
+.env

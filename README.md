@@ -172,13 +172,15 @@ D:\Python\python.exe train_3d_bcnn.py `
 D:\Python\python.exe evaluate_3d_bcnn.py `
   --config configs\dfd_supervised_3d.yaml `
   --manifest artifacts\manifests\combined_manifest_supervised.csv `
-  --checkpoint artifactsun_dfd_supervised_3d_t8_k3\checkpointsest.pt --split test
+  --checkpoint artifacts
+un_dfd_supervised_3d_t8_k3\checkpointsest.pt --split test
 
 # cross-test: the held-out domain, recalibrated operating point
 D:\Python\python.exe evaluate_3d_bcnn.py `
   --config configs\dfd_supervised_3d.yaml `
   --manifest artifacts\manifests\combined_manifest_supervised.csv `
-  --checkpoint artifactsun_dfd_supervised_3d_t8_k3\checkpointsest.pt `
+  --checkpoint artifacts
+un_dfd_supervised_3d_t8_k3\checkpointsest.pt `
   --split test --eval-datasets CelebDFv3 --recalibrate-threshold
 ```
 
@@ -212,6 +214,97 @@ supervised, so 30k CelebDFv3 fakes cannot drown out 613 reals), and
 `data.train_stratify_key: method` round-robins inside each group so all 22
 CelebDFv3 forgery methods appear every epoch.
 
+
+## Running on a rented remote GPU
+
+The repository is synced with `git clone` / `git pull`, so **do not edit the
+configs on the remote machine** -- a local edit turns every pull into a
+conflict. Override the dataset roots with environment variables instead and the
+working tree stays clean.
+
+```bash
+cp remote_env.example.sh remote_env.sh   # gitignored
+$EDITOR remote_env.sh                    # point both paths at this machine
+source remote_env.sh
+```
+
+`remote_env.sh` sets two variables that every entry point reads:
+
+| variable | overrides |
+| --- | --- |
+| `DFD_ROOT` | `data.dataset_roots.DFD` |
+| `CELEBDFV3_ROOT` | `data.dataset_roots.CelebDFv3` |
+| `NUM_WORKERS` | `data.num_workers` |
+
+Precedence is `--dataset-root NAME=PATH` > environment variable > YAML, so a
+one-off run can still override a single dataset:
+
+```bash
+python train_3d_bcnn.py --config configs/dfd_supervised_3d.yaml   --manifest artifacts/manifests/combined_manifest_supervised.csv   --dataset-root DFD=/mnt/other/DFD-Kaggle --num-workers 4
+```
+
+### Choosing num_workers -- measure, do not guess
+
+More workers is **not** automatically faster, and RAM is not the constraint.
+Per-item cost on DFD (1920x1080) breaks down as:
+
+| stage | share of per-item time |
+| --- | --- |
+| Haar face detection | ~93% |
+| video decode (seek + read) | ~6% |
+| crop / resize / normalize | <1% |
+
+Haar detection on full-resolution frames is memory-bandwidth bound and OpenCV
+already parallelises it internally, so extra worker processes contend for the
+same bandwidth while multiplying resident 6 MB frame buffers. Measured on a
+20-core box: 2 workers 0.686 s/item, 4 workers 0.610 s/item, 8 workers with
+`cv2.setNumThreads(1)` 0.833 s/item, and 20 workers died with an OpenCV
+out-of-memory error. Budget roughly 0.6-1.2 GB resident per worker for DFD.
+
+Find the value for the actual machine:
+
+```bash
+python scripts/benchmark_loader.py   --config configs/dfd_supervised_3d.yaml   --manifest artifacts/manifests/combined_manifest_supervised.csv   --workers 2 4 8
+```
+
+It warms every worker before timing, so the figure is steady-state throughput
+rather than process startup. Then `export NUM_WORKERS=<best>`.
+
+Keep the value fixed across runs that are meant to be compared: worker count
+changes which worker seeds which item, which perturbs the augmentation RNG.
+Every checkpoint records the value actually used.
+
+Verify before starting a long run:
+
+```bash
+python scripts/check_dataset_roots.py   --config configs/dfd_supervised_3d.yaml   --manifest artifacts/manifests/combined_manifest_supervised.csv --decode
+```
+
+It samples videos from every dataset/split/class group, confirms each file
+exists, and (with `--decode`) opens it to check codec support. `train` and
+`evaluate` also refuse to start when a root is missing.
+
+### Manifests travel with the repository
+
+`artifacts/manifests/*.csv` is tracked on purpose, even though the rest of
+`artifacts/` is ignored. The manifests store paths **relative** to the dataset
+roots (`DFD_original sequences/01__exit_phone_room.mp4`), so they are portable
+as they are, and rebuilding them remotely is a hazard: `split_identities`
+derives the train/val/test identities from whatever video files it finds, so a
+remote copy missing a single file would silently produce a different split and
+make the two machines' results incomparable. Clone, source the env file, train.
+
+### Linux notes
+
+- Directory names are case-sensitive there and were not on Windows. The layout
+  must keep `DFD_original sequences` (with the space),
+  `DFD_manipulated_sequences/DFD_manipulated_sequences`, `REAL/`, and `FAKE/`
+  exactly as the manifest records them.
+- `data.num_workers: 2` is conservative; raise it to match the rented CPU.
+  Video decoding is the throughput bottleneck.
+- Checkpoints store the training machine's roots, but evaluation always takes
+  roots from the runtime config, so a Windows-trained checkpoint evaluates on
+  Linux unchanged.
 
 ## Outputs and interpretation
 

@@ -204,18 +204,37 @@ class EvaluationConfigTests(unittest.TestCase):
     def test_checkpoint_preprocessing_wins_over_changed_yaml(self):
         saved = {
             "device": "cuda",
-            "data": {"clip_length": 8, "dataset_roots": {"DFD": "old"}},
+            "data": {
+                "clip_length": 8,
+                "dataset_roots": {"DFD": "old"},
+                "num_workers": 2,
+            },
             "train": {"report_dir": "old-report"},
         }
         runtime = {
             "device": "cpu",
-            "data": {"clip_length": 16, "dataset_roots": {"DFD": "new"}},
+            "data": {
+                "clip_length": 16,
+                "dataset_roots": {"DFD": "new"},
+                "num_workers": 8,
+            },
             "train": {"report_dir": "new-report"},
         }
         result = checkpoint_evaluation_config(saved, runtime)
         self.assertEqual(result["data"]["clip_length"], 8)
+        self.assertEqual(result["data"]["num_workers"], 8)
         self.assertEqual(result["data"]["dataset_roots"]["DFD"], "new")
         self.assertEqual(result["train"]["report_dir"], "new-report")
+
+    def test_runtime_without_num_workers_keeps_the_checkpoint_value(self):
+        saved = {
+            "device": "cuda",
+            "data": {"clip_length": 8, "dataset_roots": {}, "num_workers": 2},
+            "train": {"report_dir": "old"},
+        }
+        runtime = {"device": "cpu", "data": {"dataset_roots": {}}, "train": {"report_dir": "new"}}
+        result = checkpoint_evaluation_config(saved, runtime)
+        self.assertEqual(result["data"]["num_workers"], 2)
 
     def test_cross_dataset_override_changes_only_the_scored_domains(self):
         saved = {

@@ -1,0 +1,59 @@
+{
+  "identity_protocol": "Dataset-local identity splits. DFD val/test fakes are donor-safe in the strict manifest; fake videos are never assigned to training.",
+  "identities": {
+    "DFD": {
+      "train": 20,
+      "val": 4,
+      "test": 4
+    },
+    "CelebDFv3": {
+      "train": 251,
+      "val": 54,
+      "test": 54
+    }
+  },
+  "videos": {
+    "CelebDFv3:test:fake": 10433,
+    "CelebDFv3:test:real": 164,
+    "CelebDFv3:train:real": 613,
+    "CelebDFv3:unused:fake": 37335,
+    "CelebDFv3:val:fake": 5428,
+    "CelebDFv3:val:real": 113,
+    "DFD:excluded_donor_train:fake": 512,
+    "DFD:test:fake": 93,
+    "DFD:test:real": 54,
+    "DFD:train:real": 264,
+    "DFD:unused:fake": 2412,
+    "DFD:val:fake": 51,
+    "DFD:val:real": 45
+  },
+  "fake_methods": {
+    "CelebDFv3:FaceReenact/DaGAN": 1947,
+    "CelebDFv3:FaceReenact/FSRT": 1947,
+    "CelebDFv3:FaceReenact/HyperReenact": 1947,
+    "CelebDFv3:FaceReenact/LIA": 1948,
+    "CelebDFv3:FaceReenact/LivePortrait": 1948,
+    "CelebDFv3:FaceReenact/MCNET": 1947,
+    "CelebDFv3:FaceReenact/TPSMM": 1948,
+    "CelebDFv3:FaceSwap/BlendFace": 1948,
+    "CelebDFv3:FaceSwap/Celeb-DF-v2": 5639,
+    "CelebDFv3:FaceSwap/GHOST": 1948,
+    "CelebDFv3:FaceSwap/HifiFace": 1948,
+    "CelebDFv3:FaceSwap/InSwapper": 1948,
+    "CelebDFv3:FaceSwap/MobileFaceSwap": 1953,
+    "CelebDFv3:FaceSwap/SimSwap": 1953,
+    "CelebDFv3:FaceSwap/UniFace": 1948,
+    "CelebDFv3:TalkingFace/AniTalker": 2950,
+    "CelebDFv3:TalkingFace/EDTalk": 2865,
+    "CelebDFv3:TalkingFace/EchoMimic": 2885,
+    "CelebDFv3:TalkingFace/FLOAT": 2950,
+    "CelebDFv3:TalkingFace/IP_LAP": 2935,
+    "CelebDFv3:TalkingFace/Real3DPortrait": 2744,
+    "CelebDFv3:TalkingFace/SadTalker": 2950,
+    "DFD:DeepFakeDetection": 3068
+  },
+  "roots": {
+    "DFD": "E:\\PhD\\Deepfake Video TCN+BCNN\\Datasets\\DFD-Kaggle",
+    "CelebDFv3": "E:\\PhD\\Deepfake Video TCN+BCNN\\Datasets\\CelebDFv3\\CelebDFv3"
+  }
+}

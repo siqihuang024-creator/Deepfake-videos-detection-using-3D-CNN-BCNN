@@ -1,0 +1,52 @@
+{
+  "identity_protocol": "Supervised manifest. A fake enters training only when its target AND donor identities are both training identities; val/test rows are unchanged, so supervised and one-class runs are evaluated on identical videos.",
+  "promotion_counts": {
+    "CelebDFv3:excluded_donor_eval": 7186,
+    "CelebDFv3:promoted": 30149,
+    "DFD:excluded_donor_eval": 518,
+    "DFD:promoted": 1894
+  },
+  "videos": {
+    "CelebDFv3:excluded_donor_eval:fake": 7186,
+    "CelebDFv3:test:fake": 10433,
+    "CelebDFv3:test:real": 164,
+    "CelebDFv3:train:fake": 30149,
+    "CelebDFv3:train:real": 613,
+    "CelebDFv3:val:fake": 5428,
+    "CelebDFv3:val:real": 113,
+    "DFD:excluded_donor_eval:fake": 518,
+    "DFD:excluded_donor_train:fake": 512,
+    "DFD:test:fake": 93,
+    "DFD:test:real": 54,
+    "DFD:train:fake": 1894,
+    "DFD:train:real": 264,
+    "DFD:val:fake": 51,
+    "DFD:val:real": 45
+  },
+  "train_fake_methods": {
+    "CelebDFv3:FaceReenact/DaGAN": 968,
+    "CelebDFv3:FaceReenact/FSRT": 968,
+    "CelebDFv3:FaceReenact/HyperReenact": 968,
+    "CelebDFv3:FaceReenact/LIA": 968,
+    "CelebDFv3:FaceReenact/LivePortrait": 968,
+    "CelebDFv3:FaceReenact/MCNET": 968,
+    "CelebDFv3:FaceReenact/TPSMM": 968,
+    "CelebDFv3:FaceSwap/BlendFace": 969,
+    "CelebDFv3:FaceSwap/Celeb-DF-v2": 2781,
+    "CelebDFv3:FaceSwap/GHOST": 969,
+    "CelebDFv3:FaceSwap/HifiFace": 969,
+    "CelebDFv3:FaceSwap/InSwapper": 969,
+    "CelebDFv3:FaceSwap/MobileFaceSwap": 971,
+    "CelebDFv3:FaceSwap/SimSwap": 971,
+    "CelebDFv3:FaceSwap/UniFace": 969,
+    "CelebDFv3:TalkingFace/AniTalker": 2010,
+    "CelebDFv3:TalkingFace/EDTalk": 1945,
+    "CelebDFv3:TalkingFace/EchoMimic": 1950,
+    "CelebDFv3:TalkingFace/FLOAT": 2010,
+    "CelebDFv3:TalkingFace/IP_LAP": 2000,
+    "CelebDFv3:TalkingFace/Real3DPortrait": 1880,
+    "CelebDFv3:TalkingFace/SadTalker": 2010,
+    "DFD:DeepFakeDetection": 1894
+  },
+  "source_manifest": "E:\\PhD\\Deepfake Video 3D-CNN+BCNN\\artifacts\\manifests\\combined_manifest_dfd_donor_safe.csv"
+}

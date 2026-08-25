@@ -27,7 +27,15 @@ from video_bcnn.experiment import (
 )
 from video_bcnn.model import Stable2DFeatureExtractor, Stable3DFeatureExtractor, VideoBayesianCNN
 from video_bcnn.reporting import save_history
-from video_bcnn.utils import ensure_dir, load_config, resolve_device, seed_everything
+from video_bcnn.utils import (
+    ensure_dir,
+    load_config,
+    override_dataset_roots,
+    override_num_workers,
+    resolve_device,
+    seed_everything,
+    verify_dataset_roots,
+)
 
 
 def build_model(config, device):
@@ -73,8 +81,28 @@ def main():
     parser.add_argument("--config", required=True)
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--max-epochs", type=int, default=None)
+    parser.add_argument(
+        "--dataset-root",
+        action="append",
+        default=None,
+        metavar="NAME=PATH",
+        help="Repoint a dataset root for this machine, e.g. "
+             "--dataset-root DFD=/root/autodl-tmp/DFD-Kaggle. Repeatable. "
+             "Overrides the DFD_ROOT / CELEBDFV3_ROOT environment variables.",
+    )
+    parser.add_argument(
+        "--num-workers",
+        type=int,
+        default=None,
+        help="DataLoader workers for this machine. Defaults to $NUM_WORKERS, then "
+             "the config. Measure with scripts/benchmark_loader.py -- more is not "
+             "automatically faster.",
+    )
     args = parser.parse_args()
-    config = load_config(args.config)
+    config = override_dataset_roots(load_config(args.config), args.dataset_root)
+    override_num_workers(config, args.num_workers)
+    print("Dataset roots: {} | DataLoader workers: {}".format(
+        verify_dataset_roots(config), config["data"]["num_workers"]))
     if args.max_epochs is not None:
         config["train"]["epochs"] = int(args.max_epochs)
     seed_everything(config["seed"])

@@ -21,7 +21,16 @@ from video_bcnn.experiment import (
     select_records,
 )
 from video_bcnn.reporting import save_evaluation_report
-from video_bcnn.utils import ensure_dir, load_checkpoint, load_config, resolve_device, seed_everything
+from video_bcnn.utils import (
+    ensure_dir,
+    load_checkpoint,
+    load_config,
+    override_dataset_roots,
+    override_num_workers,
+    resolve_device,
+    seed_everything,
+    verify_dataset_roots,
+)
 from train_3d_bcnn import build_model
 
 
@@ -35,6 +44,8 @@ def checkpoint_evaluation_config(saved_config, runtime_config, eval_datasets=Non
     config = copy.deepcopy(saved_config)
     config["device"] = runtime_config["device"]
     config["data"]["dataset_roots"] = runtime_config["data"]["dataset_roots"]
+    if "num_workers" in runtime_config["data"]:
+        config["data"]["num_workers"] = runtime_config["data"]["num_workers"]
     config["train"]["report_dir"] = runtime_config["train"]["report_dir"]
     if eval_datasets:
         config["data"]["active_datasets"] = list(eval_datasets)
@@ -51,6 +62,21 @@ def main():
     parser.add_argument("--max-fakes-per-dataset", type=int, default=None)
     parser.add_argument("--export-embeddings", action="store_true")
     parser.add_argument(
+        "--dataset-root",
+        action="append",
+        default=None,
+        metavar="NAME=PATH",
+        help="Repoint a dataset root for this machine. Repeatable.",
+    )
+    parser.add_argument(
+        "--num-workers",
+        type=int,
+        default=None,
+        help="DataLoader workers for this machine. Defaults to $NUM_WORKERS, then "
+             "the config. Measure with scripts/benchmark_loader.py -- more is not "
+             "automatically faster.",
+    )
+    parser.add_argument(
         "--eval-datasets",
         nargs="+",
         default=None,
@@ -65,7 +91,10 @@ def main():
     )
     args = parser.parse_args()
 
-    runtime_config = load_config(args.config)
+    # The checkpoint keeps preprocessing immutable, but its saved roots point at
+    # the training machine, so the runtime roots always win here.
+    runtime_config = override_dataset_roots(load_config(args.config), args.dataset_root)
+    override_num_workers(runtime_config, args.num_workers)
     device = resolve_device(runtime_config["device"])
     checkpoint = load_checkpoint(args.checkpoint, device)
     saved_config = checkpoint["config"]
@@ -76,6 +105,8 @@ def main():
     extractor.load_state_dict(checkpoint["feature_extractor"])
     pyro.get_param_store().set_state(checkpoint["pyro_params"])
 
+    print("Dataset roots: {} | DataLoader workers: {}".format(
+        verify_dataset_roots(config), config["data"]["num_workers"]))
     records = active_records(load_manifest(args.manifest), config)
     records = select_records(records, args.split)
     if args.max_fakes_per_dataset is not None:

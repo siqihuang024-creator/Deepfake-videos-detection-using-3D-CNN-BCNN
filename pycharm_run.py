@@ -6,6 +6,10 @@ from pathlib import Path
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+
+from video_bcnn.utils import override_dataset_roots
+
 
 # Options:
 #   build_manifest, build_supervised_manifest,
@@ -72,6 +76,8 @@ def run(command):
 
 
 def build_manifest(config):
+    # Respect DFD_ROOT / CELEBDFV3_ROOT so a remote checkout needs no yaml edits.
+    config = override_dataset_roots(config)
     run([
         sys.executable,
         "scripts/build_manifest.py",
@@ -138,6 +144,7 @@ def evaluate(name, split, cross, config):
 def main():
     with open(CONFIG_3D, "r", encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
+    override_dataset_roots(config)
     if TASK == "build_manifest":
         build_manifest(config)
         return

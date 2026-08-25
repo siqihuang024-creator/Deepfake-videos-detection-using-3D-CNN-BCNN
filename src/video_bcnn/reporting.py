@@ -2,6 +2,12 @@
 
 import csv
 
+import matplotlib
+
+# Rented GPU hosts are headless. Select Agg before pyplot is imported so the
+# first epoch's curve export cannot fail on a missing display.
+matplotlib.use("Agg")
+
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import roc_curve
