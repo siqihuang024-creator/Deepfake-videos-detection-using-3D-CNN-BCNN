@@ -13,6 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from video_bcnn.data import VideoClipDataset
 from video_bcnn.utils import load_config, override_dataset_roots, verify_dataset_roots
 
 
@@ -40,6 +41,12 @@ def main():
                         help="Videos to check per dataset/split/class group.")
     parser.add_argument("--decode", action="store_true",
                         help="Also open each sampled video to confirm codec support.")
+    parser.add_argument("--all", action="store_true",
+                        help="Check every video the experiment reads, not a sample. "
+                             "Implies --decode. ~5 minutes for DFD's 2401 videos, and "
+                             "worth it before a multi-hour run.")
+    parser.add_argument("--splits", nargs="+", default=None,
+                        help="Restrict --all to these splits (default: train val test).")
     args = parser.parse_args()
 
     config = override_dataset_roots(load_config(args.config), args.dataset_root)
@@ -52,26 +59,48 @@ def main():
         rows = list(csv.DictReader(handle))
     active = set(config["data"].get("active_datasets") or [])
     groups, selected = sample_rows(rows, active, args.per_group)
+    if args.all:
+        splits = set(args.splits or ("train", "val", "test"))
+        selected = [
+            row for row in rows
+            if row["split"] in splits and (not active or row["dataset"] in active)
+        ]
 
     print("\nManifest groups (dataset / split / class -> videos):")
     for key in sorted(groups):
         print("  {:<10} {:<22} {:<5} {}".format(key[0], key[1], key[2], len(groups[key])))
 
-    missing, unreadable = [], []
-    for row in selected:
+    decode = args.decode or args.all
+    if args.all:
+        print("\nFull scan of {} videos: each is opened and its first and last frame "
+              "read.".format(len(selected)))
+    missing, unreadable, truncated = [], [], []
+    for position, row in enumerate(selected):
         path = Path(roots[row["dataset"]]) / row["path"]
+        if args.all and position and position % 500 == 0:
+            print("  {}/{} checked...".format(position, len(selected)))
         if not path.is_file():
             missing.append(path)
             continue
-        if args.decode:
-            import cv2
-            capture = cv2.VideoCapture(str(path))
-            ok = capture.isOpened() and capture.read()[0]
+        if not decode:
+            continue
+        import cv2
+        capture = cv2.VideoCapture(str(path))
+        if not capture.isOpened() or not capture.read()[0]:
             capture.release()
-            if not ok:
-                unreadable.append(path)
+            unreadable.append(path)
+            continue
+        # Metadata frequently overstates the length; the last frame is where a
+        # truncated upload or an unusable seek index shows up.
+        declared = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+        capture.set(cv2.CAP_PROP_POS_FRAMES, max(0, declared - 1))
+        if declared < 1 or not capture.read()[0]:
+            truncated.append(
+                (path, declared, VideoClipDataset._measure_decodable_frames(capture))
+            )
+        capture.release()
 
-    print("\nChecked {} sampled videos.".format(len(selected)))
+    print("\nChecked {} videos.".format(len(selected)))
     if missing:
         print("MISSING {} file(s). First few:".format(len(missing)))
         for path in missing[:5]:
@@ -83,8 +112,15 @@ def main():
         print("UNREADABLE {} file(s) (codec/OpenCV problem). First few:".format(len(unreadable)))
         for path in unreadable[:5]:
             print("  {}".format(path))
-    if not missing and not unreadable:
-        print("OK: every sampled video resolved{}.".format(" and decoded" if args.decode else ""))
+    if truncated:
+        print("SEEK/LENGTH MISMATCH on {} file(s): metadata disagrees with what the "
+              "decoder yields. Training recovers from these automatically (it "
+              "re-measures and decodes without seeking), but a large count usually "
+              "means an incomplete upload. First few:".format(len(truncated)))
+        for path, declared, measured in truncated[:5]:
+            print("  {}  declared={} decodable={}".format(path, declared, measured))
+    if not missing and not unreadable and not truncated:
+        print("OK: every video resolved{}.".format(" and decoded" if decode else ""))
         return 0
     return 1
 

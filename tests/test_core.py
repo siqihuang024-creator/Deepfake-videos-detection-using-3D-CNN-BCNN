@@ -128,6 +128,81 @@ class BalancedSamplerTests(unittest.TestCase):
         self.assertEqual(set(index for index in indices if index >= 2), {2, 3, 4})
 
 
+class FaultTolerantDecodeTests(unittest.TestCase):
+    """A truncated or badly indexed video must not kill a multi-hour run."""
+
+    class FakeCapture:
+        """Yields `length` frames; seeking past them fails like OpenCV does."""
+
+        def __init__(self, length, seekable=True):
+            self.length = length
+            self.seekable = seekable
+            self.position = 0
+
+        def set(self, prop, value):
+            del prop
+            self.position = int(value) if self.seekable else 0
+            return True
+
+        def _frame(self, index):
+            return np.full((4, 4, 3), index % 251, dtype=np.uint8)
+
+        def read(self):
+            if self.position >= self.length:
+                return False, None
+            frame = self._frame(self.position)
+            self.position += 1
+            return True, frame
+
+        def grab(self):
+            if self.position >= self.length:
+                return False
+            self.position += 1
+            return True
+
+        def retrieve(self):
+            return True, self._frame(self.position - 1)
+
+    def test_seek_past_the_last_frame_reports_failure_instead_of_raising(self):
+        capture = self.FakeCapture(length=100)
+        result = VideoClipDataset._decode_clips(capture, "fake.mp4", [[120, 121, 122]])
+        self.assertIsNone(result)
+
+    def test_measured_length_ignores_overstated_metadata(self):
+        capture = self.FakeCapture(length=57)
+        self.assertEqual(VideoClipDataset._measure_decodable_frames(capture), 57)
+
+    def test_sequential_decode_matches_the_seeking_path(self):
+        indices = [[10, 12, 14], [30, 31, 32]]
+        seeked = VideoClipDataset._decode_clips(self.FakeCapture(100), "fake.mp4", indices)
+        sequential = VideoClipDataset._decode_clips_sequential(
+            self.FakeCapture(100), "fake.mp4", indices
+        )
+        for left, right in zip(seeked, sequential):
+            for a, b in zip(left, right):
+                np.testing.assert_array_equal(a, b)
+
+    def test_sequential_decode_clamps_indices_past_the_end(self):
+        clips = VideoClipDataset._decode_clips_sequential(
+            self.FakeCapture(20), "fake.mp4", [[18, 19, 20, 21]]
+        )
+        self.assertEqual(len(clips[0]), 4)
+        # Frames beyond the end repeat the last decodable one.
+        np.testing.assert_array_equal(clips[0][2], clips[0][3])
+
+    def test_sequential_decode_works_when_seeking_is_broken(self):
+        capture = self.FakeCapture(50, seekable=False)
+        clips = VideoClipDataset._decode_clips_sequential(capture, "fake.mp4", [[5, 6, 7]])
+        np.testing.assert_array_equal(clips[0][0], np.full((4, 4, 3), 5, dtype=np.uint8))
+
+    def test_empty_video_raises_a_named_error(self):
+        with self.assertRaises(RuntimeError) as caught:
+            VideoClipDataset._decode_clips_sequential(
+                self.FakeCapture(0), "broken.mp4", [[0, 1]]
+            )
+        self.assertIn("broken.mp4", str(caught.exception))
+
+
 class SupervisedProtocolTests(unittest.TestCase):
     RECORDS = [
         {"dataset": "DFD", "split": "train", "label": "1", "class_name": "real", "method": "real"},

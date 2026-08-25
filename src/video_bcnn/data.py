@@ -45,6 +45,9 @@ class VideoClipDataset(Dataset):
         self.to_tensor = ToTensor()
         self.normalize = Normalize(config["normalize_mean"], config["normalize_std"])
         self.detector = None
+        # Repaired frame counts, so a video with bad metadata is measured once
+        # per worker rather than on every epoch.
+        self.frame_count_cache = {}
         if self.clip_length < 1:
             raise ValueError("clip_length must be positive.")
         if not self.train_clip_strides or min(self.train_clip_strides) < 1:
@@ -182,7 +185,13 @@ class VideoClipDataset(Dataset):
 
     @staticmethod
     def _decode_clips(capture, video_path, clip_indices):
-        """Seek once per clip, then decode sequentially to preserve frame order."""
+        """Seek once per clip, then decode sequentially to preserve frame order.
+
+        Returns None when the seek lands past the last decodable frame, which
+        happens whenever container metadata overstates the frame count or the
+        installed FFmpeg seeks differently from the one the manifest was built
+        with. The caller then falls back to a seek-free pass.
+        """
         clips = []
         for indices in clip_indices:
             start, end = int(indices[0]), int(indices[-1])
@@ -193,9 +202,7 @@ class VideoClipDataset(Dataset):
                 ok, frame = capture.read()
                 if not ok:
                     if previous is None:
-                        raise RuntimeError(
-                            "Unable to decode clip beginning at frame {}: {}".format(start, video_path)
-                        )
+                        return None
                     frame = previous.copy()
                 if frame_index in wanted:
                     decoded[frame_index] = frame.copy()
@@ -203,21 +210,88 @@ class VideoClipDataset(Dataset):
             missing = [index for index in wanted if index not in decoded]
             if missing:
                 if previous is None:
-                    raise RuntimeError("Unable to decode requested frames: {}".format(video_path))
+                    return None
                 for index in missing:
                     decoded[index] = previous.copy()
             clips.append([decoded[int(index)].copy() for index in indices])
+        return clips
+
+    @staticmethod
+    def _measure_decodable_frames(capture):
+        """Count frames the decoder actually yields, ignoring container metadata."""
+        capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        count = 0
+        while capture.grab():
+            count += 1
+        return count
+
+    @staticmethod
+    def _decode_clips_sequential(capture, video_path, clip_indices):
+        """Decode every clip in one forward pass, never seeking mid-video.
+
+        `grab` skips colour conversion for frames no clip wants, so the extra
+        cost over seeking is small, and it works on files whose seek index is
+        unusable.
+        """
+        wanted = sorted({int(index) for indices in clip_indices for index in indices})
+        if not wanted:
+            raise RuntimeError("No frames requested for {}".format(video_path))
+        capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        frames, position, target, last = {}, 0, set(wanted), wanted[-1]
+        while position <= last:
+            if not capture.grab():
+                break
+            if position in target:
+                ok, frame = capture.retrieve()
+                if not ok:
+                    break
+                frames[position] = frame.copy()
+            position += 1
+        if not frames:
+            raise RuntimeError(
+                "Video yielded no decodable frames; it is likely truncated or "
+                "corrupt: {}".format(video_path)
+            )
+        available = sorted(frames)
+        clips = []
+        for indices in clip_indices:
+            clip = []
+            for index in indices:
+                index = int(index)
+                if index not in frames:
+                    # Clamp onto the nearest frame at or before the request.
+                    earlier = [key for key in available if key <= index]
+                    index = earlier[-1] if earlier else available[0]
+                clip.append(frames[index].copy())
+            clips.append(clip)
         return clips
 
     def _read_clips(self, video_path):
         capture = cv2.VideoCapture(str(video_path))
         if not capture.isOpened():
             raise RuntimeError("Unable to open video: {}".format(video_path))
-        frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
         fps = float(capture.get(cv2.CAP_PROP_FPS))
+        key = str(video_path)
+        frame_count = self.frame_count_cache.get(key)
+        if frame_count is None:
+            frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
         clip_indices = self.clip_indices(frame_count)
         try:
             decoded_clips = self._decode_clips(capture, video_path, clip_indices)
+            if decoded_clips is None:
+                # Metadata or the seek index lied. Measure the real length once,
+                # remember it for later epochs, and decode without seeking.
+                measured = self._measure_decodable_frames(capture)
+                if measured < 1:
+                    raise RuntimeError(
+                        "Video has no decodable frames; it is likely truncated or "
+                        "corrupt: {}".format(video_path)
+                    )
+                self.frame_count_cache[key] = measured
+                clip_indices = self.clip_indices(measured)
+                decoded_clips = self._decode_clips_sequential(
+                    capture, video_path, clip_indices
+                )
         finally:
             capture.release()
         clips, audits = [], []
