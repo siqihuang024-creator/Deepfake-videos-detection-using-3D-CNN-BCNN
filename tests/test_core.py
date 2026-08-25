@@ -13,10 +13,11 @@ from torch import nn
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from video_bcnn.data import VideoClipDataset
+from video_bcnn.data import CachedClipDataset, VideoClipDataset
 from video_bcnn.experiment import (
     DatasetBalancedEpochSampler,
     GroupBalancedEpochSampler,
+    overfit_records,
     resolve_objective,
     training_records,
 )
@@ -43,15 +44,76 @@ class ModelContractTests(unittest.TestCase):
         self.assertEqual(extractor.temporal_receptive_field, 13)
         self.assertEqual(extractor.conv_channels, (24, 32, 32))
 
-    def test_wider_extractor_rejects_changed_output_channels(self):
+    def test_feature_dim_follows_channels_and_spatial_output(self):
+        self.assertEqual(Stable3DFeatureExtractor(3, (16, 24, 48)).feature_dim, 48 * 22 * 22)
+        self.assertEqual(
+            Stable3DFeatureExtractor(3, spatial_output_size=7).feature_dim, 32 * 7 * 7
+        )
+
+    def test_spatial_pooling_shrinks_the_bayesian_input_not_the_head(self):
+        extractor = Stable3DFeatureExtractor(3, spatial_output_size=4)
+        features = extractor(torch.zeros(1, 3, 4, 224, 224))
+        self.assertEqual(tuple(features.shape), (1, 32 * 4 * 4))
+        pyro.clear_param_store()
+        model = VideoBayesianCNN(extractor, hidden_dim=64)
+        self.assertEqual(model.fc1_init.in_features, 512)
+        self.assertEqual(model.fc1_init.out_features, 64)
+
+    def test_activation_is_selectable_and_validated(self):
+        self.assertIsInstance(
+            Stable3DFeatureExtractor(3, activation="relu").activation, nn.ReLU
+        )
         with self.assertRaises(ValueError):
-            Stable3DFeatureExtractor(5, (24, 32, 48))
+            Stable3DFeatureExtractor(3, activation="swish")
+
+    def test_default_construction_reproduces_the_paper_interface(self):
+        extractor = Stable3DFeatureExtractor(3)
+        self.assertEqual(extractor.feature_dim, 15488)
+        self.assertIsInstance(extractor.activation, nn.Sigmoid)
+        self.assertEqual(extractor.spatial_output_size, 22)
 
     def test_matched_2d_control_keeps_the_same_feature_interface(self):
         extractor = Stable2DFeatureExtractor()
         self.assertEqual(extractor.feature_dim, 15488)
         self.assertEqual(extractor.input_mode, "frame")
         self.assertEqual(extractor.conv1.kernel_size, (5, 5))
+
+
+class OverfitDiagnosticTests(unittest.TestCase):
+    RECORDS = [
+        {"dataset": "DFD", "class_name": "real", "path": "r{}".format(index)}
+        for index in range(6)
+    ] + [
+        {"dataset": "DFD", "class_name": "fake", "path": "f{}".format(index)}
+        for index in range(9)
+    ]
+
+    def test_subset_is_class_balanced_and_deterministic(self):
+        first = overfit_records(self.RECORDS, 3, seed=42)
+        second = overfit_records(self.RECORDS, 3, seed=42)
+        self.assertEqual([row["path"] for row in first], [row["path"] for row in second])
+        self.assertEqual(len(first), 6)
+        self.assertEqual(sum(row["class_name"] == "real" for row in first), 3)
+        self.assertEqual(sum(row["class_name"] == "fake" for row in first), 3)
+
+    def test_subset_never_exceeds_the_available_videos(self):
+        selected = overfit_records(self.RECORDS, 50, seed=42)
+        self.assertEqual(sum(row["class_name"] == "real" for row in selected), 6)
+        self.assertEqual(sum(row["class_name"] == "fake" for row in selected), 9)
+
+    def test_deterministic_training_clips_repeat_every_epoch(self):
+        dataset = VideoClipDataset.__new__(VideoClipDataset)
+        dataset.training = True
+        dataset.clip_length = 8
+        dataset.train_clip_strides = (1,)
+        dataset.eval_clip_stride = 2
+        dataset.clips_per_video = 1
+        dataset.deterministic_clips = True
+        first = dataset.clip_indices(200)
+        self.assertEqual(first, dataset.clip_indices(200))
+        dataset.deterministic_clips = False
+        draws = {tuple(dataset.clip_indices(200)[0]) for _ in range(20)}
+        self.assertGreater(len(draws), 1)
 
 
 class ClipIndexTests(unittest.TestCase):
@@ -62,6 +124,7 @@ class ClipIndexTests(unittest.TestCase):
         dataset.train_clip_strides = (1,)
         dataset.eval_clip_stride = 2
         dataset.clips_per_video = 3
+        dataset.deterministic_clips = False
         return dataset
 
     def test_eval_indices_are_contiguous_at_configured_stride(self):

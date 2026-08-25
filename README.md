@@ -306,6 +306,69 @@ make the two machines' results incomparable. Clone, source the env file, train.
   roots from the runtime config, so a Windows-trained checkpoint evaluates on
   Linux unchanged.
 
+## Capacity diagnostic (`--overfit-subset`)
+
+Both the one-class runs and the supervised run plateau at chance, which does
+not say whether the model *cannot* learn or merely *did not*. `--overfit-subset
+N` answers that in minutes instead of hours: train on N videos per dataset per
+class and score those same videos, with augmentation off, clip positions
+pinned, and the decoded clips cached in RAM.
+
+```bash
+python train_3d_bcnn.py   --config configs/dfd_supervised_3d.yaml   --manifest artifacts/manifests/combined_manifest_supervised.csv   --overfit-subset 6 --max-epochs 20 --run-suffix baseline
+```
+
+Outputs go to `<run_dir>_<suffix>_overfit/`, never over a real run. The reported
+AUROC measures capacity, not detection performance -- it is scored on the
+training videos.
+
+### Sweeping hypotheses
+
+Architecture and optimiser are command-line overrides, so one config serves
+every variant, and the values used still reach the checkpoint:
+
+| flag | effect |
+| --- | --- |
+| `--activation sigmoid\|relu\|leaky_relu\|tanh` | `model.activation` |
+| `--spatial-output-size 22\|7\|4` | adaptive pool after conv3: feature_dim 15488 / 1568 / 512 |
+| `--hidden-dim` | Bayesian FC1 width |
+| `--optimizer sgd\|adam` | `train.optimizer` |
+| `--learning-rate` | `train.learning_rate` |
+| `--run-suffix` | keeps sweep variants in separate directories |
+
+`spatial_output_size` shrinks the Bayesian head's input without altering its
+structure: `FC1 -> Dropout -> FC2` is untouched. `feature_dim` is derived from
+`conv_channels` and `spatial_output_size`; a config that declares a
+contradicting value is rejected rather than silently ignored.
+
+Compare the runs with:
+
+```bash
+python scripts/compare_runs.py artifacts/run_*_overfit --label A B C
+```
+
+### First result
+
+12 DFD videos, 20 epochs, seed 42:
+
+| variant | training-loss drop | AUROC on train |
+| --- | --- | --- |
+| baseline (sigmoid, 15488, SGD 1e-4) | 0.03% | 0.750 |
+| ReLU only | 0.04% | 0.750 |
+| spatial_output_size=7 only | 0.27% | 0.722 |
+| **Adam 1e-3 only** | **5.85%** | **0.917** |
+| ReLU + pool7 + Adam | 6.83% | 0.778 |
+
+The optimiser is the binding constraint, not the activation. Sigmoid gradients
+are small but consistent in direction, and Adam's per-parameter normalisation
+turns them into full-size steps, whereas SGD at a fixed 1e-4 crawls. Absolute
+losses are not comparable across different `feature_dim` (the KL term over FC1
+scales with it); the relative drop is.
+
+Caveats: 12 videos give AUROC a granularity of 1/36, 20 epochs is short, and
+this is one seed. Treat it as a direction to test at scale, not a result.
+
+
 ## Outputs and interpretation
 
 Each run writes `best.pt`, `last.pt`, `history.csv/json`, and training curves.

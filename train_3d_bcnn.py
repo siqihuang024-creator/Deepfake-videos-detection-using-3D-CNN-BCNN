@@ -13,19 +13,26 @@ from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
-from video_bcnn.data import load_manifest, seed_worker
+from video_bcnn.data import CachedClipDataset, load_manifest, seed_worker
 from video_bcnn.experiment import (
     active_records,
     capped_validation_records,
     dataset_balanced_sampler,
     evaluate_values,
     make_dataset,
+    overfit_records,
     resolve_objective,
     score_loader,
     select_records,
     training_records,
 )
-from video_bcnn.model import Stable2DFeatureExtractor, Stable3DFeatureExtractor, VideoBayesianCNN
+from video_bcnn.model import (
+    ACTIVATIONS,
+    Stable2DFeatureExtractor,
+    Stable3DFeatureExtractor,
+    VideoBayesianCNN,
+    feature_dimension,
+)
 from video_bcnn.reporting import save_history
 from video_bcnn.utils import (
     ensure_dir,
@@ -39,31 +46,47 @@ from video_bcnn.utils import (
 
 
 def build_model(config, device):
-    expected = {
+    # These are hard-coded inside the extractors, so a config that disagrees
+    # would describe a model that was never built.
+    structural = {
         "spatial_kernel_size": 5,
         "spatial_pool_kernel_size": 4,
         "spatial_pool_stride": 2,
-        "feature_dim": 15488,
-        "hidden_dim": 512,
     }
-    for name, value in expected.items():
+    for name, value in structural.items():
         configured = config["model"].get(name)
         if configured != value:
             raise ValueError(
-                "Controlled experiment requires model.{}={}, received {}.".format(
+                "This extractor implements model.{}={}, received {}.".format(
                     name, value, configured
                 )
             )
+    settings = {
+        "conv_channels": config["model"]["conv_channels"],
+        "activation": config["model"].get("activation", "sigmoid"),
+        "spatial_output_size": config["model"].get("spatial_output_size", 22),
+    }
     architecture = config["model"].get("architecture", "3d")
     if architecture == "3d":
         extractor = Stable3DFeatureExtractor(
-            temporal_kernel_size=config["model"]["temporal_kernel_size"],
-            conv_channels=config["model"]["conv_channels"],
+            temporal_kernel_size=config["model"]["temporal_kernel_size"], **settings
         ).to(device)
     elif architecture == "2d_score_mean":
-        extractor = Stable2DFeatureExtractor().to(device)
+        extractor = Stable2DFeatureExtractor(**settings).to(device)
     else:
         raise ValueError("Unknown architecture: {}".format(architecture))
+    # feature_dim follows from conv_channels and spatial_output_size. It stays
+    # in the config as a recorded protocol value, but a stale entry must not
+    # silently disagree with the model that actually ran.
+    declared = config["model"].get("feature_dim")
+    if declared is not None and int(declared) != int(extractor.feature_dim):
+        raise ValueError(
+            "model.feature_dim={} contradicts the extractor's {} "
+            "(conv_channels={}, spatial_output_size={}). Update the config.".format(
+                declared, extractor.feature_dim,
+                settings["conv_channels"], settings["spatial_output_size"],
+            )
+        )
     model = VideoBayesianCNN(
         extractor,
         dropout=config["model"]["dropout"],
@@ -72,8 +95,61 @@ def build_model(config, device):
         rho_init=config["model"]["posterior_rho_init"],
         kl_weight=config["train"]["kl_weight"],
         likelihood=config["train"].get("observation_likelihood", "gaussian"),
+        hidden_dim=config["model"].get("hidden_dim", 512),
     )
     return extractor, model
+
+
+def apply_sweep_overrides(config, args):
+    """Fold command-line architecture/optimiser overrides into the config.
+
+    They are written into the config rather than applied later so the
+    checkpoint records the settings the run actually used.
+    """
+    if args.activation is not None:
+        config["model"]["activation"] = args.activation
+    if args.spatial_output_size is not None:
+        config["model"]["spatial_output_size"] = int(args.spatial_output_size)
+    if args.hidden_dim is not None:
+        config["model"]["hidden_dim"] = int(args.hidden_dim)
+    if args.spatial_output_size is not None:
+        # feature_dim is derived, so keep the recorded value honest.
+        config["model"]["feature_dim"] = feature_dimension(
+            config["model"]["conv_channels"][-1], config["model"]["spatial_output_size"]
+        )
+    if args.optimizer is not None:
+        config["train"]["optimizer"] = args.optimizer
+    if args.learning_rate is not None:
+        config["train"]["learning_rate"] = float(args.learning_rate)
+    if args.run_suffix:
+        for key in ("checkpoint_dir", "log_dir", "report_dir"):
+            path = Path(config["train"][key])
+            config["train"][key] = str(
+                path.parent.parent / (path.parent.name + "_" + args.run_suffix) / path.name
+            )
+    return config
+
+
+def build_optimizer(config):
+    """SGD reproduces the paper; Adam exists because SGD moved the ELBO 0.2%."""
+    name = str(config["train"].get("optimizer", "sgd")).lower()
+    learning_rate = float(config["train"]["learning_rate"])
+    if name == "sgd":
+        optimizer, arguments = torch.optim.SGD, {
+            "lr": learning_rate, "momentum": float(config["train"]["momentum"]),
+        }
+    elif name == "adam":
+        optimizer, arguments = torch.optim.Adam, {
+            "lr": learning_rate,
+            "betas": tuple(config["train"].get("adam_betas", (0.9, 0.999))),
+        }
+    else:
+        raise ValueError("Unknown train.optimizer {!r}; expected sgd or adam.".format(name))
+    return pyro.optim.ExponentialLR({
+        "optimizer": optimizer,
+        "optim_args": arguments,
+        "gamma": float(config["train"]["lr_gamma"]),
+    }, clip_args={"clip_norm": float(config["train"]["gradient_clip_norm"])})
 
 
 def main():
@@ -81,6 +157,35 @@ def main():
     parser.add_argument("--config", required=True)
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--max-epochs", type=int, default=None)
+    # Architecture/optimiser sweeps: overriding on the command line keeps one
+    # config per experiment instead of one per hypothesis, and the values still
+    # land in the checkpoint because they are written into the config.
+    parser.add_argument("--activation", default=None,
+                        choices=sorted(ACTIVATIONS),
+                        help="Override model.activation (default: the config's, sigmoid).")
+    parser.add_argument("--spatial-output-size", type=int, default=None,
+                        help="Override model.spatial_output_size. 22 keeps feature_dim=15488; "
+                             "7 gives 1568 and 4 gives 512, shrinking Bayesian FC1 without "
+                             "changing the head's structure.")
+    parser.add_argument("--hidden-dim", type=int, default=None,
+                        help="Override model.hidden_dim (Bayesian FC1 output width).")
+    parser.add_argument("--optimizer", default=None, choices=["sgd", "adam"],
+                        help="Override train.optimizer.")
+    parser.add_argument("--learning-rate", type=float, default=None,
+                        help="Override train.learning_rate.")
+    parser.add_argument("--run-suffix", default=None,
+                        help="Append to the run directory name so sweep variants "
+                             "do not overwrite each other.")
+    parser.add_argument(
+        "--overfit-subset",
+        type=int,
+        default=None,
+        metavar="N",
+        help="Diagnostic: train on N videos per dataset per class and score the "
+             "same videos. Augmentation off, clip positions pinned, clips cached "
+             "in RAM. A model that cannot fit this has an architecture or "
+             "optimisation problem, and the answer takes minutes.",
+    )
     parser.add_argument(
         "--dataset-root",
         action="append",
@@ -101,6 +206,7 @@ def main():
     args = parser.parse_args()
     config = override_dataset_roots(load_config(args.config), args.dataset_root)
     override_num_workers(config, args.num_workers)
+    apply_sweep_overrides(config, args)
     print("Dataset roots: {} | DataLoader workers: {}".format(
         verify_dataset_roots(config), config["data"]["num_workers"]))
     if args.max_epochs is not None:
@@ -120,6 +226,34 @@ def main():
     )
     if not train_records or not validation_records:
         raise ValueError("The manifest lacks training or real/fake validation videos.")
+    if args.overfit_subset:
+        train_records = overfit_records(train_records, args.overfit_subset, config["seed"])
+        # Scoring the training videos themselves is the point: this measures
+        # capacity, not generalisation.
+        validation_records = list(train_records)
+        config["data"].update({
+            "horizontal_flip_probability": 0.0,
+            "deterministic_train_clips": True,
+            "selection_clips_per_video": 1,
+            "train_samples_per_dataset_per_epoch": int(args.overfit_subset),
+            "train_balance_keys": ["dataset", "class_name"],
+            "train_stratify_key": None,
+            "num_workers": 0,          # the RAM clip cache dies with each worker
+        })
+        config["train"].update({
+            "early_stopping_patience": int(config["train"]["epochs"]) + 1,
+            "selection_min_metric_improvement": 0.0,
+        })
+        for key in ("checkpoint_dir", "log_dir", "report_dir"):
+            path = Path(config["train"][key])
+            config["train"][key] = str(
+                path.parent.parent / (path.parent.name + "_overfit") / path.name
+            )
+        print(
+            "OVERFIT DIAGNOSTIC: {} videos per dataset per class, scored on the "
+            "training videos themselves. These numbers measure capacity, not "
+            "detection performance.".format(args.overfit_subset)
+        )
     active_datasets = list(config["data"].get("active_datasets", []))
     train_counts = {
         dataset: {
@@ -191,6 +325,10 @@ def main():
         training=False,
         clips_per_video=config["data"]["selection_clips_per_video"],
     )
+    if args.overfit_subset:
+        # Decode once, then every later epoch is GPU-bound.
+        train_dataset = CachedClipDataset(train_dataset)
+        validation_dataset = CachedClipDataset(validation_dataset)
     default_balance_keys = ["dataset", "class_name"] if objective["name"] == "supervised" else ["dataset"]
     balance_keys = list(config["data"].get("train_balance_keys", default_balance_keys))
     sampler = dataset_balanced_sampler(
@@ -220,14 +358,19 @@ def main():
         **loader_options
     )
     extractor, model = build_model(config, device)
-    scheduler = pyro.optim.ExponentialLR({
-        "optimizer": torch.optim.SGD,
-        "optim_args": {
-            "lr": float(config["train"]["learning_rate"]),
-            "momentum": float(config["train"]["momentum"]),
-        },
-        "gamma": float(config["train"]["lr_gamma"]),
-    }, clip_args={"clip_norm": float(config["train"]["gradient_clip_norm"])})
+    print(
+        "Extractor: {} activation, conv_channels={}, {}x{} spatial -> feature_dim={} "
+        "({} parameters). Bayesian head: {} -> {} -> 1. Optimizer: {}.".format(
+            config["model"].get("activation", "sigmoid"),
+            list(extractor.conv_channels),
+            extractor.spatial_output_size, extractor.spatial_output_size,
+            extractor.feature_dim,
+            sum(parameter.numel() for parameter in extractor.parameters()),
+            extractor.feature_dim, model.hidden_dim,
+            config["train"].get("optimizer", "sgd"),
+        )
+    )
+    scheduler = build_optimizer(config)
     svi = SVI(model.model, model.guide, scheduler, loss=TraceGraph_ELBO())
 
     checkpoint_dir = ensure_dir(config["train"]["checkpoint_dir"])

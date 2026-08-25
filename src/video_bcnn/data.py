@@ -40,6 +40,9 @@ class VideoClipDataset(Dataset):
         self.face_detector_min_neighbors = int(config.get("face_detector_min_neighbors", 5))
         self.box_smoothing_alpha = float(config.get("box_smoothing_alpha", 0.6))
         self.horizontal_flip_probability = float(config.get("horizontal_flip_probability", 0.5))
+        # Overfit diagnostics need the same frames every epoch, so the random
+        # training clip position can be pinned to the middle of the video.
+        self.deterministic_clips = bool(config.get("deterministic_train_clips", False))
         self.resize = Resize(int(config["input_resize"]))
         self.center_crop = CenterCrop(int(config["center_crop"]))
         self.to_tensor = ToTensor()
@@ -76,11 +79,14 @@ class VideoClipDataset(Dataset):
         """Return one random training clip or deterministic evaluation clips."""
         if frame_count <= 0:
             raise RuntimeError("Video reports no decodable frames.")
-        if self.training:
+        if self.training and not self.deterministic_clips:
             stride = int(np.random.choice(self.train_clip_strides))
             max_start = self._max_start(frame_count, self.clip_length, stride)
             start = int(np.random.randint(0, max_start + 1)) if max_start else 0
             starts = [start]
+        elif self.training:
+            stride = int(self.train_clip_strides[0])
+            starts = [self._max_start(frame_count, self.clip_length, stride) // 2]
         else:
             stride = self.eval_clip_stride
             max_start = self._max_start(frame_count, self.clip_length, stride)
@@ -327,3 +333,26 @@ class VideoClipDataset(Dataset):
         else:
             result["clips"] = torch.stack(clips, dim=0)
         return result
+
+
+class CachedClipDataset(Dataset):
+    """Decode each video once and keep the tensors in RAM.
+
+    Only for the overfit diagnostic. Decoding dominates the epoch (Haar
+    detection alone is ~93% of per-item time), so caching turns "can this
+    architecture fit 40 videos" into a question answered in minutes instead of
+    hours. Requires num_workers=0, otherwise each respawned worker starts with
+    an empty cache.
+    """
+
+    def __init__(self, dataset):
+        self.dataset = dataset
+        self.cache = {}
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, index):
+        if index not in self.cache:
+            self.cache[index] = self.dataset[index]
+        return self.cache[index]

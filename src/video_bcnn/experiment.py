@@ -206,6 +206,24 @@ def _feature_diagnostics(stats):
     return {"groups": groups, "real_fake_separation": separations}
 
 
+def overfit_records(records, per_class, seed):
+    """A small, deterministic, class-balanced slice for the fit diagnostic.
+
+    A model that cannot drive the loss down on a handful of videos it trains
+    on directly has an architecture or optimisation problem, not a
+    generalisation one -- and that question is worth minutes, not hours.
+    """
+    groups = {}
+    for row in records:
+        groups.setdefault((row["dataset"], row["class_name"]), []).append(row)
+    selected = []
+    for key in sorted(groups):
+        values = sorted(groups[key], key=lambda row: row["path"])
+        order = _stable_rng(seed, "overfit", *key).permutation(len(values))
+        selected.extend(values[int(index)] for index in order[: int(per_class)])
+    return selected
+
+
 def capped_validation_records(records, seed, max_fakes_per_dataset):
     """Keep all real videos and a deterministic method-stratified fake subset."""
     if max_fakes_per_dataset is None:
