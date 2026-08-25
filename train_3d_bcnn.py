@@ -119,6 +119,12 @@ def apply_sweep_overrides(config, args):
         )
     if args.optimizer is not None:
         config["train"]["optimizer"] = args.optimizer
+    if args.kl_weight is not None:
+        config["train"]["kl_weight"] = float(args.kl_weight)
+    if args.prior_std is not None:
+        config["model"]["prior_std"] = float(args.prior_std)
+    if args.posterior_rho_init is not None:
+        config["model"]["posterior_rho_init"] = float(args.posterior_rho_init)
     if args.learning_rate is not None:
         config["train"]["learning_rate"] = float(args.learning_rate)
     if args.run_suffix:
@@ -171,6 +177,15 @@ def main():
                         help="Override model.hidden_dim (Bayesian FC1 output width).")
     parser.add_argument("--optimizer", default=None, choices=["sgd", "adam"],
                         help="Override train.optimizer.")
+    parser.add_argument("--kl-weight", type=float, default=None,
+                        help="Override train.kl_weight. The KL is scaled by "
+                             "kl_weight/clips_per_epoch, and with 7.9M Bayesian FC1 "
+                             "weights it otherwise dwarfs the likelihood.")
+    parser.add_argument("--prior-std", type=float, default=None,
+                        help="Override model.prior_std.")
+    parser.add_argument("--posterior-rho-init", type=float, default=None,
+                        help="Override model.posterior_rho_init. Less negative means a "
+                             "wider initial posterior and a much smaller KL.")
     parser.add_argument("--learning-rate", type=float, default=None,
                         help="Override train.learning_rate.")
     parser.add_argument("--run-suffix", default=None,
