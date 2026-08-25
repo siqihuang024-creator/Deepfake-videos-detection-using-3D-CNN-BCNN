@@ -192,6 +192,22 @@ def main():
                         help="Append to the run directory name so sweep variants "
                              "do not overwrite each other.")
     parser.add_argument(
+        "--train-subset",
+        type=int,
+        default=None,
+        metavar="N",
+        help="Train on N videos per dataset per class but score the real held-out "
+             "val split. Unlike --overfit-subset this measures generalisation, "
+             "which is the question the overfit diagnostic cannot answer.",
+    )
+    parser.add_argument(
+        "--cache-clips",
+        action="store_true",
+        help="Keep decoded clips in RAM: pins clip positions, disables the flip, "
+             "and forces num_workers=0. Trades augmentation for speed, so it is a "
+             "diagnostic setting, not a protocol one.",
+    )
+    parser.add_argument(
         "--overfit-subset",
         type=int,
         default=None,
@@ -240,19 +256,43 @@ def main():
     )
     if not train_records or not validation_records:
         raise ValueError("The manifest lacks training or real/fake validation videos.")
+    if args.overfit_subset and args.train_subset:
+        raise ValueError("--overfit-subset and --train-subset are mutually exclusive.")
+    if args.cache_clips or args.overfit_subset:
+        # A cached clip is decoded once, so its position and flip must be fixed.
+        config["data"].update({
+            "horizontal_flip_probability": 0.0,
+            "deterministic_train_clips": True,
+            "num_workers": 0,
+        })
+    if args.train_subset:
+        train_records = overfit_records(train_records, args.train_subset, config["seed"])
+        config["data"].update({
+            "train_samples_per_dataset_per_epoch": int(args.train_subset),
+            "train_balance_keys": ["dataset", "class_name"],
+            "train_stratify_key": None,
+        })
+        for key in ("checkpoint_dir", "log_dir", "report_dir"):
+            path = Path(config["train"][key])
+            config["train"][key] = str(
+                path.parent.parent / (path.parent.name + "_subset") / path.name
+            )
+        print(
+            "SUBSET RUN: {} training videos per dataset per class, scored on the "
+            "real held-out val split. These numbers measure generalisation.".format(
+                args.train_subset
+            )
+        )
     if args.overfit_subset:
         train_records = overfit_records(train_records, args.overfit_subset, config["seed"])
         # Scoring the training videos themselves is the point: this measures
         # capacity, not generalisation.
         validation_records = list(train_records)
         config["data"].update({
-            "horizontal_flip_probability": 0.0,
-            "deterministic_train_clips": True,
             "selection_clips_per_video": 1,
             "train_samples_per_dataset_per_epoch": int(args.overfit_subset),
             "train_balance_keys": ["dataset", "class_name"],
             "train_stratify_key": None,
-            "num_workers": 0,          # the RAM clip cache dies with each worker
         })
         config["train"].update({
             "early_stopping_patience": int(config["train"]["epochs"]) + 1,
@@ -341,7 +381,7 @@ def main():
         training=False,
         clips_per_video=config["data"]["selection_clips_per_video"],
     )
-    if args.overfit_subset:
+    if args.overfit_subset or args.cache_clips:
         # Decode once, then every later epoch is GPU-bound.
         train_dataset = CachedClipDataset(train_dataset)
         validation_dataset = CachedClipDataset(validation_dataset)
