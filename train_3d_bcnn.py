@@ -222,8 +222,7 @@ def main():
     config = override_dataset_roots(load_config(args.config), args.dataset_root)
     override_num_workers(config, args.num_workers)
     apply_sweep_overrides(config, args)
-    print("Dataset roots: {} | DataLoader workers: {}".format(
-        verify_dataset_roots(config), config["data"]["num_workers"]))
+    print("Dataset roots: {}".format(verify_dataset_roots(config)))
     if args.max_epochs is not None:
         config["train"]["epochs"] = int(args.max_epochs)
     seed_everything(config["seed"])
@@ -269,6 +268,8 @@ def main():
             "training videos themselves. These numbers measure capacity, not "
             "detection performance.".format(args.overfit_subset)
         )
+    # Printed here because the overfit block above forces workers to 0.
+    print("DataLoader workers: {}".format(config["data"]["num_workers"]))
     active_datasets = list(config["data"].get("active_datasets", []))
     train_counts = {
         dataset: {
