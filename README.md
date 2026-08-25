@@ -128,6 +128,91 @@ Full CelebDFv3 test evaluation is expensive. During debugging, add
 `--max-fakes-per-dataset 64`; final reported results should use the complete
 test split.
 
+## Supervised experiments (S1/S2)
+
+The one-class runs (E0/E2) all sit at chance, which does not separate "the
+real-only objective is too hard" from "the feature extractor never learns".
+The supervised protocol settles that: with labels available, a still-flat AUROC
+points at the Sigmoid extractor and the optimizer, not at the objective.
+
+Supervised training needs labelled fakes, which the one-class manifest parks in
+`unused`. Derive the supervised manifest once:
+
+```powershell
+D:\Python\python.exe scriptsuild_supervised_manifest.py
+```
+
+It promotes a fake into `train` only when **both** its target and its donor are
+training identities. The donor rule mirrors the donor-safe val/test rule: a
+training fake built from a val/test donor would leak an evaluation identity
+into backpropagation. Rows failing it become `excluded_donor_eval`.
+
+| dataset | real train | fake train | excluded (donor outside train) |
+| --- | --- | --- | --- |
+| DFD | 264 | 1894 | 518 |
+| CelebDFv3 | 613 | 30149 | 7186 |
+
+Val/test rows are copied unchanged, so supervised and one-class runs are scored
+on identical videos.
+
+Train each domain separately, then self- and cross-test:
+
+```powershell
+D:\Python\python.exe train_3d_bcnn.py `
+  --config configs\dfd_supervised_3d.yaml `
+  --manifest artifacts\manifests\combined_manifest_supervised.csv
+
+D:\Python\python.exe train_3d_bcnn.py `
+  --config configs\celeb_supervised_3d.yaml `
+  --manifest artifacts\manifests\combined_manifest_supervised.csv
+```
+
+```powershell
+# self-test: the checkpoint's own domain, checkpoint threshold
+D:\Python\python.exe evaluate_3d_bcnn.py `
+  --config configs\dfd_supervised_3d.yaml `
+  --manifest artifacts\manifests\combined_manifest_supervised.csv `
+  --checkpoint artifactsun_dfd_supervised_3d_t8_k3\checkpointsest.pt --split test
+
+# cross-test: the held-out domain, recalibrated operating point
+D:\Python\python.exe evaluate_3d_bcnn.py `
+  --config configs\dfd_supervised_3d.yaml `
+  --manifest artifacts\manifests\combined_manifest_supervised.csv `
+  --checkpoint artifactsun_dfd_supervised_3d_t8_k3\checkpointsest.pt `
+  --split test --eval-datasets CelebDFv3 --recalibrate-threshold
+```
+
+`--recalibrate-threshold` matters because the stored threshold was calibrated
+on the training domain's reals. AUROC and EER are threshold-free and stay
+comparable either way; accuracy and TPR@FPR are not.
+
+Read the two numbers as a pair: same-dataset AUROC is an upper bound that
+includes method-specific artifacts, cross-dataset AUROC is the generalization
+result. Supervised training deliberately gives up the data-agnostic claim, so
+a large gap between them is the expected finding, not a bug.
+
+### Objectives
+
+`train.objective` selects what the likelihood is anchored to. The detector's
+positive class is always "fake", so `score_sign` keeps the anomaly score
+ranking fakes high whichever anchor is used.
+
+| objective | trains on | target | score |
+| --- | --- | --- | --- |
+| `one_class_real` (default) | real only | 1 | `-posterior_loc` |
+| `supervised` | real + fake | manifest label | `-posterior_loc` |
+| `one_class_fake` | fake only | 1 | `+posterior_loc` |
+
+`train.observation_likelihood` is `gaussian` (paper-faithful) or `bernoulli`.
+Supervised configs use `bernoulli`, because {0,1} labels under a unit-variance
+Gaussian bury the class signal in observation noise.
+
+`data.train_balance_keys` sets the balance groups (`[dataset, class_name]` for
+supervised, so 30k CelebDFv3 fakes cannot drown out 613 reals), and
+`data.train_stratify_key: method` round-robins inside each group so all 22
+CelebDFv3 forgery methods appear every epoch.
+
+
 ## Outputs and interpretation
 
 Each run writes `best.pt`, `last.pt`, `history.csv/json`, and training curves.

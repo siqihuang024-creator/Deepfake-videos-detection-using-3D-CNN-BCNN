@@ -25,12 +25,19 @@ from video_bcnn.utils import ensure_dir, load_checkpoint, load_config, resolve_d
 from train_3d_bcnn import build_model
 
 
-def checkpoint_evaluation_config(saved_config, runtime_config):
-    """Keep trained preprocessing immutable; override only runtime locations/device."""
+def checkpoint_evaluation_config(saved_config, runtime_config, eval_datasets=None):
+    """Keep trained preprocessing immutable; override only runtime locations/device.
+
+    `eval_datasets` is the one protocol-level override, because cross-dataset
+    testing has to score a domain the checkpoint never trained on. Clip length,
+    stride, crop margin, and normalization still come from the checkpoint.
+    """
     config = copy.deepcopy(saved_config)
     config["device"] = runtime_config["device"]
     config["data"]["dataset_roots"] = runtime_config["data"]["dataset_roots"]
     config["train"]["report_dir"] = runtime_config["train"]["report_dir"]
+    if eval_datasets:
+        config["data"]["active_datasets"] = list(eval_datasets)
     return config
 
 
@@ -43,13 +50,26 @@ def main():
     parser.add_argument("--mc-uncertainty-samples", type=int, default=None)
     parser.add_argument("--max-fakes-per-dataset", type=int, default=None)
     parser.add_argument("--export-embeddings", action="store_true")
+    parser.add_argument(
+        "--eval-datasets",
+        nargs="+",
+        default=None,
+        help="Score these datasets instead of the checkpoint's training domains "
+             "(use for cross-dataset testing, e.g. --eval-datasets CelebDFv3).",
+    )
+    parser.add_argument(
+        "--recalibrate-threshold",
+        action="store_true",
+        help="Recalibrate the operating point on this split's real videos instead of "
+             "reusing the checkpoint's. Required for meaningful cross-dataset accuracy.",
+    )
     args = parser.parse_args()
 
     runtime_config = load_config(args.config)
     device = resolve_device(runtime_config["device"])
     checkpoint = load_checkpoint(args.checkpoint, device)
     saved_config = checkpoint["config"]
-    config = checkpoint_evaluation_config(saved_config, runtime_config)
+    config = checkpoint_evaluation_config(saved_config, runtime_config, args.eval_datasets)
     seed_everything(config["seed"])
     pyro.clear_param_store()
     extractor, model = build_model(saved_config, device)
@@ -79,17 +99,31 @@ def main():
     mc_samples = config["train"].get("report_mc_uncertainty_samples", 0)
     if args.mc_uncertainty_samples is not None:
         mc_samples = args.mc_uncertainty_samples
+    score_sign = float(checkpoint.get("score_sign", -1.0))
     values = score_loader(
-        model, loader, device, mc_samples, collect_embeddings=args.export_embeddings
+        model, loader, device, mc_samples,
+        collect_embeddings=args.export_embeddings,
+        score_sign=score_sign,
     )
+    # The stored threshold was calibrated on the training domain's reals, so a
+    # cross-dataset run must recalibrate or its accuracy numbers are meaningless.
+    # AUROC/EER are threshold-free and stay comparable either way.
+    threshold = None if args.recalibrate_threshold else checkpoint["threshold"]
+    if args.recalibrate_threshold:
+        print("Recalibrating the threshold on this split's real videos.")
     metrics, _ = evaluate_values(
         values,
         config["train"]["calibration_false_positive_rate"],
-        threshold=checkpoint["threshold"],
+        threshold=threshold,
         include_methods=True,
     )
     metrics.update({
         "split": args.split,
+        "objective": checkpoint.get("data_protocol", {}).get("objective", "one_class_real"),
+        "score_sign": score_sign,
+        "trained_datasets": saved_config["data"].get("active_datasets", []),
+        "evaluated_datasets": config["data"].get("active_datasets", []),
+        "threshold_source": "recalibrated" if args.recalibrate_threshold else "checkpoint",
         "checkpoint": str(Path(args.checkpoint).resolve()),
         "num_videos": len(records),
         "num_clips_per_video": int(config["data"]["eval_clips_per_video"]),

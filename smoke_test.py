@@ -10,6 +10,7 @@ from pyro.infer import SVI, TraceGraph_ELBO
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
+from video_bcnn.experiment import resolve_objective
 from video_bcnn.model import Stable3DFeatureExtractor, VideoBayesianCNN
 from video_bcnn.utils import load_config, resolve_device, seed_everything
 
@@ -26,8 +27,12 @@ def main():
     extractor = Stable3DFeatureExtractor(
         config["model"]["temporal_kernel_size"], config["model"]["conv_channels"]
     ).to(device)
+    objective = resolve_objective(config)
     result = {
         "device": str(device),
+        "objective": objective["name"],
+        "likelihood": config["train"].get("observation_likelihood", "gaussian"),
+        "score_sign": objective["score_sign"],
         "clip_length": int(config["data"]["clip_length"]),
         "temporal_kernel": int(extractor.temporal_kernel_size),
         "temporal_receptive_field": int(extractor.temporal_receptive_field),
@@ -57,6 +62,7 @@ def main():
                 observation_std=config["model"]["observation_std"],
                 rho_init=config["model"]["posterior_rho_init"],
                 kl_weight=config["train"]["kl_weight"],
+                likelihood=config["train"].get("observation_likelihood", "gaussian"),
             )
             svi = SVI(
                 model.model,
@@ -65,7 +71,9 @@ def main():
                 loss=TraceGraph_ELBO(),
             )
             before = extractor.conv1.weight.detach().clone()
-            loss = float(svi.step(clips, torch.ones(1, device=device), 1))
+            # Supervised steps carry a real label; one-class steps always see 1.
+            target = 1.0 if objective["constant_target"] is None else objective["constant_target"]
+            loss = float(svi.step(clips, torch.full((1,), target, device=device), 1))
             delta = float((extractor.conv1.weight.detach() - before).abs().max().item())
             result["svi_loss"] = loss
             result["conv1_update_max_abs"] = delta

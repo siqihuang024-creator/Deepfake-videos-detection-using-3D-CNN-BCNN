@@ -102,14 +102,24 @@ class Stable3DFeatureExtractor(nn.Module):
 class VideoBayesianCNN:
     """Mean-field posterior over FC1/FC2; the 3D feature extractor is deterministic."""
 
+    LIKELIHOODS = ("gaussian", "bernoulli")
+
     def __init__(self, feature_extractor, dropout=0.2, prior_std=0.1,
-                 observation_std=1.0, rho_init=-5.0, kl_weight=0.001):
+                 observation_std=1.0, rho_init=-5.0, kl_weight=0.001,
+                 likelihood="gaussian"):
         self.feature_extractor = feature_extractor
         self.dropout = float(dropout)
         self.prior_std = float(prior_std)
         self.observation_std = float(observation_std)
         self.rho_init = float(rho_init)
         self.kl_weight = float(kl_weight)
+        if likelihood not in self.LIKELIHOODS:
+            raise ValueError(
+                "Unknown likelihood {!r}; expected one of {}.".format(
+                    likelihood, list(self.LIKELIHOODS)
+                )
+            )
+        self.likelihood = likelihood
         device = next(feature_extractor.parameters()).device
         self.fc1_init = nn.Linear(int(feature_extractor.feature_dim), 512).to(device)
         self.out_init = nn.Linear(512, 1).to(device)
@@ -117,6 +127,18 @@ class VideoBayesianCNN:
     @staticmethod
     def _event_normal(loc, scale):
         return dist.Normal(loc, scale).to_event(loc.dim())
+
+    def _observation_distribution(self, predictions):
+        """Paper-faithful Gaussian regression, or a Bernoulli head for labels.
+
+        Supervised training has genuine {0, 1} targets, where a Gaussian with
+        observation_std=1.0 buries the class signal under unit noise. The
+        Bernoulli option reads the same output as a logit instead. Ranking
+        metrics are unaffected because the logit is monotone in the probability.
+        """
+        if self.likelihood == "bernoulli":
+            return dist.Bernoulli(logits=predictions)
+        return dist.Normal(predictions, self.observation_std)
 
     def _prior_sample(self, name, initial_parameter):
         return pyro.sample(
@@ -176,7 +198,7 @@ class VideoBayesianCNN:
             )
         with pyro.plate("video_bcnn_data", predictions.shape[0]):
             with pyro.poutine.scale(scale=1.0 / float(predictions.shape[0])):
-                pyro.sample("observations", dist.Normal(predictions, self.observation_std), obs=targets)
+                pyro.sample("observations", self._observation_distribution(predictions), obs=targets)
 
     def guide(self, clips, targets=None, num_train_clips=1, units_per_observation=1):
         del targets, units_per_observation
@@ -225,6 +247,7 @@ class VideoBayesianCNN:
             "batch_norm_running_mean_abs": float(self.feature_extractor.batch_norm.running_mean.abs().mean().item()),
             "batch_norm_running_var_mean": float(self.feature_extractor.batch_norm.running_var.mean().item()),
             "input_mode": self.feature_extractor.input_mode,
+            "likelihood": self.likelihood,
         }
         if self.feature_extractor.input_mode == "clip":
             result["temporal_kernel_size"] = int(self.feature_extractor.temporal_kernel_size)

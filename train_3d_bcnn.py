@@ -20,8 +20,10 @@ from video_bcnn.experiment import (
     dataset_balanced_sampler,
     evaluate_values,
     make_dataset,
+    resolve_objective,
     score_loader,
     select_records,
+    training_records,
 )
 from video_bcnn.model import Stable2DFeatureExtractor, Stable3DFeatureExtractor, VideoBayesianCNN
 from video_bcnn.reporting import save_history
@@ -61,6 +63,7 @@ def build_model(config, device):
         observation_std=config["model"]["observation_std"],
         rho_init=config["model"]["posterior_rho_init"],
         kl_weight=config["train"]["kl_weight"],
+        likelihood=config["train"].get("observation_likelihood", "gaussian"),
     )
     return extractor, model
 
@@ -78,8 +81,9 @@ def main():
     pyro.clear_param_store()
     device = resolve_device(config["device"])
 
+    objective = resolve_objective(config)
     records = active_records(load_manifest(args.manifest), config)
-    train_records = select_records(records, "train", label=1)
+    train_records = training_records(records, objective)
     validation_candidates = select_records(records, "val")
     validation_records = capped_validation_records(
         validation_candidates,
@@ -87,12 +91,29 @@ def main():
         config["data"].get("selection_max_fakes_per_dataset"),
     )
     if not train_records or not validation_records:
-        raise ValueError("The manifest lacks real training or real/fake validation videos.")
+        raise ValueError("The manifest lacks training or real/fake validation videos.")
     active_datasets = list(config["data"].get("active_datasets", []))
     train_counts = {
-        dataset: sum(row["dataset"] == dataset for row in train_records)
+        dataset: {
+            "real": sum(
+                row["dataset"] == dataset and int(row["label"]) == 1 for row in train_records
+            ),
+            "fake": sum(
+                row["dataset"] == dataset and int(row["label"]) == 0 for row in train_records
+            ),
+        }
         for dataset in sorted({row["dataset"] for row in train_records})
     }
+    if objective["name"] == "supervised":
+        without_fakes = [
+            dataset for dataset, counts in train_counts.items() if counts["fake"] == 0
+        ]
+        if without_fakes:
+            raise ValueError(
+                "Supervised training needs labelled fake training videos, but {} have none. "
+                "Build the supervised manifest first: "
+                "python scripts/build_supervised_manifest.py".format(without_fakes)
+            )
     validation_counts = {
         dataset: {
             "real": sum(
@@ -118,13 +139,22 @@ def main():
                 missing_train, incomplete_validation
             )
         )
-    print("Using {}. Real-only training videos: {}".format(device, train_counts))
+    print("Using {}. Objective: {}. Training videos: {}".format(
+        device, objective["name"], train_counts
+    ))
     print(
         "Validation videos by dataset: {} (model selection uses macro dataset AUROC).".format(
             validation_counts
         )
     )
-    print("Protocol note: labeled validation fakes are used for debug-stage checkpoint selection.")
+    if objective["name"] == "supervised":
+        print(
+            "Protocol note: supervised training uses labelled fakes whose target and donor "
+            "identities are both training identities. Cross-dataset AUROC is the "
+            "generalization number; same-dataset AUROC is an upper bound."
+        )
+    else:
+        print("Protocol note: labeled validation fakes are used for debug-stage checkpoint selection.")
 
     train_dataset = make_dataset(train_records, config, training=True)
     validation_dataset = make_dataset(
@@ -133,10 +163,14 @@ def main():
         training=False,
         clips_per_video=config["data"]["selection_clips_per_video"],
     )
+    default_balance_keys = ["dataset", "class_name"] if objective["name"] == "supervised" else ["dataset"]
+    balance_keys = list(config["data"].get("train_balance_keys", default_balance_keys))
     sampler = dataset_balanced_sampler(
         train_records,
         config["seed"],
         config["data"].get("train_samples_per_dataset_per_epoch", "max"),
+        group_keys=balance_keys,
+        stratify_key=config["data"].get("train_stratify_key"),
     )
     loader_options = {
         "num_workers": int(config["data"]["num_workers"]),
@@ -174,8 +208,9 @@ def main():
     current_lr = float(config["train"]["learning_rate"])
     num_train_clips = len(sampler)
     print(
-        "Balanced epoch: {} real clips ({} per dataset).".format(
-            len(sampler), sampler.samples_per_dataset
+        "Balanced epoch: {} clips ({} per group, groups balanced on {}{}).".format(
+            len(sampler), sampler.samples_per_group, balance_keys,
+            ", stratified by {}".format(sampler.stratify_key) if sampler.stratify_key else "",
         )
     )
     for epoch in range(1, int(config["train"]["epochs"]) + 1):
@@ -193,7 +228,14 @@ def main():
             else:
                 model_inputs = clips
                 units_per_observation = 1
-            targets = torch.ones(clips.shape[0], device=device)
+            if objective["constant_target"] is None:
+                # Supervised: regress/classify the manifest label (real=1, fake=0).
+                targets = batch["label"].to(device=device, dtype=torch.float32)
+            else:
+                targets = torch.full(
+                    (clips.shape[0],), float(objective["constant_target"]),
+                    device=device, dtype=torch.float32,
+                )
             loss = float(svi.step(
                 model_inputs, targets, num_train_clips, units_per_observation
             ))
@@ -211,6 +253,7 @@ def main():
             validation_loader,
             device,
             config["train"].get("report_mc_uncertainty_samples", 0),
+            score_sign=objective["score_sign"],
         )
         validation, threshold = evaluate_values(
             values, config["train"]["calibration_false_positive_rate"]
@@ -254,9 +297,14 @@ def main():
             "validation": validation,
             "diagnostics": diagnostics,
             "selection_protocol": "labeled_fake_debug_macro_dataset_auroc",
+            "objective": objective,
+            "score_sign": float(objective["score_sign"]),
             "data_protocol": {
                 "active_datasets": active_datasets,
-                "real_training_videos": train_counts,
+                "objective": objective["name"],
+                "training_videos": train_counts,
+                "balance_keys": balance_keys,
+                "stratify_key": sampler.stratify_key,
                 "balanced_training_clips_per_epoch": num_train_clips,
                 "selection_validation_videos": validation_counts,
             },

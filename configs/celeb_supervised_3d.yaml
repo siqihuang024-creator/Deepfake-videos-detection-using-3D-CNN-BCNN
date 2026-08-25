@@ -1,0 +1,80 @@
+# S2: supervised 3D BCNN trained on CelebDFv3 only, for self- and cross-dataset testing.
+#
+# Diagnostic value: if labelled training still cannot separate real from fake,
+# the bottleneck is the Sigmoid feature extractor / optimizer, not the
+# one-class objective. This is also the stronger of the two supervised runs,
+# because CelebDFv3 covers 22 forgery methods across three families.
+seed: 42
+device: cuda
+
+data:
+  active_datasets: [CelebDFv3]
+  dataset_roots:
+    DFD: E:/PhD/Deepfake Video TCN+BCNN/Datasets/DFD-Kaggle
+    CelebDFv3: E:/PhD/Deepfake Video TCN+BCNN/Datasets/CelebDFv3/CelebDFv3
+
+  # 613 real and 30149 donor-safe fake CelebDFv3 training videos. Balancing on
+  # dataset x class draws 613 clips from each side; stratifying the fake side by
+  # method gives each of the 22 forgery methods ~28 clips per epoch, so the
+  # large TalkingFace families cannot crowd out the smaller FaceReenact ones.
+  # Stratification applies to every group, so the real side is also evened out
+  # from its natural 402 Real_WEB / 211 Real_YouTube split to ~306 each. That is
+  # a deliberate difference from the one-class runs; drop train_stratify_key to
+  # restore the natural proportions.
+  train_samples_per_dataset_per_epoch: 613
+  train_balance_keys: [dataset, class_name]
+  train_stratify_key: method
+  clip_length: 8
+  train_clip_strides: [1, 2]
+  selection_clips_per_video: 4
+  eval_clips_per_video: 8
+  eval_clip_stride: 2
+  selection_max_fakes_per_dataset: 64
+
+  face_crop: true
+  face_margin: 0.25
+  face_detector_scale_factor: 1.1
+  face_detector_min_neighbors: 5
+  box_smoothing_alpha: 0.6
+  horizontal_flip_probability: 0.5
+  normalize_mean: [0.485, 0.456, 0.406]
+  normalize_std: [0.229, 0.224, 0.225]
+  num_workers: 2
+
+model:
+  architecture: 3d
+  input_resize: 256
+  center_crop: 224
+  conv_channels: [16, 24, 32]
+  spatial_kernel_size: 5
+  temporal_kernel_size: 3
+  spatial_pool_kernel_size: 4
+  spatial_pool_stride: 2
+  feature_dim: 15488
+  hidden_dim: 512
+  dropout: 0.2
+  prior_std: 0.1
+  posterior_rho_init: -5.0
+  observation_std: 1.0
+
+train:
+  objective: supervised
+  # {0,1} labels under a unit-variance Gaussian would bury the class signal in
+  # observation noise, so the same output is read as a Bernoulli logit instead.
+  observation_likelihood: bernoulli
+  epochs: 50
+  physical_batch_size: 1
+  learning_rate: 0.0001
+  momentum: 0.9
+  gradient_clip_norm: 5.0
+  lr_gamma: 0.95
+  lr_step_interval: 1
+  kl_weight: 0.001
+  report_mc_uncertainty_samples: 0
+  calibration_false_positive_rate: 0.05
+  selection_metric: macro_dataset_auroc
+  selection_min_metric_improvement: 0.002
+  early_stopping_patience: 8
+  checkpoint_dir: artifacts/run_celeb_supervised_3d_t8_k3/checkpoints
+  log_dir: artifacts/run_celeb_supervised_3d_t8_k3/logs
+  report_dir: artifacts/run_celeb_supervised_3d_t8_k3/reports

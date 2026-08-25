@@ -24,6 +24,35 @@ def select_records(records, split, label=None):
     return selected
 
 
+# The detector's positive class is always "fake", so the anomaly score has to
+# rank fakes high whichever class the likelihood was anchored to.
+#   train_label      manifest label kept for backpropagation (None keeps both)
+#   constant_target  fixed regression target, or None to use the real label
+#   score_sign       multiplies the posterior mean to build the anomaly score
+TRAINING_OBJECTIVES = {
+    "one_class_real": {"train_label": 1, "constant_target": 1.0, "score_sign": -1.0},
+    "one_class_fake": {"train_label": 0, "constant_target": 1.0, "score_sign": 1.0},
+    "supervised": {"train_label": None, "constant_target": None, "score_sign": -1.0},
+}
+
+
+def resolve_objective(config):
+    """Read `train.objective`, defaulting to the original real-only protocol."""
+    name = config["train"].get("objective", "one_class_real")
+    if name not in TRAINING_OBJECTIVES:
+        raise ValueError(
+            "Unknown train.objective {!r}; expected one of {}.".format(
+                name, sorted(TRAINING_OBJECTIVES)
+            )
+        )
+    return dict(TRAINING_OBJECTIVES[name], name=name)
+
+
+def training_records(records, objective):
+    """Select the training videos an objective backpropagates through."""
+    return select_records(records, "train", label=objective["train_label"])
+
+
 def make_dataset(records, config, training, clips_per_video=None):
     data_config = dict(config["data"])
     data_config.update({
@@ -39,45 +68,92 @@ def make_dataset(records, config, training, clips_per_video=None):
     )
 
 
-class DatasetBalancedEpochSampler(Sampler):
-    """Use every large-domain item and resample smaller domains with fresh clips."""
+class GroupBalancedEpochSampler(Sampler):
+    """Draw an equal clip budget from every balance group, with fresh positions.
 
-    def __init__(self, records, seed, samples_per_dataset="max"):
-        self.indices = {}
+    `group_keys` names the manifest columns that define a balance group. The
+    one-class protocol balances `["dataset"]`; supervised training balances
+    `["dataset", "class_name"]` so the 30k CelebDFv3 fakes cannot drown out the
+    613 reals. `stratify_key` round-robins inside a group, which keeps all 23
+    CelebDFv3 forgery methods present in every epoch instead of letting the
+    larger method families dominate by chance.
+    """
+
+    def __init__(self, records, seed, samples_per_group="max",
+                 group_keys=("dataset",), stratify_key=None):
+        self.group_keys = tuple(group_keys)
+        if not self.group_keys:
+            raise ValueError("group_keys must name at least one manifest column.")
+        self.stratify_key = stratify_key
+        self.indices, self.strata = {}, {}
         for index, row in enumerate(records):
-            self.indices.setdefault(row["dataset"], []).append(index)
+            group = tuple(row[key] for key in self.group_keys)
+            self.indices.setdefault(group, []).append(index)
+            if stratify_key is not None:
+                self.strata.setdefault(group, {}).setdefault(row[stratify_key], []).append(index)
         if not self.indices:
             raise ValueError("Cannot sample an empty training record list.")
-        if samples_per_dataset == "max":
-            self.samples_per_dataset = max(len(values) for values in self.indices.values())
+        if samples_per_group == "max":
+            self.samples_per_group = max(len(values) for values in self.indices.values())
         else:
-            self.samples_per_dataset = int(samples_per_dataset)
-        if self.samples_per_dataset < 1:
-            raise ValueError("samples_per_dataset must be positive or 'max'.")
+            self.samples_per_group = int(samples_per_group)
+        if self.samples_per_group < 1:
+            raise ValueError("samples_per_group must be positive or 'max'.")
         self.generator = torch.Generator()
         self.generator.manual_seed(int(seed))
 
-    def __len__(self):
-        return self.samples_per_dataset * len(self.indices)
+    # Retained so existing call sites and logs keep reading a familiar name.
+    @property
+    def samples_per_dataset(self):
+        return self.samples_per_group
 
-    def _domain_epoch_indices(self, values):
+    def __len__(self):
+        return self.samples_per_group * len(self.indices)
+
+    def _resample(self, values, quota):
+        """Cycle through a shuffled pool until the quota is met."""
         result = []
-        while len(result) < self.samples_per_dataset:
+        while len(result) < quota:
             order = torch.randperm(len(values), generator=self.generator).tolist()
-            remaining = self.samples_per_dataset - len(result)
+            remaining = quota - len(result)
             result.extend(values[position] for position in order[:remaining])
+        return result
+
+    def _group_epoch_indices(self, group):
+        if self.stratify_key is None:
+            return self._resample(self.indices[group], self.samples_per_group)
+        strata = self.strata[group]
+        names = sorted(strata)
+        base, extra = divmod(self.samples_per_group, len(names))
+        result = []
+        for position, name in enumerate(names):
+            quota = base + (1 if position < extra else 0)
+            if quota:
+                result.extend(self._resample(strata[name], quota))
         return result
 
     def __iter__(self):
         combined = []
-        for dataset in sorted(self.indices):
-            combined.extend(self._domain_epoch_indices(self.indices[dataset]))
+        for group in sorted(self.indices):
+            combined.extend(self._group_epoch_indices(group))
         order = torch.randperm(len(combined), generator=self.generator).tolist()
         return iter(combined[position] for position in order)
 
 
-def dataset_balanced_sampler(records, seed, samples_per_dataset="max"):
-    return DatasetBalancedEpochSampler(records, seed, samples_per_dataset)
+class DatasetBalancedEpochSampler(GroupBalancedEpochSampler):
+    """Backwards-compatible dataset-only balancing used by the one-class runs."""
+
+    def __init__(self, records, seed, samples_per_dataset="max"):
+        super(DatasetBalancedEpochSampler, self).__init__(
+            records, seed, samples_per_dataset, group_keys=("dataset",)
+        )
+
+
+def dataset_balanced_sampler(records, seed, samples_per_dataset="max",
+                            group_keys=("dataset",), stratify_key=None):
+    return GroupBalancedEpochSampler(
+        records, seed, samples_per_dataset, group_keys, stratify_key
+    )
 
 
 def _stable_rng(seed, *parts):
@@ -162,7 +238,8 @@ def capped_validation_records(records, seed, max_fakes_per_dataset):
 
 
 @torch.no_grad()
-def score_loader(bayesian_model, loader, device, mc_samples=0, collect_embeddings=False):
+def score_loader(bayesian_model, loader, device, mc_samples=0, collect_embeddings=False,
+                 score_sign=-1.0):
     bayesian_model.feature_extractor.eval()
     labels, scores, means, stds = [], [], [], []
     paths, datasets, methods, target_ids, donor_ids = [], [], [], [], []
@@ -206,7 +283,7 @@ def score_loader(bayesian_model, loader, device, mc_samples=0, collect_embedding
         embedding_norms.extend(video_features.norm(dim=1).cpu().tolist())
         if collect_embeddings:
             exported_embeddings.append(video_features.float().cpu().numpy())
-        unit_anomaly = -posterior_loc.reshape(batch_size, units_per_video)
+        unit_anomaly = float(score_sign) * posterior_loc.reshape(batch_size, units_per_video)
         scores.extend(unit_anomaly.mean(dim=1).cpu().tolist())
         means.extend(posterior_loc.reshape(batch_size, units_per_video).mean(dim=1).cpu().tolist())
         stds.extend(posterior_std.reshape(batch_size, units_per_video).mean(dim=1).cpu().tolist())
