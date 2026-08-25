@@ -23,12 +23,19 @@ def save_history(history, output_dir):
         "validation_accuracy", "validation_balanced_accuracy", "validation_auroc",
         "validation_macro_dataset_auroc", "validation_eer", "validation_tpr_at_target_fpr",
         "dfd_auroc", "celebdfv3_auroc", "embedding_variance_mean",
+        # Saturation evidence: a stage whose pre-activations mostly exceed |4|
+        # has stopped passing gradient, which separates a dead activation from
+        # a badly scaled objective.
+        "stage1_saturated", "stage2_saturated", "stage3_saturated", "stage3_output_std",
     ]
     with open(output_dir / "history.csv", "w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
         for row in history:
             validation = row["validation"]
+            stages = row.get("posterior_diagnostics", {}).get("activation_stages", [])
+            def stage(index, key):
+                return stages[index][key] if len(stages) > index else None
             writer.writerow({
                 "epoch": row["epoch"],
                 "train_loss": row["train_loss"],
@@ -43,6 +50,10 @@ def save_history(history, output_dir):
                 "dfd_auroc": validation["per_dataset"].get("DFD", {}).get("auroc"),
                 "celebdfv3_auroc": validation["per_dataset"].get("CelebDFv3", {}).get("auroc"),
                 "embedding_variance_mean": validation["embedding_variance_mean"],
+                "stage1_saturated": stage(0, "saturated_fraction"),
+                "stage2_saturated": stage(1, "saturated_fraction"),
+                "stage3_saturated": stage(2, "saturated_fraction"),
+                "stage3_output_std": stage(2, "output_std"),
             })
     epochs = [row["epoch"] for row in history]
     plt.figure(figsize=(11, 4))

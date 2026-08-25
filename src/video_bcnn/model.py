@@ -32,6 +32,22 @@ def feature_dimension(channels, spatial_output_size):
     return int(channels) * int(spatial_output_size) * int(spatial_output_size)
 
 
+
+def _stage_statistics(pre_activation, activated):
+    """Saturation evidence for one conv stage.
+
+    A sigmoid whose pre-activation leaves |x| > 4 has a derivative under 0.018,
+    so a high saturated_fraction means that stage has stopped passing gradient
+    and the collapse is an activation problem rather than an objective one.
+    """
+    with torch.no_grad():
+        return {
+            "preactivation_abs_mean": float(pre_activation.abs().mean().item()),
+            "saturated_fraction": float((pre_activation.abs() > 4.0).float().mean().item()),
+            "output_std": float(activated.std().item()),
+        }
+
+
 class Stable2DFeatureExtractor(nn.Module):
     """Original paper feature extractor used with the matched clip preprocessing."""
 
@@ -59,6 +75,7 @@ class Stable2DFeatureExtractor(nn.Module):
         # Identity when the size already matches, so the default is unchanged.
         self.spatial_pool = nn.AdaptiveAvgPool2d(self.spatial_output_size)
         self.batch_norm = nn.BatchNorm2d(conv_channels[-1])
+        self.last_activation_stats = []
         self._reset_convolutions()
 
     def _reset_convolutions(self):
@@ -69,9 +86,13 @@ class Stable2DFeatureExtractor(nn.Module):
     def forward(self, images):
         if images.dim() != 4 or images.shape[1] != 3 or tuple(images.shape[-2:]) != (224, 224):
             raise ValueError("The controlled 2D BCNN requires RGB 224x224 frames.")
-        values = self.activation(self.pool1(self.conv1(images)))
-        values = self.activation(self.pool2(self.conv2(values)))
-        values = self.activation(self.pool3(self.conv3(values)))
+        stats, values = [], images
+        for convolution, pool in ((self.conv1, self.pool1), (self.conv2, self.pool2),
+                                  (self.conv3, self.pool3)):
+            pre = pool(convolution(values))
+            values = self.activation(pre)
+            stats.append(_stage_statistics(pre, values))
+        self.last_activation_stats = stats
         values = self.spatial_pool(values)
         return self.batch_norm(values).flatten(1)
 
@@ -117,6 +138,7 @@ class Stable3DFeatureExtractor(nn.Module):
         self.spatial_pool = nn.AdaptiveAvgPool2d(self.spatial_output_size)
         # Temporal pooling precedes the original deterministic BatchNorm2d.
         self.batch_norm = nn.BatchNorm2d(conv_channels[-1])
+        self.last_activation_stats = []
         self._reset_convolutions()
 
     def _reset_convolutions(self):
@@ -133,9 +155,13 @@ class Stable3DFeatureExtractor(nn.Module):
             raise ValueError("Expected clips shaped [batch, channels, time, height, width].")
         if clips.shape[1] != 3 or tuple(clips.shape[-2:]) != (224, 224):
             raise ValueError("The controlled 3D BCNN requires RGB 224x224 clips.")
-        values = self.activation(self.pool1(self.conv1(clips)))
-        values = self.activation(self.pool2(self.conv2(values)))
-        values = self.activation(self.pool3(self.conv3(values)))
+        stats, values = [], clips
+        for convolution, pool in ((self.conv1, self.pool1), (self.conv2, self.pool2),
+                                  (self.conv3, self.pool3)):
+            pre = pool(convolution(values))
+            values = self.activation(pre)
+            stats.append(_stage_statistics(pre, values))
+        self.last_activation_stats = stats
         values = self.spatial_pool(values.mean(dim=2))
         expected = (self.conv_channels[-1], self.spatial_output_size, self.spatial_output_size)
         if tuple(values.shape[1:]) != expected:
@@ -299,6 +325,9 @@ class VideoBayesianCNN:
             "spatial_output_size": int(getattr(self.feature_extractor, "spatial_output_size", 22)),
             "feature_dim": int(self.feature_extractor.feature_dim),
             "hidden_dim": self.hidden_dim,
+            "activation_stages": list(
+                getattr(self.feature_extractor, "last_activation_stats", [])
+            ),
         }
         if self.feature_extractor.input_mode == "clip":
             result["temporal_kernel_size"] = int(self.feature_extractor.temporal_kernel_size)
