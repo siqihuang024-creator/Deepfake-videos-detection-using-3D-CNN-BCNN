@@ -13,7 +13,12 @@ from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
-from video_bcnn.data import CachedClipDataset, load_manifest, seed_worker
+from video_bcnn.data import (
+    CachedClipDataset,
+    load_manifest,
+    seed_worker,
+    skip_unreadable_collate,
+)
 from video_bcnn.experiment import (
     active_records,
     capped_validation_records,
@@ -398,6 +403,8 @@ def main():
         "num_workers": int(config["data"]["num_workers"]),
         "pin_memory": device.type == "cuda",
         "worker_init_fn": seed_worker,
+        # A corrupt file is dropped and counted instead of ending the run.
+        "collate_fn": skip_unreadable_collate,
     }
     batch_size = int(config["train"]["physical_batch_size"])
     train_loader = DataLoader(
@@ -444,7 +451,11 @@ def main():
         extractor.train()
         total_loss, batches = 0.0, 0
         progress = tqdm(train_loader, desc="3D BCNN epoch {}/{}".format(epoch, config["train"]["epochs"]))
+        skipped_clips = 0
         for batch in progress:
+            if batch is None:
+                skipped_clips += 1
+                continue
             clips = batch["clip"].to(device, non_blocking=True)
             if extractor.input_mode == "frame":
                 batch_size, channels, frame_count, height, width = clips.shape
@@ -471,6 +482,8 @@ def main():
             total_loss += loss
             batches += 1
             progress.set_postfix(elbo="{:.4f}".format(total_loss / batches))
+        if skipped_clips:
+            print("Skipped {} unreadable training clips this epoch.".format(skipped_clips))
         if epoch % int(config["train"]["lr_step_interval"]) == 0:
             scheduler.step()
             current_lr *= float(config["train"]["lr_gamma"])
@@ -491,6 +504,7 @@ def main():
         row = {
             "epoch": epoch,
             "train_loss": total_loss / max(1, batches),
+            "skipped_training_clips": int(skipped_clips),
             "learning_rate": current_lr,
             "selection_metric": metric_name,
             "selection_value": selection_value,

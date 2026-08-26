@@ -1,6 +1,7 @@
 """Contiguous video-clip decoding with temporally consistent face preprocessing."""
 
 import csv
+import time
 from pathlib import Path
 
 import cv2
@@ -8,7 +9,25 @@ import numpy as np
 import torch
 from PIL import Image, ImageOps
 from torch.utils.data import Dataset
+from torch.utils.data._utils.collate import default_collate
 from torchvision.transforms import CenterCrop, Normalize, Resize, ToTensor
+
+
+class UnreadableVideoError(RuntimeError):
+    """A video the decoder cannot open at all, after retries."""
+
+
+def skip_unreadable_collate(batch):
+    """Drop unreadable items instead of failing the epoch.
+
+    One corrupt file in 30k training videos is statistically irrelevant, but it
+    has now ended three multi-hour runs. Returning None lets the caller count
+    and report the skip rather than lose the run.
+    """
+    items = [item for item in batch if item is not None]
+    if not items:
+        return None
+    return default_collate(items)
 
 
 def load_manifest(path):
@@ -51,6 +70,8 @@ class VideoClipDataset(Dataset):
         # Repaired frame counts, so a video with bad metadata is measured once
         # per worker rather than on every epoch.
         self.frame_count_cache = {}
+        # Videos this worker could not open, reported instead of crashing.
+        self.unreadable = set()
         if self.clip_length < 1:
             raise ValueError("clip_length must be positive.")
         if not self.train_clip_strides or min(self.train_clip_strides) < 1:
@@ -272,10 +293,25 @@ class VideoClipDataset(Dataset):
             clips.append(clip)
         return clips
 
+    @staticmethod
+    def _open_capture(video_path, attempts=3):
+        """Open a video, retrying briefly before giving up.
+
+        A single open can fail transiently under IO contention -- a DFD file
+        that failed a full scan opened fine seconds later -- so a retry
+        distinguishes a busy filesystem from a genuinely broken file.
+        """
+        for attempt in range(int(attempts)):
+            capture = cv2.VideoCapture(str(video_path))
+            if capture.isOpened():
+                return capture
+            capture.release()
+            if attempt + 1 < int(attempts):
+                time.sleep(0.25 * (attempt + 1))
+        raise UnreadableVideoError("Unable to open video: {}".format(video_path))
+
     def _read_clips(self, video_path):
-        capture = cv2.VideoCapture(str(video_path))
-        if not capture.isOpened():
-            raise RuntimeError("Unable to open video: {}".format(video_path))
+        capture = self._open_capture(video_path)
         fps = float(capture.get(cv2.CAP_PROP_FPS))
         key = str(video_path)
         frame_count = self.frame_count_cache.get(key)
@@ -312,7 +348,13 @@ class VideoClipDataset(Dataset):
     def __getitem__(self, index):
         record = self.records[index]
         video_path = self.dataset_roots[record["dataset"]] / record["path"]
-        clips, audits, fps = self._read_clips(video_path)
+        try:
+            clips, audits, fps = self._read_clips(video_path)
+        except UnreadableVideoError:
+            # Signal the collate function to drop this item. Every other error
+            # still propagates, so real bugs are not swallowed.
+            self.unreadable.add(str(video_path))
+            return None
         result = {
             "label": torch.tensor(int(record["label"]), dtype=torch.long),
             "path": str(video_path),

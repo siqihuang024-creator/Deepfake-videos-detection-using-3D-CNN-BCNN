@@ -13,7 +13,12 @@ from torch import nn
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from video_bcnn.data import CachedClipDataset, VideoClipDataset
+from video_bcnn.data import (
+    CachedClipDataset,
+    UnreadableVideoError,
+    VideoClipDataset,
+    skip_unreadable_collate,
+)
 from video_bcnn.experiment import (
     DatasetBalancedEpochSampler,
     GroupBalancedEpochSampler,
@@ -264,6 +269,58 @@ class FaultTolerantDecodeTests(unittest.TestCase):
                 self.FakeCapture(0), "broken.mp4", [[0, 1]]
             )
         self.assertIn("broken.mp4", str(caught.exception))
+
+
+class UnreadableVideoTests(unittest.TestCase):
+    """One corrupt file in 30k must not end a multi-hour run."""
+
+    def test_collate_drops_unreadable_items(self):
+        batch = skip_unreadable_collate([None, {"label": torch.tensor(1)}])
+        self.assertEqual(int(batch["label"][0]), 1)
+
+    def test_collate_returns_none_when_everything_failed(self):
+        self.assertIsNone(skip_unreadable_collate([None, None]))
+
+    def test_collate_is_transparent_for_healthy_batches(self):
+        batch = skip_unreadable_collate([
+            {"label": torch.tensor(1)}, {"label": torch.tensor(0)}
+        ])
+        self.assertEqual(batch["label"].tolist(), [1, 0])
+
+    def test_open_retries_before_giving_up(self):
+        attempts = []
+        original = VideoClipDataset._open_capture
+
+        class Failing:
+            def isOpened(self):
+                attempts.append(1)
+                return False
+
+            def release(self):
+                pass
+
+        import video_bcnn.data as module
+        saved = module.cv2.VideoCapture
+        module.cv2.VideoCapture = lambda path: Failing()
+        try:
+            with self.assertRaises(UnreadableVideoError):
+                original("missing.mp4", attempts=3)
+        finally:
+            module.cv2.VideoCapture = saved
+        self.assertEqual(len(attempts), 3)
+
+    def test_getitem_returns_none_for_an_unopenable_video(self):
+        dataset = VideoClipDataset.__new__(VideoClipDataset)
+        dataset.records = [{"dataset": "DFD", "path": "gone.mp4"}]
+        dataset.dataset_roots = {"DFD": Path("/nowhere")}
+        dataset.unreadable = set()
+
+        def explode(video_path):
+            raise UnreadableVideoError(str(video_path))
+
+        dataset._read_clips = explode
+        self.assertIsNone(dataset.__getitem__(0))
+        self.assertEqual(len(dataset.unreadable), 1)
 
 
 class SupervisedProtocolTests(unittest.TestCase):

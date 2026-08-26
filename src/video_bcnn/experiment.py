@@ -268,7 +268,11 @@ def score_loader(bayesian_model, loader, device, mc_samples=0, collect_embedding
     feature_sum = None
     feature_square_sum = None
     feature_count = 0
+    skipped = 0
     for batch in tqdm(loader, desc="Scoring clips", leave=False):
+        if batch is None:
+            skipped += 1
+            continue
         clips = batch["clips"].to(device, non_blocking=True)
         batch_size, clip_count, channels, frame_count, height, width = clips.shape
         if bayesian_model.feature_extractor.input_mode == "clip":
@@ -318,9 +322,12 @@ def score_loader(bayesian_model, loader, device, mc_samples=0, collect_embedding
         center_y_jitter.extend(batch["clip_box_center_y_jitter"].mean(dim=1).cpu().tolist())
         width_jitter.extend(batch["clip_box_width_jitter"].mean(dim=1).cpu().tolist())
         height_jitter.extend(batch["clip_box_height_jitter"].mean(dim=1).cpu().tolist())
+    if skipped:
+        print("Scored {} videos; skipped {} unreadable.".format(len(labels), skipped))
     feature_mean = feature_sum / float(max(1, feature_count))
     feature_variance = feature_square_sum / float(max(1, feature_count)) - feature_mean.square()
     result = {
+        "skipped_unreadable": int(skipped),
         "labels": np.asarray(labels),
         "scores": np.asarray(scores),
         "means": np.asarray(means),
