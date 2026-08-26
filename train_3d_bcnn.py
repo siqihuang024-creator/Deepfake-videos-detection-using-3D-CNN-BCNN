@@ -70,6 +70,8 @@ def build_model(config, device):
         "conv_channels": config["model"]["conv_channels"],
         "activation": config["model"].get("activation", "sigmoid"),
         "spatial_output_size": config["model"].get("spatial_output_size", 22),
+        "pool_type": config["model"].get("spatial_pool_type", "avg"),
+        "norm": config["model"].get("norm", "none"),
     }
     architecture = config["model"].get("architecture", "3d")
     if architecture == "3d":
@@ -115,12 +117,19 @@ def apply_sweep_overrides(config, args):
         config["model"]["activation"] = args.activation
     if args.spatial_output_size is not None:
         config["model"]["spatial_output_size"] = int(args.spatial_output_size)
+    if args.conv_channels is not None:
+        config["model"]["conv_channels"] = [int(value) for value in args.conv_channels]
+    if args.pool_type is not None:
+        config["model"]["spatial_pool_type"] = args.pool_type
+    if args.norm is not None:
+        config["model"]["norm"] = args.norm
     if args.hidden_dim is not None:
         config["model"]["hidden_dim"] = int(args.hidden_dim)
-    if args.spatial_output_size is not None:
+    if args.spatial_output_size is not None or args.conv_channels is not None:
         # feature_dim is derived, so keep the recorded value honest.
         config["model"]["feature_dim"] = feature_dimension(
-            config["model"]["conv_channels"][-1], config["model"]["spatial_output_size"]
+            config["model"]["conv_channels"][-1],
+            config["model"].get("spatial_output_size", 22),
         )
     if args.optimizer is not None:
         config["train"]["optimizer"] = args.optimizer
@@ -182,6 +191,18 @@ def main():
                         help="Override model.spatial_output_size. 22 keeps feature_dim=15488; "
                              "7 gives 1568 and 4 gives 512, shrinking Bayesian FC1 without "
                              "changing the head's structure.")
+    parser.add_argument("--conv-channels", type=int, nargs=3, default=None,
+                        metavar=("C1", "C2", "C3"),
+                        help="Override model.conv_channels. The paper's 16 24 32 gives a "
+                             "90k-parameter extractor against a 7.9M-parameter Bayesian "
+                             "head, so 99% of the model is the classifier.")
+    parser.add_argument("--pool-type", default=None, choices=["avg", "max"],
+                        help="Override model.spatial_pool_type. Three 4x4 average pools "
+                             "low-pass exactly the frequencies deepfake artefacts live in.")
+    parser.add_argument("--norm", default=None, choices=["none", "batch"],
+                        help="Override model.norm: normalisation before each activation. "
+                             "Without it the pre-activation magnitude drifted 0.35 -> 8.4 "
+                             "across stages.")
     parser.add_argument("--hidden-dim", type=int, default=None,
                         help="Override model.hidden_dim (Bayesian FC1 output width).")
     parser.add_argument("--optimizer", default=None, choices=["sgd", "adam"],
@@ -432,14 +453,18 @@ def main():
     )
     extractor, model = build_model(config, device)
     print(
-        "Extractor: {} activation, conv_channels={}, {}x{} spatial -> feature_dim={} "
-        "({} parameters). Bayesian head: {} -> {} -> 1. Optimizer: {}.".format(
+        "Extractor: {} activation, {} pooling, {} norm, conv_channels={}, {}x{} spatial "
+        "-> feature_dim={} ({:,} parameters). Bayesian head: {} -> {} -> 1 ({:,} FC1 "
+        "weights). Optimizer: {}.".format(
             config["model"].get("activation", "sigmoid"),
+            config["model"].get("spatial_pool_type", "avg"),
+            config["model"].get("norm", "none"),
             list(extractor.conv_channels),
             extractor.spatial_output_size, extractor.spatial_output_size,
             extractor.feature_dim,
             sum(parameter.numel() for parameter in extractor.parameters()),
             extractor.feature_dim, model.hidden_dim,
+            extractor.feature_dim * model.hidden_dim,
             config["train"].get("optimizer", "sgd"),
         )
     )

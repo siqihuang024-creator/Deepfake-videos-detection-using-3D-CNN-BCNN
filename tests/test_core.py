@@ -71,6 +71,38 @@ class ModelContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             Stable3DFeatureExtractor(3, activation="swish")
 
+    def test_pool_type_and_norm_are_selectable(self):
+        extractor = Stable3DFeatureExtractor(3, pool_type="max", norm="batch")
+        self.assertIsInstance(extractor.pool1, nn.MaxPool3d)
+        self.assertIsInstance(extractor.norm1, nn.BatchNorm3d)
+        features = extractor(torch.randn(2, 3, 4, 224, 224))
+        self.assertEqual(tuple(features.shape), (2, 15488))
+
+    def test_defaults_keep_average_pooling_and_no_norm(self):
+        extractor = Stable3DFeatureExtractor(3)
+        self.assertIsInstance(extractor.pool1, nn.AvgPool3d)
+        self.assertIsInstance(extractor.norm1, nn.Identity)
+
+    def test_unknown_pool_and_norm_are_rejected(self):
+        with self.assertRaises(ValueError):
+            Stable3DFeatureExtractor(3, pool_type="median")
+        with self.assertRaises(ValueError):
+            Stable3DFeatureExtractor(3, norm="layer")
+
+    def test_widening_moves_capacity_from_the_head_to_the_extractor(self):
+        wide = Stable3DFeatureExtractor(
+            3, conv_channels=(32, 64, 128), spatial_output_size=4,
+            pool_type="max", norm="batch", activation="relu",
+        )
+        self.assertEqual(wide.feature_dim, 128 * 16)
+        paper = Stable3DFeatureExtractor(3)
+        self.assertGreater(
+            sum(p.numel() for p in wide.parameters()),
+            sum(p.numel() for p in paper.parameters()),
+        )
+        # The Bayesian FC1 shrinks even as the extractor grows.
+        self.assertLess(wide.feature_dim * 512, paper.feature_dim * 512)
+
     def test_default_construction_reproduces_the_paper_interface(self):
         extractor = Stable3DFeatureExtractor(3)
         self.assertEqual(extractor.feature_dim, 15488)
