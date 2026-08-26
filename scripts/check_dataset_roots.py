@@ -78,9 +78,13 @@ def main():
     for position, row in enumerate(selected):
         path = Path(roots[row["dataset"]]) / row["path"]
         if args.all and position and position % 500 == 0:
-            print("  {}/{} checked...".format(position, len(selected)))
+            print("  {}/{} checked... ({} problems so far)".format(
+                position, len(selected), len(missing) + len(unreadable) + len(truncated)),
+                flush=True)
         if not path.is_file():
             missing.append(path)
+            # Reported as found, so an interrupted scan still yields its results.
+            print("  MISSING     {}".format(path), flush=True)
             continue
         if not decode:
             continue
@@ -89,15 +93,17 @@ def main():
         if not capture.isOpened() or not capture.read()[0]:
             capture.release()
             unreadable.append(path)
+            print("  UNREADABLE  {}".format(path), flush=True)
             continue
         # Metadata frequently overstates the length; the last frame is where a
         # truncated upload or an unusable seek index shows up.
         declared = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
         capture.set(cv2.CAP_PROP_POS_FRAMES, max(0, declared - 1))
         if declared < 1 or not capture.read()[0]:
-            truncated.append(
-                (path, declared, VideoClipDataset._measure_decodable_frames(capture))
-            )
+            measured = VideoClipDataset._measure_decodable_frames(capture)
+            truncated.append((path, declared, measured))
+            print("  MISMATCH    {}  declared={} decodable={}".format(
+                path, declared, measured), flush=True)
         capture.release()
 
     print("\nChecked {} videos.".format(len(selected)))
