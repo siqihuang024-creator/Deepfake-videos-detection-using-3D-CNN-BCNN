@@ -132,6 +132,10 @@ def apply_sweep_overrides(config, args):
         config["model"]["posterior_rho_init"] = float(args.posterior_rho_init)
     if args.learning_rate is not None:
         config["train"]["learning_rate"] = float(args.learning_rate)
+    if args.selection_max_fakes is not None:
+        config["data"]["selection_max_fakes_per_dataset"] = int(args.selection_max_fakes)
+    if args.early_stopping_patience is not None:
+        config["train"]["early_stopping_patience"] = int(args.early_stopping_patience)
     if args.run_suffix:
         for key in ("checkpoint_dir", "log_dir", "report_dir"):
             path = Path(config["train"][key])
@@ -193,6 +197,12 @@ def main():
                              "wider initial posterior and a much smaller KL.")
     parser.add_argument("--learning-rate", type=float, default=None,
                         help="Override train.learning_rate.")
+    parser.add_argument("--selection-max-fakes", type=int, default=None,
+                        help="Validation fakes per dataset used for model selection. "
+                             "The default 64 makes AUROC swing +/-0.04 between epochs, "
+                             "which is wider than the differences between runs.")
+    parser.add_argument("--early-stopping-patience", type=int, default=None,
+                        help="Override train.early_stopping_patience.")
     parser.add_argument("--run-suffix", default=None,
                         help="Append to the run directory name so sweep variants "
                              "do not overwrite each other.")
