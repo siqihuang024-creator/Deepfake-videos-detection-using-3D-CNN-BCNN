@@ -4,12 +4,16 @@ __pycache__/
 .vscode/
 *.py[cod]
 
-# Large archives
+# Large archives. Result bundles downloaded off the GPU box live beside the
+# code, so *.tgz has to be here too: without it `git add -A` sweeps every
+# run's archive into the repository.
 *.rar
 *.zip
 *.7z
 *.tar
 *.tar.gz
+*.tgz
+dfd_results
 
 # Training outputs. Manifests are tracked on purpose: they define the identity
 # split, and rebuilding them on another machine would silently change the
