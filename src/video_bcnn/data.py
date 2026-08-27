@@ -227,7 +227,10 @@ class VideoClipDataset(Dataset):
             decoded, previous = {}, None
             for frame_index in range(start, end + 1):
                 ok, frame = capture.read()
-                if not ok:
+                # A stalled read can report success and still hand back None:
+                # FFmpeg's interrupt callback fires on timeout after OpenCV has
+                # already set the success flag.
+                if not ok or frame is None:
                     if previous is None:
                         return None
                     frame = previous.copy()
@@ -270,12 +273,12 @@ class VideoClipDataset(Dataset):
                 break
             if position in target:
                 ok, frame = capture.retrieve()
-                if not ok:
+                if not ok or frame is None:
                     break
                 frames[position] = frame.copy()
             position += 1
         if not frames:
-            raise RuntimeError(
+            raise UnreadableVideoError(
                 "Video yielded no decodable frames; it is likely truncated or "
                 "corrupt: {}".format(video_path)
             )
@@ -325,7 +328,7 @@ class VideoClipDataset(Dataset):
                 # remember it for later epochs, and decode without seeking.
                 measured = self._measure_decodable_frames(capture)
                 if measured < 1:
-                    raise RuntimeError(
+                    raise UnreadableVideoError(
                         "Video has no decodable frames; it is likely truncated or "
                         "corrupt: {}".format(video_path)
                     )
