@@ -145,6 +145,12 @@ def apply_sweep_overrides(config, args):
         config["data"]["selection_max_fakes_per_dataset"] = int(args.selection_max_fakes)
     if args.early_stopping_patience is not None:
         config["train"]["early_stopping_patience"] = int(args.early_stopping_patience)
+    if args.clip_length is not None:
+        config["data"]["clip_length"] = int(args.clip_length)
+    if args.train_clip_strides is not None:
+        config["data"]["train_clip_strides"] = [int(value) for value in args.train_clip_strides]
+    if args.eval_clip_stride is not None:
+        config["data"]["eval_clip_stride"] = int(args.eval_clip_stride)
     if args.run_suffix:
         for key in ("checkpoint_dir", "log_dir", "report_dir"):
             path = Path(config["train"][key])
@@ -224,6 +230,17 @@ def main():
                              "which is wider than the differences between runs.")
     parser.add_argument("--early-stopping-patience", type=int, default=None,
                         help="Override train.early_stopping_patience.")
+    # CelebDFv3 runs at 28 fps, so the default 8 frames at stride 1 span 0.28 s.
+    # Temporal forgery artefacts (identity drift, blink rhythm, expression
+    # dynamics) live on a 1-3 s scale, which no amount of extractor capacity
+    # can recover from a window that short.
+    parser.add_argument("--clip-length", type=int, default=None,
+                        help="Frames per clip. Combined with the strides this "
+                             "sets how many seconds the 3D convolutions see.")
+    parser.add_argument("--train-clip-strides", type=int, nargs="+", default=None,
+                        help="Frame strides sampled during training, e.g. 4 8.")
+    parser.add_argument("--eval-clip-stride", type=int, default=None,
+                        help="Frame stride for validation and test clips.")
     parser.add_argument("--run-suffix", default=None,
                         help="Append to the run directory name so sweep variants "
                              "do not overwrite each other.")
