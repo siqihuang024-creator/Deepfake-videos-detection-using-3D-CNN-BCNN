@@ -19,7 +19,7 @@ def save_history(history, output_dir):
     output_dir = ensure_dir(output_dir)
     save_json(output_dir / "history.json", history)
     fields = [
-        "epoch", "train_loss", "learning_rate", "selection_value",
+        "epoch", "train_loss", "skipped_training_clips", "learning_rate", "selection_value",
         "validation_accuracy", "validation_balanced_accuracy", "validation_auroc",
         "validation_macro_dataset_auroc", "validation_eer", "validation_tpr_at_target_fpr",
         "dfd_auroc", "celebdfv3_auroc", "embedding_variance_mean",
@@ -39,6 +39,10 @@ def save_history(history, output_dir):
             writer.writerow({
                 "epoch": row["epoch"],
                 "train_loss": row["train_loss"],
+                # Videos dropped because a stalled read yielded no frame. A
+                # handful per epoch is storage contention; a steady climb means
+                # the dataset copy itself is degrading.
+                "skipped_training_clips": row.get("skipped_training_clips"),
                 "learning_rate": row["learning_rate"],
                 "selection_value": row["selection_value"],
                 "validation_accuracy": validation["accuracy"],
