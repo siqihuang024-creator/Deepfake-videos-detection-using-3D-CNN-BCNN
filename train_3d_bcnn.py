@@ -27,6 +27,7 @@ from video_bcnn.experiment import (
     make_dataset,
     overfit_records,
     resolve_objective,
+    subset_training_identities,
     score_loader,
     select_records,
     training_records,
@@ -245,6 +246,16 @@ def main():
                         help="Append to the run directory name so sweep variants "
                              "do not overwrite each other.")
     parser.add_argument(
+        "--train-identities",
+        type=int,
+        default=None,
+        metavar="N",
+        help="Train on N identities per dataset instead of all of them, keeping "
+             "the donor-safe rule. Isolates identity diversity from the video "
+             "count, resolution and forgery-method differences that separate "
+             "CelebDFv3 from DFD.",
+    )
+    parser.add_argument(
         "--train-subset",
         type=int,
         default=None,
@@ -318,6 +329,12 @@ def main():
             "deterministic_train_clips": True,
             "num_workers": 0,
         })
+    if args.train_identities:
+        train_records, identity_summary = subset_training_identities(
+            train_records, args.train_identities, config["seed"]
+        )
+        config["data"]["train_identities"] = int(args.train_identities)
+        print("IDENTITY SUBSET: {}".format(identity_summary))
     if args.train_subset:
         train_records = overfit_records(train_records, args.train_subset, config["seed"])
         config["data"].update({

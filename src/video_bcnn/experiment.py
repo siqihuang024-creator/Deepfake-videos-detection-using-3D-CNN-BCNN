@@ -224,6 +224,62 @@ def overfit_records(records, per_class, seed):
     return selected
 
 
+def subset_training_identities(records, count, seed):
+    """Keep `count` training identities, dropping every row that leaves the set.
+
+    DFD reaches only chance with 20 training identities while CelebDFv3 reaches
+    0.777 with 251, but those two runs also differ in resolution, face-detection
+    failure rate and forgery-method count. Cutting CelebDFv3's identities to the
+    same 20 isolates identity diversity from all of them.
+
+    Identities are drawn from those that appear in fakes, because the donor-safe
+    rule keeps a fake only when its target and its donor both survive: sampling
+    from all 251 identities instead leaves 20 identities with zero fakes.
+    """
+    per_dataset, kept, counts = {}, [], {}
+    for row in records:
+        if int(row["label"]) == 0:
+            names = per_dataset.setdefault(row["dataset"], set())
+            names.add(row["target_id"])
+            if row["donor_id"]:
+                names.add(row["donor_id"])
+    chosen = {}
+    for dataset in sorted(per_dataset):
+        names = sorted(per_dataset[dataset])
+        if int(count) >= len(names):
+            chosen[dataset] = set(names)
+            continue
+        rng = _stable_rng(seed, "identities", dataset, count)
+        order = rng.permutation(len(names))
+        chosen[dataset] = {names[int(index)] for index in order[: int(count)]}
+    for row in records:
+        allowed = chosen.get(row["dataset"])
+        if allowed is None:
+            continue
+        if int(row["label"]) == 1:
+            keep = row["target_id"] in allowed
+        else:
+            # Mirror the manifest's donor-safe rule: an empty donor carries no
+            # second identity, so only the target has to survive.
+            keep = row["target_id"] in allowed and (
+                not row["donor_id"] or row["donor_id"] in allowed
+            )
+        if keep:
+            kept.append(row)
+            key = (row["dataset"], row["class_name"])
+            counts[key] = counts.get(key, 0) + 1
+    if not kept:
+        raise ValueError(
+            "Keeping {} identities left no training videos.".format(count)
+        )
+    summary = {
+        dataset: {"identities": len(names)} for dataset, names in sorted(chosen.items())
+    }
+    for (dataset, class_name), value in sorted(counts.items()):
+        summary[dataset][class_name] = value
+    return kept, summary
+
+
 def capped_validation_records(records, seed, max_fakes_per_dataset):
     """Keep all real videos and a deterministic method-stratified fake subset."""
     if max_fakes_per_dataset is None:
