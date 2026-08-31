@@ -146,6 +146,10 @@ def apply_sweep_overrides(config, args):
         config["data"]["selection_max_fakes_per_dataset"] = int(args.selection_max_fakes)
     if args.early_stopping_patience is not None:
         config["train"]["early_stopping_patience"] = int(args.early_stopping_patience)
+    if args.face_crop is not None:
+        config["data"]["face_crop"] = args.face_crop == "on"
+    if args.face_margin is not None:
+        config["data"]["face_margin"] = float(args.face_margin)
     if args.clip_length is not None:
         config["data"]["clip_length"] = int(args.clip_length)
     if args.train_clip_strides is not None:
@@ -245,6 +249,25 @@ def main():
     parser.add_argument("--run-suffix", default=None,
                         help="Append to the run directory name so sweep variants "
                              "do not overwrite each other.")
+    # Cropping to the tracked face box spends the 224x224 budget on the region
+    # the forgery is in, but it also motion-stabilises the head: the box follows
+    # the face and is smoothed, so global head motion is subtracted before the
+    # temporal convolutions ever see it. Disabling it is the way to find out
+    # whether that is why a wider temporal window bought nothing.
+    parser.add_argument(
+        "--face-crop",
+        choices=["on", "off"],
+        default=None,
+        help="Override data.face_crop. 'off' takes the centre square of the "
+             "frame instead of the tracked face box, which also skips Haar "
+             "detection entirely and runs roughly ten times faster.",
+    )
+    parser.add_argument(
+        "--face-margin",
+        type=float,
+        default=None,
+        help="Override data.face_margin, the padding around the detected box.",
+    )
     parser.add_argument(
         "--train-identities",
         type=int,
