@@ -24,6 +24,7 @@ from video_bcnn.experiment import (
     capped_validation_records,
     dataset_balanced_sampler,
     evaluate_values,
+    filter_forgery_methods,
     make_dataset,
     overfit_records,
     resolve_objective,
@@ -249,6 +250,20 @@ def main():
     parser.add_argument("--run-suffix", default=None,
                         help="Append to the run directory name so sweep variants "
                              "do not overwrite each other.")
+    # CelebDFv3's generators write their own frame size: the FaceSwap methods
+    # keep the source video's native wide frame, while most FaceReenact and all
+    # TalkingFace methods write small squares. Every real video is native wide,
+    # so blur alone identifies 61% of the fakes. Restricting the fakes to the
+    # native-resolution generators takes that shortcut out of the gradient.
+    parser.add_argument(
+        "--fake-methods",
+        nargs="+",
+        default=None,
+        metavar="SUBSTRING",
+        help="Train and select on fakes whose method contains one of these "
+             "substrings; real videos are always kept. Pass 'FaceSwap/' plus "
+             "'LivePortrait' for the resolution-matched subset.",
+    )
     # Cropping to the tracked face box spends the 224x224 budget on the region
     # the forgery is in, but it also motion-stabilises the head: the box follows
     # the face and is smoothed, so global head motion is subtracted before the
@@ -336,6 +351,15 @@ def main():
     records = active_records(load_manifest(args.manifest), config)
     train_records = training_records(records, objective)
     validation_candidates = select_records(records, "val")
+    if args.fake_methods:
+        train_records, dropped = filter_forgery_methods(train_records, args.fake_methods)
+        validation_candidates, _ = filter_forgery_methods(
+            validation_candidates, args.fake_methods
+        )
+        config["data"]["fake_methods"] = list(args.fake_methods)
+        print("METHOD FILTER: keeping {}; dropped {} fake training videos across "
+              "{} methods.".format(list(args.fake_methods),
+                                   sum(dropped.values()), len(dropped)))
     validation_records = capped_validation_records(
         validation_candidates,
         config["seed"],

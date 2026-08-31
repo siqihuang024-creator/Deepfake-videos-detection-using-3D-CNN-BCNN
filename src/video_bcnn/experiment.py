@@ -224,6 +224,39 @@ def overfit_records(records, per_class, seed):
     return selected
 
 
+def filter_forgery_methods(records, patterns):
+    """Keep every real video and only the fakes whose method matches a pattern.
+
+    CelebDFv3's fakes carry the generator's own output size: all eight FaceSwap
+    methods write native wide frames like the real videos, while six of seven
+    FaceReenact methods and all seven TalkingFace methods write 256x256 or
+    512x512 squares. Every real video is native wide, so "square and small"
+    identifies 61% of the fakes with no reference to content at all, and a
+    detector can reach most of its score by measuring blur.
+
+    Restricting training to the native-resolution generators removes the
+    shortcut from the gradient, at the cost of a model that has never seen
+    reenactment or talking-face forgeries.
+    """
+    wanted = tuple(patterns)
+    kept, dropped = [], {}
+    for row in records:
+        if int(row["label"]) == 1:
+            kept.append(row)
+            continue
+        method = row.get("method", "")
+        if any(pattern in method for pattern in wanted):
+            kept.append(row)
+        else:
+            dropped[method] = dropped.get(method, 0) + 1
+    if not any(int(row["label"]) == 0 for row in kept):
+        raise ValueError(
+            "No fake videos match {!r}; check the method names in the "
+            "manifest.".format(list(wanted))
+        )
+    return kept, dropped
+
+
 def subset_training_identities(records, count, seed):
     """Keep `count` training identities, dropping every row that leaves the set.
 
