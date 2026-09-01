@@ -129,11 +129,14 @@ def main():
     config = override_dataset_roots(load_config(args.config), args.dataset_root)
     override_num_workers(config, args.num_workers)
     # apply_sweep_overrides reads flags this script does not define, so fill in
-    # the ones it expects with the neutral value.
+    # the ones it expects with the neutral value. run_suffix is held aside
+    # rather than read back from args: the helper renames the run directory for
+    # a Bayesian run, and this script names its own below.
+    run_suffix = args.run_suffix
     for name in ("optimizer", "kl_weight", "prior_std", "posterior_rho_init",
                  "early_stopping_patience", "objective", "mc_uncertainty_samples",
                  "run_suffix"):
-        setattr(args, name, None)  # the run directory is renamed below instead
+        setattr(args, name, None)
     apply_sweep_overrides(config, args)
     if args.active_datasets is not None:
         config["data"]["active_datasets"] = list(args.active_datasets)
@@ -148,7 +151,7 @@ def main():
     for key in ("checkpoint_dir", "log_dir", "report_dir"):
         path = Path(config["train"][key])
         config["train"][key] = str(
-            path.parent.parent / (path.parent.name + "_" + args.run_suffix) / path.name
+            path.parent.parent / (path.parent.name + "_" + run_suffix) / path.name
         )
 
     verify_dataset_roots(config)
@@ -181,7 +184,17 @@ def main():
     validation_dataset = make_dataset(
         validation_records, config, training=False,
         clips_per_video=config["data"]["selection_clips_per_video"])
-    sampler = dataset_balanced_sampler(train_records, config)
+    sampler = dataset_balanced_sampler(
+        train_records,
+        config["seed"],
+        config["data"].get("train_samples_per_dataset_per_epoch", "max"),
+        group_keys=list(config["data"].get(
+            "train_balance_keys", ["dataset", "class_name"])),
+        stratify_key=config["data"].get("train_stratify_key"),
+    )
+    print("Balanced epoch: {} clips ({} per group, groups balanced on {}).".format(
+        len(sampler), sampler.samples_per_group,
+        list(config["data"].get("train_balance_keys", ["dataset", "class_name"]))))
     train_loader = build_loader(train_dataset, config, sampler=sampler)
     validation_loader = build_loader(validation_dataset, config)
 
