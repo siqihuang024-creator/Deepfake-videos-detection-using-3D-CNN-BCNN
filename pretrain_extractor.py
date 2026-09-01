@@ -265,7 +265,9 @@ def main():
             "learning_rate": float(scheduler.get_last_lr()[0]),
             "selection_metric": "auroc",
             "selection_value": metrics["auroc"],
-            "validation": dict(metrics, embedding_variance_mean=float("nan"),
+            # save_json writes with allow_nan=False, and this stage has no
+            # embedding statistics to report, so the field stays null.
+            "validation": dict(metrics, embedding_variance_mean=None,
                                per_dataset={}, macro_dataset_auroc=metrics["auroc"]),
         })
         print("Validation AUROC={:.4f}  EER={:.4f}  TPR@5%FPR={:.4f}  "
