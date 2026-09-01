@@ -39,6 +39,7 @@ from video_bcnn.model import (
     Stable3DFeatureExtractor,
     VideoBayesianCNN,
     feature_dimension,
+    freeze_extractor,
 )
 from video_bcnn.reporting import save_history
 from video_bcnn.utils import (
@@ -147,6 +148,10 @@ def apply_sweep_overrides(config, args):
         config["data"]["selection_max_fakes_per_dataset"] = int(args.selection_max_fakes)
     if args.early_stopping_patience is not None:
         config["train"]["early_stopping_patience"] = int(args.early_stopping_patience)
+    if args.objective is not None:
+        config["train"]["objective"] = args.objective
+    if args.mc_uncertainty_samples is not None:
+        config["train"]["report_mc_uncertainty_samples"] = int(args.mc_uncertainty_samples)
     if args.face_crop is not None:
         config["data"]["face_crop"] = args.face_crop == "on"
     if args.face_margin is not None:
@@ -207,7 +212,7 @@ def main():
                         metavar=("C1", "C2", "C3"),
                         help="Override model.conv_channels. The paper's 16 24 32 gives a "
                              "90k-parameter extractor against a 7.9M-parameter Bayesian "
-                             "head, so 99% of the model is the classifier.")
+                             "head, so 99%% of the model is the classifier.")
     parser.add_argument("--pool-type", default=None, choices=["avg", "max"],
                         help="Override model.spatial_pool_type. Three 4x4 average pools "
                              "low-pass exactly the frequencies deepfake artefacts live in.")
@@ -255,6 +260,38 @@ def main():
     # TalkingFace methods write small squares. Every real video is native wide,
     # so blur alone identifies 61% of the fakes. Restricting the fakes to the
     # native-resolution generators takes that shortcut out of the gradient.
+    # Stage B of the two-stage protocol: the extractor arrives already trained
+    # behind a deterministic head, so the posterior's sampling noise never
+    # shaped it. Freezing matters for one-class training specifically, where a
+    # trainable extractor can drive a constant target to zero loss by collapsing
+    # to a constant function.
+    parser.add_argument(
+        "--init-extractor",
+        default=None,
+        metavar="CHECKPOINT",
+        help="Load extractor weights from a pretrain_extractor.py checkpoint "
+             "before attaching the Bayesian head.",
+    )
+    parser.add_argument(
+        "--freeze-extractor",
+        action="store_true",
+        help="Stop the extractor learning and hold its BatchNorm statistics. "
+             "Features then depend only on the input, so they can be cached.",
+    )
+    parser.add_argument(
+        "--objective",
+        default=None,
+        choices=["supervised", "one_class_real", "one_class_fake"],
+        help="Override train.objective.",
+    )
+    parser.add_argument(
+        "--mc-uncertainty-samples",
+        type=int,
+        default=None,
+        help="Posterior samples per video for the predictive spread. Stays 0 "
+             "for supervised runs, where ranking uses the point estimate, but "
+             "one-class detection needs it: the uncertainty is the signal.",
+    )
     parser.add_argument(
         "--fake-methods",
         nargs="+",
@@ -533,6 +570,20 @@ def main():
         **loader_options
     )
     extractor, model = build_model(config, device)
+    if args.init_extractor:
+        saved = torch.load(args.init_extractor, map_location=device, weights_only=False)
+        extractor.load_state_dict(saved["extractor"])
+        config["model"]["init_extractor"] = str(args.init_extractor)
+        print("STAGE B: loaded extractor from {} (pre-trained {} epochs, "
+              "validation AUROC {:.4f}).".format(
+                  args.init_extractor, saved.get("epoch", "?"),
+                  saved.get("validation_auroc", float("nan"))))
+    if args.freeze_extractor:
+        freeze_extractor(extractor)
+        config["model"]["freeze_extractor"] = True
+        print("STAGE B: extractor frozen ({:,} parameters held, BatchNorm in "
+              "eval mode); only the Bayesian head learns.".format(
+                  sum(parameter.numel() for parameter in extractor.parameters())))
     print(
         "Extractor: {} activation, {} pooling, {} norm, conv_channels={}, {}x{} spatial "
         "-> feature_dim={} ({:,} parameters). Bayesian head: {} -> {} -> 1 ({:,} FC1 "

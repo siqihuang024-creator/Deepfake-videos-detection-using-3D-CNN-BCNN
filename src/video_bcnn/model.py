@@ -216,6 +216,43 @@ class Stable3DFeatureExtractor(nn.Module):
         return self.batch_norm(values).flatten(1)
 
 
+class DeterministicHead(nn.Module):
+    """The Bayesian head's shape without the posterior, for pre-training.
+
+    Training the extractor jointly with the mean-field head means every gradient
+    it receives carries the posterior's sampling noise, and for five runs the KL
+    term was 95-99.9% of the objective. Pre-training behind this head gives the
+    extractor clean deterministic gradients first; the head is then discarded and
+    only the extractor's weights are carried forward, so the layer shape has to
+    match what the Bayesian head will present.
+    """
+
+    def __init__(self, feature_dim, hidden_dim=512, dropout=0.2):
+        super().__init__()
+        self.fc1 = nn.Linear(int(feature_dim), int(hidden_dim))
+        self.out = nn.Linear(int(hidden_dim), 1)
+        self.dropout = float(dropout)
+
+    def forward(self, features):
+        hidden = F.dropout(self.fc1(features), p=self.dropout, training=self.training)
+        return self.out(hidden).squeeze(-1)
+
+
+def freeze_extractor(extractor):
+    """Stop the extractor learning, and stop its BatchNorm statistics drifting.
+
+    One-class training presents real videos only, so a trainable extractor can
+    minimise a constant target by collapsing to a constant function. Freezing
+    removes that solution. `eval()` matters as much as `requires_grad_`: a
+    BatchNorm left in training mode keeps updating its running statistics on the
+    real-only stream even with its affine parameters frozen.
+    """
+    for parameter in extractor.parameters():
+        parameter.requires_grad_(False)
+    extractor.eval()
+    return extractor
+
+
 class VideoBayesianCNN:
     """Mean-field posterior over FC1/FC2; the 3D feature extractor is deterministic."""
 
