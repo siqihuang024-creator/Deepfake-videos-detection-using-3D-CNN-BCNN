@@ -55,6 +55,12 @@ class VideoClipDataset(Dataset):
         self.clips_per_video = int(default_clips if clips_per_video is None else clips_per_video)
         self.face_crop = bool(config.get("face_crop", True))
         self.face_margin = float(config.get("face_margin", 0.25))
+        self.crop_padding = str(config.get("crop_padding", "clamp"))
+        if self.crop_padding not in ("clamp", "replicate"):
+            raise ValueError(
+                "Unknown crop_padding {!r}; expected 'clamp' or "
+                "'replicate'.".format(self.crop_padding)
+            )
         self.face_detector_scale_factor = float(config.get("face_detector_scale_factor", 1.1))
         self.face_detector_min_neighbors = int(config.get("face_detector_min_neighbors", 5))
         self.box_smoothing_alpha = float(config.get("box_smoothing_alpha", 0.6))
@@ -189,18 +195,44 @@ class VideoClipDataset(Dataset):
         return boxes, audit
 
     def _crop_box(self, frame, box):
+        """Cut the margin-expanded box out of the frame.
+
+        `crop_padding="clamp"` truncates the box at the frame edge, which is
+        what every run up to v15 did. That silently breaks the scale
+        normalisation a face-anchored crop is for: 16% of CelebDFv3 faces and
+        22% of DFD faces sit more than 30% off centre, and for those the box
+        comes back rectangular and no longer centred on the face, so the later
+        Resize/CenterCrop trims one side. The wider the margin the more often it
+        happens, so a wide-context crop needs `"replicate"`, which pads with the
+        edge pixels and always returns the full requested square.
+        """
         frame_height, frame_width = frame.shape[:2]
         x, y, width, height = [float(value) for value in box]
-        x0 = max(0, int(round(x - width * self.face_margin)))
-        y0 = max(0, int(round(y - height * self.face_margin)))
-        x1 = min(frame_width, int(round(x + width * (1.0 + self.face_margin))))
-        y1 = min(frame_height, int(round(y + height * (1.0 + self.face_margin))))
-        crop = frame[y0:y1, x0:x1]
-        if crop.size:
-            return crop
-        fallback = self._center_square_box(frame)
-        x, y, width, height = [int(round(value)) for value in fallback]
-        return frame[y:y + height, x:x + width]
+        x0 = int(round(x - width * self.face_margin))
+        y0 = int(round(y - height * self.face_margin))
+        x1 = int(round(x + width * (1.0 + self.face_margin)))
+        y1 = int(round(y + height * (1.0 + self.face_margin)))
+        if self.crop_padding == "clamp":
+            crop = frame[max(0, y0):min(frame_height, y1),
+                         max(0, x0):min(frame_width, x1)]
+            if crop.size:
+                return crop
+            fallback = self._center_square_box(frame)
+            fx, fy, fw, fh = [int(round(value)) for value in fallback]
+            return frame[fy:fy + fh, fx:fx + fw]
+        crop = frame[max(0, y0):min(frame_height, y1),
+                     max(0, x0):min(frame_width, x1)]
+        if not crop.size:
+            fallback = self._center_square_box(frame)
+            fx, fy, fw, fh = [int(round(value)) for value in fallback]
+            return frame[fy:fy + fh, fx:fx + fw]
+        top, bottom = max(0, -y0), max(0, y1 - frame_height)
+        left, right = max(0, -x0), max(0, x1 - frame_width)
+        if top or bottom or left or right:
+            crop = cv2.copyMakeBorder(
+                crop, top, bottom, left, right, cv2.BORDER_REPLICATE
+            )
+        return crop
 
     def _transform(self, bgr_frame, flip):
         image = Image.fromarray(cv2.cvtColor(bgr_frame, cv2.COLOR_BGR2RGB))

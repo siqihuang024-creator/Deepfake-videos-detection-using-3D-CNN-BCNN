@@ -117,6 +117,8 @@ def main():
     parser.add_argument("--pool-type", default=None, choices=["avg", "max"])
     parser.add_argument("--norm", default=None, choices=["none", "batch"])
     parser.add_argument("--hidden-dim", type=int, default=None)
+    parser.add_argument("--active-datasets", nargs="+", default=None, metavar="NAME")
+    parser.add_argument("--crop-padding", choices=["clamp", "replicate"], default=None)
     parser.add_argument("--face-crop", choices=["on", "off"], default=None)
     parser.add_argument("--face-margin", type=float, default=None)
     parser.add_argument("--clip-length", type=int, default=None)
@@ -133,6 +135,10 @@ def main():
                  "run_suffix"):
         setattr(args, name, None)  # the run directory is renamed below instead
     apply_sweep_overrides(config, args)
+    if args.active_datasets is not None:
+        config["data"]["active_datasets"] = list(args.active_datasets)
+    if args.crop_padding is not None:
+        config["data"]["crop_padding"] = args.crop_padding
     if args.selection_max_fakes is not None:
         config["data"]["selection_max_fakes_per_dataset"] = int(args.selection_max_fakes)
     if args.learning_rate is not None:

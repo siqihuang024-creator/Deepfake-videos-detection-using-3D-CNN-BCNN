@@ -152,6 +152,10 @@ def apply_sweep_overrides(config, args):
         config["train"]["objective"] = args.objective
     if args.mc_uncertainty_samples is not None:
         config["train"]["report_mc_uncertainty_samples"] = int(args.mc_uncertainty_samples)
+    if args.active_datasets is not None:
+        config["data"]["active_datasets"] = list(args.active_datasets)
+    if args.crop_padding is not None:
+        config["data"]["crop_padding"] = args.crop_padding
     if args.face_crop is not None:
         config["data"]["face_crop"] = args.face_crop == "on"
     if args.face_margin is not None:
@@ -306,6 +310,25 @@ def main():
     # the face and is smoothed, so global head motion is subtracted before the
     # temporal convolutions ever see it. Disabling it is the way to find out
     # whether that is why a wider temporal window bought nothing.
+    parser.add_argument(
+        "--active-datasets",
+        nargs="+",
+        default=None,
+        metavar="NAME",
+        help="Override data.active_datasets, e.g. --active-datasets CelebDFv3 "
+             "DFD. Balancing is per dataset and class, so adding a dataset "
+             "adds a group and lengthens the epoch.",
+    )
+    parser.add_argument(
+        "--crop-padding",
+        choices=["clamp", "replicate"],
+        default=None,
+        help="What to do when the margin-expanded box leaves the frame. "
+             "'clamp' truncates it, which is what every run up to v15 did and "
+             "which returns a rectangle that is no longer centred on the face. "
+             "'replicate' pads with edge pixels and keeps the crop square, "
+             "which a wide --face-margin needs.",
+    )
     parser.add_argument(
         "--face-crop",
         choices=["on", "off"],
