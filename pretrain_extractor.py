@@ -235,10 +235,11 @@ def main():
             if batch is None:
                 skipped += 1
                 continue
-            clips = batch["clips"].to(device)
-            flat = clips.reshape(-1, *clips.shape[-4:])
+            # The dataset yields one random clip per video while training and a
+            # stack of deterministic clips while scoring, under different keys.
+            clips = batch["clip"].to(device)
             targets = batch["label"].to(device).float()
-            logits = head(extractor(flat)).reshape(clips.shape[0], -1).mean(dim=1)
+            logits = head(extractor(clips))
             loss = criterion(logits, targets)
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
