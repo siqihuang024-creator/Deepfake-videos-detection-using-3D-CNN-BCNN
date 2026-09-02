@@ -199,8 +199,21 @@ class Stable3DFeatureExtractor(nn.Module):
     def forward(self, clips):
         if clips.dim() != 5:
             raise ValueError("Expected clips shaped [batch, channels, time, height, width].")
-        if clips.shape[1] != 3 or tuple(clips.shape[-2:]) != (224, 224):
-            raise ValueError("The controlled 3D BCNN requires RGB 224x224 clips.")
+        # The size was pinned to 224x224 while every run cropped a square face
+        # box. Letterboxed whole frames are 16:9, and the spatial pyramid does
+        # not care: three 5x5 convolutions and three 4x4 stride-2 pools shrink
+        # whatever comes in, and the adaptive pool that follows fixes the output
+        # at spatial_output_size regardless. Only the minimum survives as a
+        # check, because too small an input leaves the third pool nothing to
+        # reduce and the failure would otherwise surface as a shape error deep
+        # in the stack.
+        if clips.shape[1] != 3:
+            raise ValueError("The controlled 3D BCNN requires RGB clips.")
+        if min(clips.shape[-2:]) < 64:
+            raise ValueError(
+                "Clips of {}x{} are too small for three 5x5 convolutions and "
+                "three stride-2 pools.".format(*clips.shape[-2:])
+            )
         stats, values = [], clips
         for convolution, pool, norm in ((self.conv1, self.pool1, self.norm1),
                                         (self.conv2, self.pool2, self.norm2),
@@ -209,6 +222,10 @@ class Stable3DFeatureExtractor(nn.Module):
             values = self.activation(pre)
             stats.append(_stage_statistics(pre, values))
         self.last_activation_stats = stats
+        # A 16:9 input reaches the adaptive pool as a rectangle (768x432 arrives
+        # as 90x48) and is squeezed to a square. That is anisotropic, but it
+        # keeps feature_dim at 15,488 so the Bayesian head, its parameter count
+        # and the KL scale all stay identical to v1-v15.
         values = self.spatial_pool(values.mean(dim=2))
         expected = (self.conv_channels[-1], self.spatial_output_size, self.spatial_output_size)
         if tuple(values.shape[1:]) != expected:

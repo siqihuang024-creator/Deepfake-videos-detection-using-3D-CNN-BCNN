@@ -55,6 +55,24 @@ class VideoClipDataset(Dataset):
         self.clips_per_video = int(default_clips if clips_per_video is None else clips_per_video)
         self.face_crop = bool(config.get("face_crop", True))
         self.face_margin = float(config.get("face_margin", 0.25))
+        # "face" keeps the tracked-box behaviour every run up to v15 used.
+        # "letterbox" keeps the whole frame instead: it rescales it to fit the
+        # target canvas and pads the short side, so no face detection runs at
+        # all. That removes the 93% of per-item time Haar costs, and on DFD it
+        # removes a 50.3% detection failure rate, at the price of a face that is
+        # smaller in the input and of a padding fraction that is visible to the
+        # model -- CelebDFv3's reals are 99.8% wide while 59.6% of its fakes are
+        # square, so padding is class-correlated and results need stratifying.
+        self.frame_mode = str(config.get("frame_mode", "face"))
+        if self.frame_mode not in ("face", "letterbox"):
+            raise ValueError(
+                "Unknown frame_mode {!r}; expected 'face' or "
+                "'letterbox'.".format(self.frame_mode)
+            )
+        size = config.get("letterbox_size", (768, 432))
+        self.letterbox_size = (int(size[0]), int(size[1]))
+        if min(self.letterbox_size) < 32:
+            raise ValueError("letterbox_size must be at least 32 pixels a side.")
         self.crop_padding = str(config.get("crop_padding", "clamp"))
         if self.crop_padding not in ("clamp", "replicate"):
             raise ValueError(
@@ -164,6 +182,20 @@ class VideoClipDataset(Dataset):
         return filled
 
     def _prepare_boxes(self, frames):
+        if self.frame_mode == "letterbox":
+            # The whole frame is kept, so there is no box to find and no
+            # detection to fail. The audit keys stay so downstream reporting
+            # does not have to special-case the mode.
+            boxes = [
+                np.asarray([0.0, 0.0, float(frame.shape[1]), float(frame.shape[0])])
+                for frame in frames
+            ]
+            audit = {
+                "any_miss": 0.0, "miss_fraction": 0.0,
+                "center_x_jitter": 0.0, "center_y_jitter": 0.0,
+                "width_jitter": 0.0, "height_jitter": 0.0,
+            }
+            return boxes, audit
         raw_boxes = [self._detect_box(frame) for frame in frames]
         filled = self._interpolate_missing_boxes(raw_boxes, frames)
         boxes, previous = [], None
@@ -206,6 +238,8 @@ class VideoClipDataset(Dataset):
         happens, so a wide-context crop needs `"replicate"`, which pads with the
         edge pixels and always returns the full requested square.
         """
+        if self.frame_mode == "letterbox":
+            return frame
         frame_height, frame_width = frame.shape[:2]
         x, y, width, height = [float(value) for value in box]
         x0 = int(round(x - width * self.face_margin))
@@ -234,12 +268,36 @@ class VideoClipDataset(Dataset):
             )
         return crop
 
+    def _letterbox(self, bgr_frame):
+        """Fit the whole frame into the canvas and pad the short side.
+
+        Edge replication rather than black bars: a constant border is a signal
+        no natural image carries, and the padded fraction already correlates
+        with the class here.
+        """
+        target_width, target_height = self.letterbox_size
+        height, width = bgr_frame.shape[:2]
+        scale = min(target_width / float(width), target_height / float(height))
+        new_width = max(1, int(round(width * scale)))
+        new_height = max(1, int(round(height * scale)))
+        interpolation = cv2.INTER_AREA if scale < 1.0 else cv2.INTER_LINEAR
+        resized = cv2.resize(bgr_frame, (new_width, new_height), interpolation=interpolation)
+        left = (target_width - new_width) // 2
+        top = (target_height - new_height) // 2
+        return cv2.copyMakeBorder(
+            resized, top, target_height - new_height - top,
+            left, target_width - new_width - left, cv2.BORDER_REPLICATE,
+        )
+
     def _transform(self, bgr_frame, flip):
+        if self.frame_mode == "letterbox":
+            bgr_frame = self._letterbox(bgr_frame)
         image = Image.fromarray(cv2.cvtColor(bgr_frame, cv2.COLOR_BGR2RGB))
         if flip:
             image = ImageOps.mirror(image)
-        image = self.resize(image)
-        image = self.center_crop(image)
+        if self.frame_mode == "face":
+            image = self.resize(image)
+            image = self.center_crop(image)
         return self.normalize(self.to_tensor(image))
 
     @staticmethod

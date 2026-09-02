@@ -57,10 +57,10 @@ from video_bcnn.utils import (
 from train_3d_bcnn import build_model, apply_sweep_overrides
 
 
-def build_loader(dataset, config, sampler=None, shuffle=False):
+def build_loader(dataset, config, sampler=None, shuffle=False, batch_size=1):
     return DataLoader(
         dataset,
-        batch_size=1,
+        batch_size=int(batch_size),
         sampler=sampler,
         shuffle=shuffle,
         num_workers=int(config["data"].get("num_workers", 0)),
@@ -71,12 +71,14 @@ def build_loader(dataset, config, sampler=None, shuffle=False):
 
 
 @torch.no_grad()
-def score_split(extractor, head, loader, device):
+def score_split(extractor, head, loader, device, limit=None):
     """One logit per video, averaged over its evaluation clips."""
     extractor.eval()
     head.eval()
     labels, scores, skipped = [], [], 0
-    for batch in tqdm(loader, desc="Scoring", leave=False):
+    for index, batch in enumerate(tqdm(loader, desc="Scoring", leave=False)):
+        if limit is not None and index >= limit:
+            break
         if batch is None:
             skipped += 1
             continue
@@ -118,6 +120,30 @@ def main():
     parser.add_argument("--norm", default=None, choices=["none", "batch"])
     parser.add_argument("--hidden-dim", type=int, default=None)
     parser.add_argument("--active-datasets", nargs="+", default=None, metavar="NAME")
+    parser.add_argument(
+        "--frame-mode", choices=["face", "letterbox"], default=None,
+        help="'face' crops the tracked box as every run up to v15 did. "
+             "'letterbox' keeps the whole frame, rescaled to fit and padded, "
+             "and skips face detection entirely.",
+    )
+    parser.add_argument(
+        "--letterbox-size", nargs=2, type=int, default=None, metavar=("W", "H"),
+        help="Canvas for --frame-mode letterbox, e.g. 768 432. At 768x432 a "
+             "CelebDFv3 face lands at about 134 pixels against 149 for the "
+             "v9 face crop, while the whole scene stays in view.",
+    )
+    parser.add_argument(
+        "--batch-size", type=int, default=1,
+        help="Clips per optimiser step. It was pinned at 1 while Haar made "
+             "decoding the bottleneck; without detection a larger batch is "
+             "affordable and cuts the gradient noise that a single-clip BCE "
+             "step carries.",
+    )
+    parser.add_argument(
+        "--smoke-test", type=int, default=None, metavar="N",
+        help="Run N training batches and a truncated validation, then exit. "
+             "Walks every code path in minutes before a long run.",
+    )
     parser.add_argument("--crop-padding", choices=["clamp", "replicate"], default=None)
     parser.add_argument("--face-crop", choices=["on", "off"], default=None)
     parser.add_argument("--face-margin", type=float, default=None)
@@ -140,6 +166,10 @@ def main():
     apply_sweep_overrides(config, args)
     if args.active_datasets is not None:
         config["data"]["active_datasets"] = list(args.active_datasets)
+    if args.frame_mode is not None:
+        config["data"]["frame_mode"] = args.frame_mode
+    if args.letterbox_size is not None:
+        config["data"]["letterbox_size"] = [int(v) for v in args.letterbox_size]
     if args.crop_padding is not None:
         config["data"]["crop_padding"] = args.crop_padding
     if args.selection_max_fakes is not None:
@@ -195,7 +225,8 @@ def main():
     print("Balanced epoch: {} clips ({} per group, groups balanced on {}).".format(
         len(sampler), sampler.samples_per_group,
         list(config["data"].get("train_balance_keys", ["dataset", "class_name"]))))
-    train_loader = build_loader(train_dataset, config, sampler=sampler)
+    train_loader = build_loader(
+        train_dataset, config, sampler=sampler, batch_size=args.batch_size)
     validation_loader = build_loader(validation_dataset, config)
 
     extractor, _ = build_model(config, device)
@@ -231,7 +262,9 @@ def main():
         head.train()
         running, seen, skipped = 0.0, 0, 0
         progress = tqdm(train_loader, desc="Stage A epoch {}/{}".format(epoch, args.max_epochs))
-        for batch in progress:
+        for step, batch in enumerate(progress):
+            if args.smoke_test is not None and step >= args.smoke_test:
+                break
             if batch is None:
                 skipped += 1
                 continue
@@ -251,7 +284,9 @@ def main():
         scheduler.step()
         train_loss = running / max(seen, 1)
 
-        labels, scores, eval_skipped = score_split(extractor, head, validation_loader, device)
+        labels, scores, eval_skipped = score_split(
+            extractor, head, validation_loader, device,
+            limit=(args.smoke_test * 4 if args.smoke_test else None))
         # A high logit means "real" here, so the anomaly score is its negation
         # and the metric helper sees the same orientation as stage B.
         anomaly = -scores
@@ -287,6 +322,11 @@ def main():
             best_auroc = metrics["auroc"]
             torch.save(payload, checkpoint_dir / "best.pt")
         save_history(history, log_dir)
+        if args.smoke_test is not None:
+            print("SMOKE TEST PASSED: {} training batches, {} validation "
+                  "batches, checkpoint and history written to {}.".format(
+                      args.smoke_test, args.smoke_test * 4, log_dir))
+            return 0
 
     print("Best validation AUROC {:.4f}. Extractor weights: {}".format(
         best_auroc, checkpoint_dir / "best.pt"))
