@@ -145,9 +145,9 @@ def main():
     )
     parser.add_argument(
         "--letterbox-size", nargs=2, type=int, default=None, metavar=("W", "H"),
-        help="Canvas for --frame-mode letterbox, e.g. 768 432. At 768x432 a "
-             "CelebDFv3 face lands at about 134 pixels against 149 for the "
-             "v9 face crop, while the whole scene stays in view.",
+        help="Canvas for --frame-mode letterbox, e.g. 896 504. At 896x504 "
+             "CelebDFv3 sits at its native scale (median factor 1.01) and "
+             "DFD is reduced by 0.47, while the whole scene stays in view.",
     )
     parser.add_argument(
         "--batch-size", type=int, default=1,
@@ -160,6 +160,15 @@ def main():
         "--smoke-test", type=int, default=None, metavar="N",
         help="Run N training batches and a truncated validation, then exit. "
              "Walks every code path in minutes before a long run.",
+    )
+    parser.add_argument(
+        "--samples-per-group", type=int, default=None, metavar="N",
+        help="Clips drawn per balance group per epoch; every training video "
+             "stays in the pool. The config default 'max' matches the largest "
+             "group, which oversamples the 613 CelebDFv3 reals up to the 30k "
+             "fakes and makes one epoch 120k clips. Pass a budget instead and "
+             "run more epochs. Unlike train_3d_bcnn.py's --train-subset this "
+             "does not drop any training video.",
     )
     parser.add_argument("--crop-padding", choices=["clamp", "replicate"], default=None)
     parser.add_argument("--face-crop", choices=["on", "off"], default=None)
@@ -231,6 +240,8 @@ def main():
     validation_dataset = make_dataset(
         validation_records, config, training=False,
         clips_per_video=config["data"]["selection_clips_per_video"])
+    if args.samples_per_group is not None:
+        config["data"]["train_samples_per_dataset_per_epoch"] = int(args.samples_per_group)
     sampler = dataset_balanced_sampler(
         train_records,
         config["seed"],
