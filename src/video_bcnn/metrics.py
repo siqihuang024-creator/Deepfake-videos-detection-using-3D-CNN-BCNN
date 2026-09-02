@@ -34,7 +34,14 @@ def detection_metrics(real_labels, anomaly_scores, threshold, target_fpr=0.05):
         "observed_true_positive_rate": float(predicted_fake[fake_labels == 1].mean()),
     }
     if np.unique(fake_labels).size < 2:
-        return dict(result, auroc=math.nan, average_precision=math.nan, eer=math.nan)
+        # Every key still comes back, so a caller can read the dict without
+        # knowing whether the split degenerated. A truncated smoke-test
+        # validation hits this, and so would a split that lost one class.
+        return dict(
+            result, auroc=math.nan, average_precision=math.nan, eer=math.nan,
+            target_false_positive_rate=float(target_fpr),
+            tpr_at_target_fpr=math.nan,
+        )
     result["auroc"] = float(roc_auc_score(fake_labels, scores))
     result["average_precision"] = float(average_precision_score(fake_labels, scores))
     fpr, tpr, _ = roc_curve(fake_labels, scores)

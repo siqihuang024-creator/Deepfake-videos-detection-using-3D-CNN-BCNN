@@ -19,6 +19,7 @@ resolution, and every real video in CelebDFv3 is native wide.
 
 import argparse
 import copy
+import math
 import sys
 from pathlib import Path
 
@@ -55,6 +56,22 @@ from video_bcnn.utils import (
     verify_dataset_roots,
 )
 from train_3d_bcnn import build_model, apply_sweep_overrides
+
+
+def json_safe(value):
+    """Replace non-finite floats with None so save_json can write the history.
+
+    save_json uses allow_nan=False. A degenerate validation split -- which a
+    truncated smoke test produces -- yields NaN metrics that would otherwise
+    end the run at the point it writes its first epoch.
+    """
+    if isinstance(value, dict):
+        return {key: json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [json_safe(item) for item in value]
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    return value
 
 
 def build_loader(dataset, config, sampler=None, shuffle=False, batch_size=1):
@@ -293,7 +310,7 @@ def main():
         threshold = calibrate_threshold(
             anomaly[labels == 1], config["train"]["calibration_false_positive_rate"])
         metrics = detection_metrics(labels, anomaly, threshold)
-        history.append({
+        record = {
             "epoch": epoch,
             "train_loss": train_loss,
             "skipped_training_clips": skipped,
@@ -304,7 +321,8 @@ def main():
             # embedding statistics to report, so the field stays null.
             "validation": dict(metrics, embedding_variance_mean=None,
                                per_dataset={}, macro_dataset_auroc=metrics["auroc"]),
-        })
+        }
+        history.append(json_safe(record))
         print("Validation AUROC={:.4f}  EER={:.4f}  TPR@5%FPR={:.4f}  "
               "train BCE={:.4f}  skipped={}".format(
                   metrics["auroc"], metrics["eer"], metrics["tpr_at_target_fpr"],
