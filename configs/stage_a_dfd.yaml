@@ -51,6 +51,13 @@ model:
   # produces still hands Stage B the same vector the CelebDFv3 one does.
   input_resize: 256
   center_crop: 256
+  # build_model defaults to activation='sigmoid', norm='none' -- the
+  # pre-v9 architecture. Three conv3d layers behind sigmoid barely pass a
+  # gradient to the first one; v9 reached 0.7774 only after relu and batch
+  # norm, and every run since has carried both on the command line. Written
+  # here so a run that omits the flags still gets the architecture we mean.
+  activation: relu
+  norm: batch
   conv_channels: [16, 24, 32]
   spatial_kernel_size: 5
   temporal_kernel_size: 3
