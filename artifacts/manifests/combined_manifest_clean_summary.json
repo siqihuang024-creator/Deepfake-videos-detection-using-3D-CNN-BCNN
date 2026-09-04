@@ -1,0 +1,181 @@
+{
+  "built_from": "E:\\PhD\\Deepfake Video 3D-CNN+BCNN\\artifacts\\manifests\\combined_manifest_supervised.csv",
+  "canvas": [
+    896,
+    504
+  ],
+  "celebdfv3_method_shapes": {
+    "FaceReenact/DaGAN": {
+      "square": 139,
+      "wide": 0
+    },
+    "FaceReenact/FSRT": {
+      "square": 139,
+      "wide": 0
+    },
+    "FaceReenact/HyperReenact": {
+      "square": 139,
+      "wide": 0
+    },
+    "FaceReenact/LIA": {
+      "square": 139,
+      "wide": 0
+    },
+    "FaceReenact/LivePortrait": {
+      "square": 11,
+      "wide": 128
+    },
+    "FaceReenact/MCNET": {
+      "square": 139,
+      "wide": 0
+    },
+    "FaceReenact/TPSMM": {
+      "square": 139,
+      "wide": 0
+    },
+    "FaceSwap/BlendFace": {
+      "square": 11,
+      "wide": 128
+    },
+    "FaceSwap/Celeb-DF-v2": {
+      "square": 49,
+      "wide": 392
+    },
+    "FaceSwap/GHOST": {
+      "square": 11,
+      "wide": 128
+    },
+    "FaceSwap/HifiFace": {
+      "square": 11,
+      "wide": 128
+    },
+    "FaceSwap/InSwapper": {
+      "square": 11,
+      "wide": 128
+    },
+    "FaceSwap/MobileFaceSwap": {
+      "square": 11,
+      "wide": 128
+    },
+    "FaceSwap/SimSwap": {
+      "square": 11,
+      "wide": 128
+    },
+    "FaceSwap/UniFace": {
+      "square": 11,
+      "wide": 128
+    },
+    "TalkingFace/AniTalker": {
+      "square": 940,
+      "wide": 0
+    },
+    "TalkingFace/EDTalk": {
+      "square": 920,
+      "wide": 0
+    },
+    "TalkingFace/EchoMimic": {
+      "square": 935,
+      "wide": 0
+    },
+    "TalkingFace/FLOAT": {
+      "square": 940,
+      "wide": 0
+    },
+    "TalkingFace/IP_LAP": {
+      "square": 935,
+      "wide": 0
+    },
+    "TalkingFace/Real3DPortrait": {
+      "square": 864,
+      "wide": 0
+    },
+    "TalkingFace/SadTalker": {
+      "square": 940,
+      "wide": 0
+    }
+  },
+  "clean_manifest_videos": {
+    "CelebDFv3:excluded_donor_eval:fake": 7186,
+    "CelebDFv3:excluded_donor_train:fake": 7000,
+    "CelebDFv3:test:fake": 5677,
+    "CelebDFv3:test:real": 164,
+    "CelebDFv3:train:fake": 30149,
+    "CelebDFv3:train:real": 613,
+    "CelebDFv3:val:fake": 3184,
+    "CelebDFv3:val:real": 113,
+    "DFD:excluded_donor_eval:fake": 518,
+    "DFD:excluded_donor_train:fake": 512,
+    "DFD:test:fake": 93,
+    "DFD:test:real": 54,
+    "DFD:train:fake": 1894,
+    "DFD:train:real": 264,
+    "DFD:val:fake": 51,
+    "DFD:val:real": 45
+  },
+  "donor_repair": {
+    "CelebDFv3:test": 4756,
+    "CelebDFv3:val": 2244
+  },
+  "match_ratio": 4,
+  "matched_manifest_videos": {
+    "CelebDFv3:excluded_donor_eval:fake": 7186,
+    "CelebDFv3:excluded_donor_train:fake": 7000,
+    "CelebDFv3:excluded_shape_unmatched:fake": 8233,
+    "CelebDFv3:excluded_shape_unmatched:real": 120,
+    "CelebDFv3:test:fake": 400,
+    "CelebDFv3:test:real": 100,
+    "CelebDFv3:train:fake": 30149,
+    "CelebDFv3:train:real": 613,
+    "CelebDFv3:val:fake": 228,
+    "CelebDFv3:val:real": 57,
+    "DFD:excluded_donor_eval:fake": 518,
+    "DFD:excluded_donor_train:fake": 512,
+    "DFD:test:fake": 93,
+    "DFD:test:real": 54,
+    "DFD:train:fake": 1894,
+    "DFD:train:real": 264,
+    "DFD:val:fake": 51,
+    "DFD:val:real": 45
+  },
+  "methods_without_wide_video": [
+    "FaceReenact/DaGAN",
+    "FaceReenact/FSRT",
+    "FaceReenact/HyperReenact",
+    "FaceReenact/LIA",
+    "FaceReenact/MCNET",
+    "FaceReenact/TPSMM",
+    "TalkingFace/AniTalker",
+    "TalkingFace/EDTalk",
+    "TalkingFace/EchoMimic",
+    "TalkingFace/FLOAT",
+    "TalkingFace/IP_LAP",
+    "TalkingFace/Real3DPortrait",
+    "TalkingFace/SadTalker"
+  ],
+  "min_wide_aspect": 1.65,
+  "resolution_matching": {
+    "CelebDFv3:test": {
+      "chosen_ratio": 4,
+      "expected_auroc_standard_error": 0.0211,
+      "matched_fake": 400,
+      "matched_real": 100,
+      "resolutions_with_both_classes": 14,
+      "wide_candidates": 1023
+    },
+    "CelebDFv3:val": {
+      "chosen_ratio": 4,
+      "expected_auroc_standard_error": 0.028,
+      "matched_fake": 228,
+      "matched_real": 57,
+      "resolutions_with_both_classes": 9,
+      "wide_candidates": 650
+    },
+    "DFD:test": {
+      "passed_through": true
+    },
+    "DFD:val": {
+      "passed_through": true
+    }
+  },
+  "seed": 42
+}

@@ -1,0 +1,541 @@
+detector,mode,dataset,class_name,shape,method,path,frames,detected,clips,clips_complete,clips_empty,box_width_px,clip_jitter,seconds_per_frame
+haar,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id50_0009_test_id01822_taZoHZYN5-E.mp4,32,32,4,4,0,292.0,0.013416163717792423,0.01674022525548935
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id50_0009_test_id01822_taZoHZYN5-E.mp4,32,32,4,4,0,240.0,0.010766749950475303,0.06343594193458557
+retinaface,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id50_0009_test_id01822_taZoHZYN5-E.mp4,32,32,4,4,0,234.0,0.009434497177057796,0.026429474353790283
+haar,train,CelebDFv3,fake,square,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id2_id1_0002.mp4,32,32,4,4,0,171.25,0.004108571529723156,0.019053496420383453
+mtcnn,train,CelebDFv3,fake,square,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id2_id1_0002.mp4,32,32,4,4,0,144.25,0.00587833731311138,0.02451227605342865
+retinaface,train,CelebDFv3,fake,square,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id2_id1_0002.mp4,32,32,4,4,0,146.0,0.004811098174390277,0.028193548321723938
+haar,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id52_0007_test_id03524_QceiuT-p3rU.mp4,32,32,4,4,0,267.0,0.012053952662570394,0.009754300117492676
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id52_0007_test_id03524_QceiuT-p3rU.mp4,32,32,4,4,0,237.25,0.014383636557301734,0.006010860204696655
+retinaface,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id52_0007_test_id03524_QceiuT-p3rU.mp4,32,32,4,4,0,235.5,0.010163744844034345,0.02463103085756302
+haar,train,CelebDFv3,fake,square,TalkingFace/Real3DPortrait,FAKE/TalkingFace/Real3DPortrait/id4_0004_test_id03862_YQMdTzyG-P8.mp4,32,32,4,4,0,258.0,0.007130425131776946,0.010423228144645691
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/Real3DPortrait,FAKE/TalkingFace/Real3DPortrait/id4_0004_test_id03862_YQMdTzyG-P8.mp4,32,32,4,4,0,203.25,0.008003892279694112,0.00684405118227005
+retinaface,train,CelebDFv3,fake,square,TalkingFace/Real3DPortrait,FAKE/TalkingFace/Real3DPortrait/id4_0004_test_id03862_YQMdTzyG-P8.mp4,32,32,4,4,0,193.0,0.006400205951513371,0.024953767657279968
+haar,train,CelebDFv3,fake,square,TalkingFace/EDTalk,FAKE/TalkingFace/EDTalk/id24_0005_test_id04094_rKFO0TtoCUU.mp4,32,32,4,4,0,158.75,0.010984341617043265,0.008610866963863373
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/EDTalk,FAKE/TalkingFace/EDTalk/id24_0005_test_id04094_rKFO0TtoCUU.mp4,32,32,4,4,0,125.0,0.012948466123151356,0.0052027627825737
+retinaface,train,CelebDFv3,fake,square,TalkingFace/EDTalk,FAKE/TalkingFace/EDTalk/id24_0005_test_id04094_rKFO0TtoCUU.mp4,32,32,4,4,0,127.25,0.00845371921286931,0.015767134726047516
+haar,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id6_id16_0008.mp4,32,32,4,4,0,158.0,0.011769541831029991,0.007304161787033081
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id6_id16_0008.mp4,32,32,4,4,0,117.5,0.0071700070989920844,0.004233986139297485
+retinaface,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id6_id16_0008.mp4,32,32,4,4,0,127.5,0.0059875827450167046,0.016471780836582184
+haar,train,CelebDFv3,fake,square,FaceReenact/LivePortrait,FAKE/FaceReenact/LivePortrait/id3_id20_0006.mp4,32,32,4,4,0,158.0,0.003661479886359382,0.013996995985507965
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/LivePortrait,FAKE/FaceReenact/LivePortrait/id3_id20_0006.mp4,32,32,4,4,0,123.5,0.0035173184630255556,0.009124018251895905
+retinaface,train,CelebDFv3,fake,square,FaceReenact/LivePortrait,FAKE/FaceReenact/LivePortrait/id3_id20_0006.mp4,32,32,4,4,0,126.25,0.0039009738776902246,0.025818392634391785
+haar,train,CelebDFv3,fake,square,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id3_id0_0008.mp4,32,32,4,4,0,126.5,0.006014694012449995,0.014802955090999603
+mtcnn,train,CelebDFv3,fake,square,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id3_id0_0008.mp4,32,32,4,4,0,111.75,0.008265273907316836,0.013835810124874115
+retinaface,train,CelebDFv3,fake,square,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id3_id0_0008.mp4,32,32,4,4,0,114.0,0.004635601279354407,0.02374090999364853
+haar,train,CelebDFv3,fake,square,TalkingFace/AniTalker,FAKE/TalkingFace/AniTalker/id29_0005_test_id02286_cp_LOv6mdJA.mp4,32,32,4,4,0,148.5,0.011720714681375765,0.008779793977737427
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/AniTalker,FAKE/TalkingFace/AniTalker/id29_0005_test_id02286_cp_LOv6mdJA.mp4,32,32,4,4,0,120.5,0.012828420621872949,0.004104286432266235
+retinaface,train,CelebDFv3,fake,square,TalkingFace/AniTalker,FAKE/TalkingFace/AniTalker/id29_0005_test_id02286_cp_LOv6mdJA.mp4,32,32,4,4,0,116.0,0.014517619633225513,0.01573123037815094
+haar,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id0_id3_0001.mp4,32,32,4,4,0,136.5,0.005356132247959916,0.0074746012687683105
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id0_id3_0001.mp4,32,32,4,4,0,103.75,0.007887247347304838,0.004371777176856995
+retinaface,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id0_id3_0001.mp4,32,32,4,4,0,106.5,0.005204185081409528,0.01619240641593933
+haar,train,CelebDFv3,fake,square,FaceReenact/LIA,FAKE/FaceReenact/LIA/id20_id1_0008.mp4,32,20,4,1,0,186.75,0.03648448188034547,0.010046243667602539
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/LIA,FAKE/FaceReenact/LIA/id20_id1_0008.mp4,32,32,4,4,0,142.25,0.016805827085971732,0.00682850182056427
+retinaface,train,CelebDFv3,fake,square,FaceReenact/LIA,FAKE/FaceReenact/LIA/id20_id1_0008.mp4,32,32,4,4,0,133.0,0.010984799015348712,0.01574133336544037
+haar,train,CelebDFv3,fake,square,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id47_id42_0006.mp4,32,32,4,4,0,115.5,0.0024856330990398697,0.028021544218063354
+mtcnn,train,CelebDFv3,fake,square,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id47_id42_0006.mp4,32,32,4,4,0,96.0,0.0027722734557867664,0.058707959949970245
+retinaface,train,CelebDFv3,fake,square,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id47_id42_0006.mp4,32,32,4,4,0,104.0,0.0015315355970714536,0.02767898142337799
+haar,train,CelebDFv3,fake,square,TalkingFace/AniTalker,FAKE/TalkingFace/AniTalker/id20_0009_test_id08701_A2nebxHmWOU.mp4,32,32,4,4,0,151.25,0.0075525909116900556,0.009851299226284027
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/AniTalker,FAKE/TalkingFace/AniTalker/id20_0009_test_id08701_A2nebxHmWOU.mp4,32,32,4,4,0,110.25,0.008432244781365797,0.005441702902317047
+retinaface,train,CelebDFv3,fake,square,TalkingFace/AniTalker,FAKE/TalkingFace/AniTalker/id20_0009_test_id08701_A2nebxHmWOU.mp4,32,32,4,4,0,111.25,0.00660818641088113,0.016865834593772888
+haar,train,CelebDFv3,fake,square,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id20_id2_0008.mp4,32,32,4,4,0,163.5,0.004256626006206311,0.022012121975421906
+mtcnn,train,CelebDFv3,fake,square,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id20_id2_0008.mp4,32,32,4,4,0,144.0,0.004778669184565031,0.016781367361545563
+retinaface,train,CelebDFv3,fake,square,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id20_id2_0008.mp4,32,32,4,4,0,138.75,0.00385548281962857,0.028520047664642334
+haar,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id27_id20_0009.mp4,32,32,4,4,0,163.0,0.011361267555236396,0.007346987724304199
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id27_id20_0009.mp4,32,32,4,4,0,131.25,0.007166921871322131,0.004944011569023132
+retinaface,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id27_id20_0009.mp4,32,32,4,4,0,131.0,0.004338688786695534,0.01590527594089508
+haar,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id5_0008_test_id01333_gujKn7v2CJg.mp4,32,32,4,4,0,140.75,0.015225174991996875,0.007890626788139343
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id5_0008_test_id01333_gujKn7v2CJg.mp4,32,32,4,4,0,121.75,0.014361671729272558,0.0049144551157951355
+retinaface,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id5_0008_test_id01333_gujKn7v2CJg.mp4,32,32,4,4,0,122.25,0.013836990112542597,0.015310831367969513
+haar,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id49_0003_test_id07802_MtoFAMWjUxM.mp4,32,32,4,4,0,167.5,0.023486650316704154,0.007244378328323364
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id49_0003_test_id07802_MtoFAMWjUxM.mp4,32,32,4,4,0,129.25,0.01904107219753579,0.005148269236087799
+retinaface,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id49_0003_test_id07802_MtoFAMWjUxM.mp4,32,32,4,4,0,127.75,0.01880029667270692,0.015446677803993225
+haar,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id38_id20_0005.mp4,32,32,4,4,0,153.75,0.0050866677012790865,0.00906827300786972
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id38_id20_0005.mp4,32,32,4,4,0,125.25,0.007168285447230581,0.004268452525138855
+retinaface,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id38_id20_0005.mp4,32,32,4,4,0,123.0,0.002441206485228754,0.015645794570446014
+haar,train,CelebDFv3,fake,square,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id3_id16_0006.mp4,32,32,4,4,0,159.5,0.007115635626644261,0.01393582671880722
+mtcnn,train,CelebDFv3,fake,square,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id3_id16_0006.mp4,32,32,4,4,0,130.25,0.004969888459737343,0.009228944778442383
+retinaface,train,CelebDFv3,fake,square,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id3_id16_0006.mp4,32,32,4,4,0,131.5,0.005165298290889674,0.025320619344711304
+haar,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id3_0001_test_id04232_ROWN2ssXek8.mp4,32,32,4,4,0,158.75,0.008254366900875498,0.009293340146541595
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id3_0001_test_id04232_ROWN2ssXek8.mp4,32,32,4,4,0,137.0,0.015265463308453912,0.005369976162910461
+retinaface,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id3_0001_test_id04232_ROWN2ssXek8.mp4,32,32,4,4,0,135.0,0.004758520018550842,0.016323506832122803
+haar,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id4_id28_0002.mp4,32,6,4,0,3,139.0,0.012127562506638774,0.005447298288345337
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id4_id28_0002.mp4,32,32,4,4,0,123.25,0.004512168087138183,0.005127228796482086
+retinaface,train,CelebDFv3,fake,square,FaceReenact/HyperReenact,FAKE/FaceReenact/HyperReenact/id4_id28_0002.mp4,32,32,4,4,0,123.0,0.0026416804041017377,0.01731979101896286
+haar,train,CelebDFv3,fake,square,TalkingFace/EchoMimic,FAKE/TalkingFace/EchoMimic/id6_0009_test_id05176_SLPR1rH8LYg.mp4,32,32,4,4,0,318.5,0.006705627440330439,0.014629565179347992
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/EchoMimic,FAKE/TalkingFace/EchoMimic/id6_0009_test_id05176_SLPR1rH8LYg.mp4,32,32,4,4,0,266.25,0.00790369372245364,0.0073943957686424255
+retinaface,train,CelebDFv3,fake,square,TalkingFace/EchoMimic,FAKE/TalkingFace/EchoMimic/id6_0009_test_id05176_SLPR1rH8LYg.mp4,32,32,4,4,0,254.25,0.002928561130338268,0.023573726415634155
+haar,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id9_0002_test_id03347_JbbZ8at5OF8.mp4,32,32,4,4,0,170.25,0.01798734935460456,0.009124703705310822
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id9_0002_test_id03347_JbbZ8at5OF8.mp4,32,32,4,4,0,138.5,0.017221552176762918,0.005968719720840454
+retinaface,train,CelebDFv3,fake,square,TalkingFace/IP_LAP,FAKE/TalkingFace/IP_LAP/id9_0002_test_id03347_JbbZ8at5OF8.mp4,32,32,4,4,0,135.75,0.01376798369830183,0.015685848891735077
+haar,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id20_0008_test_id01437_jrXvutBWU8k.mp4,32,32,4,4,0,174.0,0.004239627818681388,0.012459821999073029
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id20_0008_test_id01437_jrXvutBWU8k.mp4,32,32,4,4,0,139.25,0.005015909365552416,0.00623447448015213
+retinaface,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id20_0008_test_id01437_jrXvutBWU8k.mp4,32,32,4,4,0,146.25,0.0044087440964235575,0.01532202959060669
+haar,train,CelebDFv3,fake,square,FaceReenact/FSRT,FAKE/FaceReenact/FSRT/id13_id10_0003.mp4,32,30,4,3,0,154.0,0.0227946961500215,0.0063814446330070496
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/FSRT,FAKE/FaceReenact/FSRT/id13_id10_0003.mp4,32,32,4,4,0,137.5,0.054992615359480385,0.004011854529380798
+retinaface,train,CelebDFv3,fake,square,FaceReenact/FSRT,FAKE/FaceReenact/FSRT/id13_id10_0003.mp4,32,32,4,4,0,128.75,0.030603596520409414,0.01644686609506607
+haar,train,CelebDFv3,fake,square,TalkingFace/Real3DPortrait,FAKE/TalkingFace/Real3DPortrait/id6_0005_test_id00866_It2TvTOz9y4.mp4,32,32,4,4,0,305.0,0.01202830376689087,0.01128976047039032
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/Real3DPortrait,FAKE/TalkingFace/Real3DPortrait/id6_0005_test_id00866_It2TvTOz9y4.mp4,32,32,4,4,0,263.25,0.011841318837663444,0.008052311837673187
+retinaface,train,CelebDFv3,fake,square,TalkingFace/Real3DPortrait,FAKE/TalkingFace/Real3DPortrait/id6_0005_test_id00866_It2TvTOz9y4.mp4,32,32,4,4,0,265.5,0.011302518434264004,0.023981913924217224
+haar,train,CelebDFv3,fake,square,TalkingFace/EDTalk,FAKE/TalkingFace/EDTalk/id46_0002_test_id02286_B3_GpoLIZpU.mp4,32,32,4,4,0,158.0,0.011692650997868967,0.007826179265975952
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/EDTalk,FAKE/TalkingFace/EDTalk/id46_0002_test_id02286_B3_GpoLIZpU.mp4,32,32,4,4,0,123.5,0.012078461434443622,0.00446135550737381
+retinaface,train,CelebDFv3,fake,square,TalkingFace/EDTalk,FAKE/TalkingFace/EDTalk/id46_0002_test_id02286_B3_GpoLIZpU.mp4,32,32,4,4,0,120.5,0.008081458448406218,0.016478225588798523
+haar,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id1_id20_0007.mp4,32,23,4,2,1,176.0,0.022018723409930635,0.007500439882278442
+mtcnn,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id1_id20_0007.mp4,32,32,4,4,0,145.25,0.037576458748729495,0.004479438066482544
+retinaface,train,CelebDFv3,fake,square,FaceReenact/DaGAN,FAKE/FaceReenact/DaGAN/id1_id20_0007.mp4,32,32,4,4,0,146.0,0.026967862552465145,0.01593002676963806
+haar,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id16_0013_test_id08456_57jM1IfuGag.mp4,32,32,4,4,0,175.5,0.007900505091401326,0.007839515805244446
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id16_0013_test_id08456_57jM1IfuGag.mp4,32,32,4,4,0,142.75,0.009091655736994398,0.0044914186000823975
+retinaface,train,CelebDFv3,fake,square,TalkingFace/SadTalker,FAKE/TalkingFace/SadTalker/id16_0013_test_id08456_57jM1IfuGag.mp4,32,32,4,4,0,139.0,0.0077577820423183706,0.015404321253299713
+haar,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id0_0006_test_id01333__9WuuzOL_cE.mp4,32,32,4,4,0,297.25,0.01762398893458341,0.016263380646705627
+mtcnn,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id0_0006_test_id01333__9WuuzOL_cE.mp4,32,32,4,4,0,239.0,0.01643760576533749,0.009041555225849152
+retinaface,train,CelebDFv3,fake,square,TalkingFace/FLOAT,FAKE/TalkingFace/FLOAT/id0_0006_test_id01333__9WuuzOL_cE.mp4,32,32,4,4,0,227.5,0.01490640191369598,0.02619023621082306
+haar,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id19_id28_0007.mp4,32,32,4,4,0,160.5,0.003362702179791028,0.02812299132347107
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id19_id28_0007.mp4,32,32,4,4,0,135.25,0.003986146555805948,0.012890808284282684
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id19_id28_0007.mp4,32,32,4,4,0,133.5,0.0026196815183883175,0.028388172388076782
+haar,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id28_id1_0008.mp4,32,32,4,4,0,149.5,0.0021776585807132282,0.02051423490047455
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id28_id1_0008.mp4,32,32,4,4,0,121.75,0.002576493960450536,0.01031050831079483
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id28_id1_0008.mp4,32,32,4,4,0,126.5,0.0018717243877445543,0.0311872735619545
+haar,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id35_id33_0000.mp4,32,32,4,4,0,118.0,0.00701280850756651,0.030223943293094635
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id35_id33_0000.mp4,32,32,4,4,0,97.75,0.005679490857717929,0.02412804216146469
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id35_id33_0000.mp4,32,32,4,4,0,100.25,0.004510668298729297,0.03120749443769455
+haar,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id38_id35_0005.mp4,32,32,4,4,0,124.75,0.0011880374755500597,0.026989169418811798
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id38_id35_0005.mp4,32,32,4,4,0,84.25,0.0019028440324605836,0.031077340245246887
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id38_id35_0005.mp4,32,32,4,4,0,90.0,0.0009838039920209971,0.031409889459609985
+haar,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id55_id50_0003.mp4,32,32,4,4,0,98.5,0.0046395404768467315,0.0324232280254364
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id55_id50_0003.mp4,32,32,4,4,0,78.5,0.0039553284077038404,0.020211122930049896
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id55_id50_0003.mp4,32,32,4,4,0,82.5,0.003436716733548939,0.0312579870223999
+haar,train,CelebDFv3,fake,wide,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id4_id20_0006.mp4,32,32,4,4,0,279.75,0.019599106757989267,0.027333125472068787
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id4_id20_0006.mp4,32,32,4,4,0,215.0,0.014381392266426582,0.042683713138103485
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id4_id20_0006.mp4,32,32,4,4,0,204.0,0.012857238964904153,0.03851451724767685
+haar,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id30_id3_0006.mp4,32,32,4,4,0,129.0,0.0022235048487534753,0.02752649039030075
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id30_id3_0006.mp4,32,32,4,4,0,102.25,0.006744703808935597,0.013017132878303528
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id30_id3_0006.mp4,32,32,4,4,0,109.0,0.002078781899242698,0.03127114474773407
+haar,train,CelebDFv3,fake,wide,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id16_id30_0000.mp4,32,32,4,4,0,177.0,0.006294529713074133,0.024589046835899353
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id16_id30_0000.mp4,32,32,4,4,0,141.5,0.006319284103769687,0.010629914700984955
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/MobileFaceSwap,FAKE/FaceSwap/MobileFaceSwap/id16_id30_0000.mp4,32,32,4,4,0,142.25,0.005556973815370311,0.035060666501522064
+haar,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id21_id16_0000.mp4,32,32,4,4,0,188.5,0.013211875827127826,0.016686752438545227
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id21_id16_0000.mp4,32,32,4,4,0,142.0,0.01078115240367755,0.010922595858573914
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id21_id16_0000.mp4,32,32,4,4,0,140.75,0.008755159259675122,0.03117409348487854
+haar,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id30_id4_0004.mp4,32,32,4,4,0,133.25,0.0015255889495847988,0.01960175484418869
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id30_id4_0004.mp4,32,32,4,4,0,107.75,0.004204960705671421,0.015665575861930847
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id30_id4_0004.mp4,32,32,4,4,0,110.0,0.002486469780090251,0.03155149519443512
+haar,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id33_id21_0004.mp4,32,32,4,4,0,137.25,0.06074395491255566,0.014234110713005066
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id33_id21_0004.mp4,32,32,4,4,0,108.75,0.005383624163218829,0.01178094744682312
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id33_id21_0004.mp4,32,32,4,4,0,112.0,0.006484965956822419,0.03302805870771408
+haar,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id28_id6_0001.mp4,32,32,4,4,0,149.5,0.0024213979933449094,0.04197154939174652
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id28_id6_0001.mp4,32,32,4,4,0,124.25,0.004574883514339974,0.052604034543037415
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id28_id6_0001.mp4,32,32,4,4,0,135.0,0.0018979755401297626,0.032832734286785126
+haar,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id30_id2_0007.mp4,32,32,4,4,0,170.0,0.007807998101356399,0.015212833881378174
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id30_id2_0007.mp4,32,32,4,4,0,138.25,0.0072528092215098355,0.010714560747146606
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id30_id2_0007.mp4,32,32,4,4,0,133.5,0.007455314855519039,0.03410831093788147
+haar,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id17_id21_0006.mp4,32,32,4,4,0,168.0,0.023798387023488774,0.02487275004386902
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id17_id21_0006.mp4,32,32,4,4,0,144.25,0.018751005075586438,0.012265786528587341
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id17_id21_0006.mp4,32,32,4,4,0,142.25,0.017071377262062683,0.03657088428735733
+haar,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id52_id50_0009.mp4,32,32,4,4,0,164.5,0.012039056884583555,0.025875143706798553
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id52_id50_0009.mp4,32,32,4,4,0,115.75,0.010070963424943928,0.015740856528282166
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id52_id50_0009.mp4,32,32,4,4,0,117.25,0.00801367526597746,0.03308060020208359
+haar,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id2_id0_0008.mp4,32,32,4,4,0,296.25,0.008162150119033006,0.023902036249637604
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id2_id0_0008.mp4,32,32,4,4,0,229.25,0.006928707558933506,0.06357348710298538
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id2_id0_0008.mp4,32,32,4,4,0,226.25,0.006589412123167083,0.03655819594860077
+haar,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id53_id57_0003.mp4,32,32,4,4,0,222.75,0.005155989249517502,0.02425733208656311
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id53_id57_0003.mp4,32,32,4,4,0,172.25,0.008108954846892481,0.020198948681354523
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id53_id57_0003.mp4,32,32,4,4,0,170.75,0.008074001923476522,0.03348066657781601
+haar,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id6_id0_0001.mp4,32,32,4,4,0,151.75,0.0048968003999548,0.04605777561664581
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id6_id0_0001.mp4,32,32,4,4,0,116.0,0.018053099767584558,0.07709838449954987
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id6_id0_0001.mp4,32,32,4,4,0,119.75,0.005456790909982059,0.038901083171367645
+haar,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id28_id24_0009.mp4,32,16,4,2,2,146.75,0.0019873739894571488,0.026881836354732513
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id28_id24_0009.mp4,32,32,4,4,0,134.25,0.0028035195099422754,0.013761870563030243
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id28_id24_0009.mp4,32,32,4,4,0,135.75,0.0010820257506901948,0.03520199656486511
+haar,train,CelebDFv3,fake,wide,FaceReenact/LivePortrait,FAKE/FaceReenact/LivePortrait/id4_id28_0002.mp4,32,32,4,4,0,167.0,0.003907746167608781,0.02393658459186554
+mtcnn,train,CelebDFv3,fake,wide,FaceReenact/LivePortrait,FAKE/FaceReenact/LivePortrait/id4_id28_0002.mp4,32,32,4,4,0,133.75,0.0034037702968637245,0.0189451202750206
+retinaface,train,CelebDFv3,fake,wide,FaceReenact/LivePortrait,FAKE/FaceReenact/LivePortrait/id4_id28_0002.mp4,32,32,4,4,0,133.25,0.0031926599137712666,0.036107681691646576
+haar,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id6_id28_0002.mp4,32,32,4,4,0,142.5,0.0011919955774633492,0.024055734276771545
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id6_id28_0002.mp4,32,32,4,4,0,126.5,0.004327405483214851,0.015494614839553833
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id6_id28_0002.mp4,32,32,4,4,0,119.5,0.001430617955229583,0.03437098115682602
+haar,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id2_id35_0008.mp4,32,32,4,4,0,277.25,0.02526831348711727,0.023255623877048492
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id2_id35_0008.mp4,32,32,4,4,0,215.25,0.009865904983088484,0.060903653502464294
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/UniFace,FAKE/FaceSwap/UniFace/id2_id35_0008.mp4,32,32,4,4,0,220.0,0.007857479430393327,0.033162638545036316
+haar,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id61_id60_0000.mp4,32,32,4,4,0,145.0,0.00849750831674391,0.01876230537891388
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id61_id60_0000.mp4,32,32,4,4,0,116.0,0.006560349159677669,0.013218924403190613
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/BlendFace,FAKE/FaceSwap/BlendFace/id61_id60_0000.mp4,32,32,4,4,0,115.0,0.003913176358705288,0.03212294727563858
+haar,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id28_id35_0000.mp4,32,32,4,4,0,166.25,0.007750163112962824,0.016086503863334656
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id28_id35_0000.mp4,32,32,4,4,0,128.75,0.005526761652176494,0.011989489197731018
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/Celeb-DF-v2,FAKE/FaceSwap/Celeb-DF-v2/id28_id35_0000.mp4,32,32,4,4,0,133.25,0.00488719814685171,0.0303993821144104
+haar,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id9_id6_0002.mp4,32,32,4,4,0,183.25,0.00606838417009243,0.019555382430553436
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id9_id6_0002.mp4,32,32,4,4,0,148.5,0.005316315213992706,0.01224413514137268
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id9_id6_0002.mp4,32,32,4,4,0,150.5,0.003847647797028537,0.035180337727069855
+haar,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id39_id46_0006.mp4,32,32,4,4,0,149.0,0.004694571783281315,0.023760974407196045
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id39_id46_0006.mp4,32,32,4,4,0,124.0,0.004763208978541663,0.03354983776807785
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/InSwapper,FAKE/FaceSwap/InSwapper/id39_id46_0006.mp4,32,32,4,4,0,126.75,0.00383303442246449,0.03145156055688858
+haar,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id53_id57_0006.mp4,32,32,4,4,0,117.75,0.005486810119484101,0.03577592968940735
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id53_id57_0006.mp4,32,32,4,4,0,101.0,0.005386181811287309,0.023149631917476654
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/HifiFace,FAKE/FaceSwap/HifiFace/id53_id57_0006.mp4,32,32,4,4,0,101.0,0.004977302290922182,0.0308271124958992
+haar,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id29_id33_0007.mp4,32,32,4,4,0,161.25,0.014162087162343837,0.014767073094844818
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id29_id33_0007.mp4,32,32,4,4,0,127.25,0.013216928462472455,0.012502454221248627
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/GHOST,FAKE/FaceSwap/GHOST/id29_id33_0007.mp4,32,32,4,4,0,130.0,0.010137119886431407,0.030476830899715424
+haar,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id0_id21_0001.mp4,32,32,4,4,0,140.75,0.004123629124319107,0.019215404987335205
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id0_id21_0001.mp4,32,32,4,4,0,117.0,0.004743642406634552,0.009877398610115051
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id0_id21_0001.mp4,32,32,4,4,0,114.0,0.004940072017497512,0.03517214208841324
+haar,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id35_id9_0001.mp4,32,32,4,4,0,194.75,0.0752568768886126,0.035838283598423004
+mtcnn,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id35_id9_0001.mp4,32,32,4,4,0,108.0,0.006074490942665831,0.029632695019245148
+retinaface,train,CelebDFv3,fake,wide,FaceSwap/SimSwap,FAKE/FaceSwap/SimSwap/id35_id9_0001.mp4,32,32,4,4,0,111.5,0.003909235868427288,0.030597500503063202
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id17_0003.mp4,32,32,4,4,0,141.0,0.0067180024547283095,0.015111096203327179
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id17_0003.mp4,32,32,4,4,0,116.5,0.006520280553455094,0.01229763776063919
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id17_0003.mp4,32,32,4,4,0,119.0,0.006185087056640587,0.024815641343593597
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id3_0004.mp4,32,32,4,4,0,178.0,0.003304290514651866,0.013326190412044525
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id3_0004.mp4,32,32,4,4,0,149.0,0.005480037883869981,0.009297989308834076
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id3_0004.mp4,32,32,4,4,0,149.25,0.0022370387605772364,0.025213100016117096
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0006.mp4,32,32,4,4,0,189.0,0.00543787291193646,0.012132830917835236
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0006.mp4,32,32,4,4,0,146.75,0.008000928747867453,0.008839726448059082
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0006.mp4,32,32,4,4,0,150.0,0.0029536913799328435,0.0265769362449646
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id27_0006.mp4,32,32,4,4,0,196.5,0.014876676031378024,0.012740135192871094
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id27_0006.mp4,32,32,4,4,0,162.75,0.01370228412797174,0.008859485387802124
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id27_0006.mp4,32,32,4,4,0,161.0,0.012817103743777153,0.028510473668575287
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0000.mp4,32,32,4,4,0,226.75,0.007024392256158259,0.01933024823665619
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0000.mp4,32,32,4,4,0,178.5,0.009186816005182886,0.015425272285938263
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0000.mp4,32,32,4,4,0,181.0,0.006857721108529968,0.029513277113437653
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id3_0003.mp4,32,32,4,4,0,171.25,0.008371652121317411,0.012470945715904236
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id3_0003.mp4,32,32,4,4,0,135.75,0.010003893380743058,0.013847008347511292
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id3_0003.mp4,32,32,4,4,0,143.5,0.00752855934068335,0.030355729162693024
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0003.mp4,32,32,4,4,0,131.5,0.005335491813757479,0.016849055886268616
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0003.mp4,32,32,4,4,0,117.0,0.005953479323033641,0.016339637339115143
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0003.mp4,32,32,4,4,0,120.75,0.005069532155241323,0.028361916542053223
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id10_0006.mp4,32,23,4,2,0,118.75,0.0052356738711498456,0.021606065332889557
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id10_0006.mp4,32,27,4,3,0,132.25,0.2839875426537497,0.020310290157794952
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id10_0006.mp4,32,27,4,3,0,96.5,0.0066633298997235725,0.028980888426303864
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0002.mp4,32,32,4,4,0,167.5,0.0033776457482882203,0.013939492404460907
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0002.mp4,32,32,4,4,0,133.75,0.007507973902409223,0.01017344743013382
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0002.mp4,32,32,4,4,0,133.5,0.001989484604263495,0.026177018880844116
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id27_0007.mp4,32,32,4,4,0,94.25,0.00865901024217661,0.013342410326004028
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id27_0007.mp4,32,32,4,4,0,77.5,0.0061971273340085935,0.009380169212818146
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id27_0007.mp4,32,32,4,4,0,81.25,0.006247653562159032,0.020634368062019348
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0008.mp4,32,21,4,2,0,184.75,0.0026234433516821804,0.013790681958198547
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0008.mp4,32,32,4,4,0,177.75,0.0038963995799773665,0.013189040124416351
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0008.mp4,32,32,4,4,0,175.5,0.003288895375496758,0.028217501938343048
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id39_0005.mp4,32,32,4,4,0,174.0,0.00873361716250749,0.022251181304454803
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id39_0005.mp4,32,32,4,4,0,135.75,0.009288806917312193,0.016668617725372314
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id39_0005.mp4,32,32,4,4,0,134.0,0.00794252684395498,0.031794458627700806
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id24_0002.mp4,32,32,4,4,0,133.25,0.005590115923761706,0.01174965500831604
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id24_0002.mp4,32,32,4,4,0,96.75,0.003562933814493312,0.009152576327323914
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id24_0002.mp4,32,32,4,4,0,101.75,0.002276352184436879,0.02395792305469513
+haar,train,CelebDFv3,real,square,real/Real_YouTube,REAL/Real_YouTube/00263.mp4,32,32,4,4,0,199.0,0.0020944170963765277,0.018307901918888092
+mtcnn,train,CelebDFv3,real,square,real/Real_YouTube,REAL/Real_YouTube/00263.mp4,32,32,4,4,0,139.5,0.0033039752986790995,0.015282593667507172
+retinaface,train,CelebDFv3,real,square,real/Real_YouTube,REAL/Real_YouTube/00263.mp4,32,32,4,4,0,139.5,0.0016426034183239734,0.031381770968437195
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id2_0009.mp4,32,32,4,4,0,191.0,0.005699807777987847,0.01307009905576706
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id2_0009.mp4,32,32,4,4,0,162.25,0.005286954417022893,0.009355686604976654
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id2_0009.mp4,32,32,4,4,0,160.75,0.003012117561944946,0.029193952679634094
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id10_0000.mp4,32,32,4,4,0,192.5,0.08940235103067268,0.01829686015844345
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id10_0000.mp4,32,32,4,4,0,156.25,0.009231064545118312,0.013828136026859283
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id10_0000.mp4,32,32,4,4,0,151.25,0.007724616248305153,0.02916887402534485
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id20_0008.mp4,32,32,4,4,0,163.75,0.0036771560119070457,0.022658802568912506
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id20_0008.mp4,32,32,4,4,0,141.5,0.0031818545659336064,0.013573229312896729
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id20_0008.mp4,32,32,4,4,0,140.25,0.0037759989432162647,0.033018745481967926
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0000.mp4,32,32,4,4,0,166.5,0.022589229726330755,0.013159886002540588
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0000.mp4,32,32,4,4,0,146.0,0.014061417993751648,0.009833134710788727
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0000.mp4,32,32,4,4,0,149.0,0.012625535367603496,0.03069644421339035
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0007.mp4,32,32,4,4,0,168.75,0.00099139392754612,0.02845245599746704
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0007.mp4,32,32,4,4,0,138.0,0.0029049677216680878,0.01920708268880844
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0007.mp4,32,32,4,4,0,143.5,0.0011305670738605924,0.024377994239330292
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id40_0000.mp4,32,32,4,4,0,98.25,0.0039009489576849136,0.019128747284412384
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id40_0000.mp4,32,32,4,4,0,75.75,0.0041882601771305455,0.017717011272907257
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id40_0000.mp4,32,32,4,4,0,78.0,0.0028534985924202425,0.0217113196849823
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0005.mp4,32,32,4,4,0,126.25,0.0024588550689053105,0.020826339721679688
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0005.mp4,32,32,4,4,0,101.25,0.003078795235919082,0.009558416903018951
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0005.mp4,32,32,4,4,0,103.25,0.001981901043023695,0.027883261442184448
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0007.mp4,32,32,4,4,0,152.0,0.009237997284500917,0.016364239156246185
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0007.mp4,32,32,4,4,0,123.25,0.010898750823408042,0.009590357542037964
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0007.mp4,32,32,4,4,0,128.5,0.010947214883013551,0.026956431567668915
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id19_0003.mp4,32,32,4,4,0,297.0,0.003925609575930777,0.01999884843826294
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id19_0003.mp4,32,32,4,4,0,247.75,0.006119446774367794,0.011179141700267792
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id19_0003.mp4,32,32,4,4,0,254.5,0.0037301420290808754,0.02920449525117874
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0006.mp4,32,32,4,4,0,119.75,0.003044603715727333,0.0302470400929451
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0006.mp4,32,32,4,4,0,94.5,0.0020416780941846123,0.052045829594135284
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id47_0006.mp4,32,32,4,4,0,102.5,0.0019835189583205545,0.02731098234653473
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id17_0001.mp4,32,32,4,4,0,103.25,0.00950251468653985,0.016290031373500824
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id17_0001.mp4,32,32,4,4,0,86.0,0.006609956862783236,0.013081341981887817
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id17_0001.mp4,32,32,4,4,0,91.75,0.006508921137839624,0.02504725754261017
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id21_0003.mp4,32,24,4,2,0,207.25,0.008723013091367313,0.01496102660894394
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id21_0003.mp4,32,32,4,4,0,178.0,0.010380207661130469,0.010092653334140778
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id21_0003.mp4,32,32,4,4,0,176.5,0.006837751611240313,0.029189705848693848
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0009.mp4,32,32,4,4,0,201.5,0.006826316275470491,0.023878030478954315
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0009.mp4,32,32,4,4,0,162.0,0.006384902071634305,0.023272491991519928
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id1_0009.mp4,32,32,4,4,0,162.75,0.00438749814654642,0.024044610559940338
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id42_0001.mp4,32,32,4,4,0,98.5,0.00660858951884601,0.016277417540550232
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id42_0001.mp4,32,32,4,4,0,82.0,0.005444929520340295,0.010785005986690521
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id42_0001.mp4,32,32,4,4,0,84.0,0.003805591365716964,0.02087688446044922
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id21_0009.mp4,32,32,4,4,0,217.5,0.007348492911863911,0.020464904606342316
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id21_0009.mp4,32,32,4,4,0,157.25,0.003558599516667156,0.012372441589832306
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id21_0009.mp4,32,32,4,4,0,155.25,0.0033522685358243196,0.02836707979440689
+haar,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id29_0009.mp4,32,32,4,4,0,128.25,0.012001085795588392,0.018101081252098083
+mtcnn,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id29_0009.mp4,32,32,4,4,0,99.75,0.0075834383560671875,0.010468415915966034
+retinaface,train,CelebDFv3,real,square,real/Real_WEB,REAL/Real_WEB/id29_0009.mp4,32,32,4,4,0,104.5,0.005844449588812058,0.022890836000442505
+haar,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00279.mp4,32,32,4,4,0,96.5,0.01266960998949164,0.024976380169391632
+mtcnn,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00279.mp4,32,32,4,4,0,81.25,0.004489542431717852,0.008331574499607086
+retinaface,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00279.mp4,32,32,4,4,0,85.25,0.0051149529645232086,0.030973054468631744
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id10_0001.mp4,32,32,4,4,0,223.5,0.026443009395479698,0.02126891165971756
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id10_0001.mp4,32,32,4,4,0,179.25,0.026005835142519657,0.013957470655441284
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id10_0001.mp4,32,32,4,4,0,164.75,0.024867833463733342,0.03488079458475113
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id61_0001.mp4,32,25,4,0,0,67.75,0.0984478036901795,0.0197872593998909
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id61_0001.mp4,32,32,4,4,0,138.0,0.013425293550664132,0.012269310653209686
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id61_0001.mp4,32,32,4,4,0,145.75,0.008937815181836888,0.031510964035987854
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id16_0006.mp4,32,32,4,4,0,155.5,0.00533012848032601,0.02667265385389328
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id16_0006.mp4,32,32,4,4,0,123.5,0.00315443839086472,0.020125798881053925
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id16_0006.mp4,32,32,4,4,0,126.75,0.003993994414696468,0.0369081124663353
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id34_0006.mp4,32,32,4,4,0,160.75,0.012865440472683724,0.023726381361484528
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id34_0006.mp4,32,32,4,4,0,125.25,0.009951093349971532,0.01308123767375946
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id34_0006.mp4,32,32,4,4,0,126.25,0.011267848015974316,0.03249149024486542
+haar,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00084.mp4,32,32,4,4,0,99.0,0.0024285787758299,0.0258624404668808
+mtcnn,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00084.mp4,32,32,4,4,0,75.5,0.002628873261584739,0.01754450798034668
+retinaface,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00084.mp4,32,32,4,4,0,80.0,0.0013980138960830693,0.03440931439399719
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id29_0000.mp4,32,32,4,4,0,161.5,0.007509450693986005,0.02193596214056015
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id29_0000.mp4,32,32,4,4,0,118.0,0.005160293627780029,0.013497918844223022
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id29_0000.mp4,32,32,4,4,0,118.0,0.005742957498251435,0.0335264578461647
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id9_0002.mp4,32,32,4,4,0,151.0,0.0050803652685059274,0.020693816244602203
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id9_0002.mp4,32,32,4,4,0,122.75,0.005988820796189214,0.012649089097976685
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id9_0002.mp4,32,32,4,4,0,122.0,0.005126119491640013,0.03607784956693649
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id61_0007.mp4,32,23,4,1,0,97.5,0.031065436737140455,0.030392244458198547
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id61_0007.mp4,32,32,4,4,0,100.25,0.011242011437344674,0.01672733575105667
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id61_0007.mp4,32,32,4,4,0,102.25,0.0050412960033974635,0.0324699729681015
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id33_0003.mp4,32,32,4,4,0,166.25,0.012589566658408262,0.03667021542787552
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id33_0003.mp4,32,32,4,4,0,121.5,0.01084714360122831,0.03853373974561691
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id33_0003.mp4,32,32,4,4,0,118.75,0.009215893956998223,0.0338883250951767
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id57_0000.mp4,32,32,4,4,0,136.25,0.009512965575325924,0.03398840129375458
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id57_0000.mp4,32,32,4,4,0,108.0,0.00834988042080648,0.016260169446468353
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id57_0000.mp4,32,32,4,4,0,110.75,0.007055721865543756,0.031657010316848755
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id60_0000.mp4,32,31,4,3,0,138.75,0.007754193274907546,0.023445159196853638
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id60_0000.mp4,32,32,4,4,0,121.0,0.01057605965213827,0.021993495523929596
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id60_0000.mp4,32,32,4,4,0,119.25,0.007757043208492684,0.03187984973192215
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id16_0003.mp4,32,32,4,4,0,172.25,0.0023715499638041777,0.029290087521076202
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id16_0003.mp4,32,32,4,4,0,142.5,0.003759752481115525,0.020825862884521484
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id16_0003.mp4,32,32,4,4,0,145.0,0.0033070307899996407,0.037264496088027954
+haar,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00009.mp4,32,32,4,4,0,123.25,0.008636388212344418,0.04000449925661087
+mtcnn,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00009.mp4,32,32,4,4,0,99.0,0.008557037448041226,0.028363920748233795
+retinaface,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00009.mp4,32,32,4,4,0,101.5,0.007454539882132161,0.03375043720006943
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id38_0004.mp4,32,32,4,4,0,204.5,0.004596066919866472,0.023347049951553345
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id38_0004.mp4,32,32,4,4,0,126.75,0.004663914853012726,0.019803933799266815
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id38_0004.mp4,32,32,4,4,0,126.5,0.0037370143230892727,0.03282883018255234
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id21_0001.mp4,32,32,4,4,0,160.75,0.004253451256230956,0.028022602200508118
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id21_0001.mp4,32,32,4,4,0,121.75,0.004762472672317758,0.02444598823785782
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id21_0001.mp4,32,32,4,4,0,121.0,0.004984350468606135,0.03435923904180527
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id13_0008.mp4,32,32,4,4,0,158.5,0.0019985616310332906,0.019586272537708282
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id13_0008.mp4,32,32,4,4,0,126.5,0.002993934217267835,0.01682225614786148
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id13_0008.mp4,32,32,4,4,0,127.5,0.001960655440288891,0.03605432063341141
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id19_0007.mp4,32,32,4,4,0,165.5,0.0017268078479865448,0.02948373556137085
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id19_0007.mp4,32,32,4,4,0,132.0,0.004943297837854085,0.013225987553596497
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id19_0007.mp4,32,32,4,4,0,136.25,0.001717230773288089,0.029765889048576355
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id27_0005.mp4,1,0,1,0,1,,,0.016823768615722656
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id27_0005.mp4,1,1,1,1,0,72.0,nan,0.042879343032836914
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id27_0005.mp4,1,1,1,1,0,78.0,nan,0.03979635238647461
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id6_0003.mp4,32,32,4,4,0,191.0,0.006979917389877737,0.037232913076877594
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id6_0003.mp4,32,32,4,4,0,141.5,0.004869496197082815,0.015704557299613953
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id6_0003.mp4,32,32,4,4,0,139.5,0.005603221428000315,0.038616329431533813
+haar,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00140.mp4,32,32,4,4,0,172.25,0.004498058653277652,0.034745439887046814
+mtcnn,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00140.mp4,32,32,4,4,0,135.75,0.006177322384151434,0.024575307965278625
+retinaface,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00140.mp4,32,32,4,4,0,141.5,0.004310219170550973,0.03513932228088379
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id46_0006.mp4,32,32,4,4,0,157.75,0.008558265615638144,0.01772785186767578
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id46_0006.mp4,32,32,4,4,0,116.25,0.010433211918074791,0.02310957759618759
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id46_0006.mp4,32,32,4,4,0,115.0,0.009883187468651645,0.03057805448770523
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id6_0004.mp4,32,32,4,4,0,234.75,0.004774246961850873,0.018311746418476105
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id6_0004.mp4,32,32,4,4,0,187.75,0.005070816605693011,0.011079654097557068
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id6_0004.mp4,32,32,4,4,0,176.0,0.005350533483836554,0.03566138446331024
+haar,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00110.mp4,32,32,4,4,0,189.5,0.004890842342686384,0.04160808026790619
+mtcnn,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00110.mp4,32,32,4,4,0,147.0,0.004346876583985166,0.03509896248579025
+retinaface,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00110.mp4,32,32,4,4,0,145.5,0.004092540582967364,0.03545449674129486
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id0_0007.mp4,32,32,4,4,0,193.75,0.007988510418549184,0.032277025282382965
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id0_0007.mp4,32,32,4,4,0,156.5,0.005702482746908365,0.021622352302074432
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id0_0007.mp4,32,32,4,4,0,155.25,0.0022479129974432134,0.03628218173980713
+haar,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00225.mp4,32,32,4,4,0,220.25,0.004846535549921432,0.021164022386074066
+mtcnn,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00225.mp4,32,32,4,4,0,180.75,0.003933741982325721,0.009179100394248962
+retinaface,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00225.mp4,32,32,4,4,0,171.0,0.0038345298418562923,0.03460180014371872
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id29_0005.mp4,32,32,4,4,0,133.5,0.22922025849676525,0.029528558254241943
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id29_0005.mp4,32,32,4,4,0,76.25,0.005949722381238741,0.012439832091331482
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id29_0005.mp4,32,32,4,4,0,77.25,0.005425220141076135,0.0344734787940979
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id19_0004.mp4,32,32,4,4,0,149.0,0.0016503157623154363,0.01566515862941742
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id19_0004.mp4,32,32,4,4,0,127.25,0.0013764145031831961,0.015050843358039856
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id19_0004.mp4,32,32,4,4,0,130.5,0.0025066068698053525,0.029208585619926453
+haar,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id21_0002.mp4,32,32,4,4,0,135.0,0.005116050335525805,0.01665620505809784
+mtcnn,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id21_0002.mp4,32,32,4,4,0,101.5,0.004703450575187456,0.013320676982402802
+retinaface,train,CelebDFv3,real,wide,real/Real_WEB,REAL/Real_WEB/id21_0002.mp4,32,32,4,4,0,99.75,0.0035013615373494225,0.03238523006439209
+haar,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00241.mp4,32,24,4,3,1,84.5,0.007556136228609347,0.02658497542142868
+mtcnn,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00241.mp4,32,32,4,4,0,65.0,0.005084670802291575,0.013515815138816833
+retinaface,train,CelebDFv3,real,wide,real/Real_YouTube,REAL/Real_YouTube/00241.mp4,32,32,4,4,0,65.25,0.004077893116645796,0.034473977982997894
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/13_07__exit_phone_room__RVQCPCJF.mp4,32,32,4,4,0,208.0,0.001730479896174851,0.07978734374046326
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/13_07__exit_phone_room__RVQCPCJF.mp4,32,32,4,4,0,159.75,0.0023536507466820917,0.04140796512365341
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/13_07__exit_phone_room__RVQCPCJF.mp4,32,32,4,4,0,160.0,0.000925756614421774,0.11515150964260101
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_15__meeting_serious__Q14RO7M7.mp4,32,32,4,4,0,127.5,0.0025793271840421923,0.08586627244949341
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_15__meeting_serious__Q14RO7M7.mp4,32,32,4,4,0,96.25,0.0030062086002853516,0.045782387256622314
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_15__meeting_serious__Q14RO7M7.mp4,32,32,4,4,0,114.75,0.0012984048213647878,0.12120014429092407
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_20__walking_down_street_outside_angry__3HWOJRAM.mp4,32,32,4,4,0,177.25,0.0007942382861865871,0.16060870885849
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_20__walking_down_street_outside_angry__3HWOJRAM.mp4,32,32,4,4,0,118.5,0.0021732533647569564,0.10064880549907684
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_20__walking_down_street_outside_angry__3HWOJRAM.mp4,32,32,4,4,0,120.5,0.0007545926619482893,0.11922052502632141
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/19_22__outside_talking_pan_laughing__VK6BF5NV.mp4,32,23,4,2,0,157.75,0.01319442808510881,0.09490187466144562
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/19_22__outside_talking_pan_laughing__VK6BF5NV.mp4,32,31,4,3,0,157.25,0.010734864640753898,0.03319777548313141
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/19_22__outside_talking_pan_laughing__VK6BF5NV.mp4,32,31,4,3,0,136.75,0.007313931507436312,0.11803305894136429
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/15_02__walking_outside_cafe_disgusted__HTG660F8.mp4,32,32,4,4,0,163.0,0.0013585907667789067,0.1337350308895111
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/15_02__walking_outside_cafe_disgusted__HTG660F8.mp4,32,32,4,4,0,124.0,0.001233713786228895,0.14079750329256058
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/15_02__walking_outside_cafe_disgusted__HTG660F8.mp4,32,32,4,4,0,122.5,0.000927593298866194,0.1180075854063034
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/27_15__outside_talking_still_laughing__2ERUWYH8.mp4,32,32,4,4,0,219.5,0.029355038652492862,0.09363336861133575
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/27_15__outside_talking_still_laughing__2ERUWYH8.mp4,32,32,4,4,0,146.5,0.00582185883392042,0.03503260761499405
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/27_15__outside_talking_still_laughing__2ERUWYH8.mp4,32,32,4,4,0,146.75,0.005659089260441626,0.12251400947570801
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/26_12__kitchen_pan__BFBNM8FR.mp4,32,32,4,4,0,266.75,0.004553108666195393,0.10090744495391846
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/26_12__kitchen_pan__BFBNM8FR.mp4,32,32,4,4,0,221.5,0.004681219757886122,0.04475371539592743
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/26_12__kitchen_pan__BFBNM8FR.mp4,32,32,4,4,0,210.25,0.004399285480231737,0.12090957164764404
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_02__walk_down_hall_angry__37DH75GQ.mp4,32,32,4,4,0,155.0,0.0024980700296923413,0.0896482840180397
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_02__walk_down_hall_angry__37DH75GQ.mp4,32,32,4,4,0,121.25,0.0032700106640465316,0.042808838188648224
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_02__walk_down_hall_angry__37DH75GQ.mp4,32,32,4,4,0,118.25,0.002659480106970014,0.12137483060359955
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/18_06__walking_outside_cafe_disgusted__XJ76YU5A.mp4,32,32,4,4,0,142.0,0.004592493566653714,0.12803221493959427
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/18_06__walking_outside_cafe_disgusted__XJ76YU5A.mp4,32,32,4,4,0,120.5,0.0026307983631059986,0.04843689501285553
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/18_06__walking_outside_cafe_disgusted__XJ76YU5A.mp4,32,32,4,4,0,120.75,0.0013583653671696387,0.11995340883731842
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/13_20__outside_talking_pan_laughing__43KAHOT2.mp4,32,32,4,4,0,197.5,0.010546732875336619,0.1009589284658432
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/13_20__outside_talking_pan_laughing__43KAHOT2.mp4,32,32,4,4,0,167.0,0.010996834109625736,0.03945242613554001
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/13_20__outside_talking_pan_laughing__43KAHOT2.mp4,32,32,4,4,0,165.25,0.008923151966549775,0.1184672936797142
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/20_25__walk_down_hall_angry__DW2L6D2V.mp4,32,32,4,4,0,130.25,0.005388617743839813,0.0679125264286995
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/20_25__walk_down_hall_angry__DW2L6D2V.mp4,32,32,4,4,0,110.75,0.0054217457202240995,0.0316745787858963
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/20_25__walk_down_hall_angry__DW2L6D2V.mp4,32,32,4,4,0,117.0,0.004793372817732668,0.11905989050865173
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_07__meeting_serious__1JCLEEBQ.mp4,32,32,4,4,0,143.5,0.003532505602180219,0.07877171039581299
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_07__meeting_serious__1JCLEEBQ.mp4,32,32,4,4,0,113.5,0.0017686911512273995,0.04120858758687973
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_07__meeting_serious__1JCLEEBQ.mp4,32,32,4,4,0,111.0,0.0007913258808012429,0.1205659732222557
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/26_12__outside_talking_still_laughing__FWFQ5YB8.mp4,32,32,4,4,0,176.5,0.013344731086068424,0.08211753517389297
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/26_12__outside_talking_still_laughing__FWFQ5YB8.mp4,32,32,4,4,0,153.0,0.012179938436659217,0.032105520367622375
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/26_12__outside_talking_still_laughing__FWFQ5YB8.mp4,32,32,4,4,0,151.0,0.01205946025527772,0.12103363871574402
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_25__walking_and_outside_surprised__MI9BDQ7M.mp4,32,32,4,4,0,307.0,0.011777128989982538,0.11184720695018768
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_25__walking_and_outside_surprised__MI9BDQ7M.mp4,32,32,4,4,0,262.25,0.019675083432583104,0.06428171694278717
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_25__walking_and_outside_surprised__MI9BDQ7M.mp4,32,32,4,4,0,248.25,0.020297819405579624,0.12144850194454193
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_03__hugging_happy__1IXGY2FK.mp4,32,32,4,4,0,280.5,0.011564289303138402,0.056751713156700134
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_03__hugging_happy__1IXGY2FK.mp4,32,32,4,4,0,215.25,0.013634008303750392,0.031651876866817474
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_03__hugging_happy__1IXGY2FK.mp4,32,32,4,4,0,205.5,0.013640971226750918,0.12123666703701019
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/27_25__walking_and_outside_surprised__1KU29EUL.mp4,32,32,4,4,0,256.75,0.008100903239616392,0.12273300439119339
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/27_25__walking_and_outside_surprised__1KU29EUL.mp4,32,32,4,4,0,183.75,0.014542677614642206,0.04890775680541992
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/27_25__walking_and_outside_surprised__1KU29EUL.mp4,32,32,4,4,0,183.0,0.008508178993626849,0.11963717639446259
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_06__walking_and_outside_surprised__8U9ULZDT.mp4,32,32,4,4,0,203.0,0.12432808415288163,0.13159698992967606
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_06__walking_and_outside_surprised__8U9ULZDT.mp4,32,32,4,4,0,164.25,0.0127270410826724,0.06945843249559402
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_06__walking_and_outside_surprised__8U9ULZDT.mp4,32,32,4,4,0,165.0,0.011938759963303514,0.12073180079460144
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__walking_and_outside_surprised__P1L5PF4I.mp4,32,32,4,4,0,251.25,0.18559428555268886,0.13980280607938766
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__walking_and_outside_surprised__P1L5PF4I.mp4,32,32,4,4,0,198.25,0.17103427932941767,0.056602686643600464
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__walking_and_outside_surprised__P1L5PF4I.mp4,32,32,4,4,0,192.25,0.06913714483746689,0.12238051742315292
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_15__podium_speech_happy__DG8ITQO3.mp4,32,32,4,4,0,198.25,0.001990592353015304,0.05488847941160202
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_15__podium_speech_happy__DG8ITQO3.mp4,32,32,4,4,0,149.75,0.002602778329235625,0.030311815440654755
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_15__podium_speech_happy__DG8ITQO3.mp4,32,32,4,4,0,146.5,0.004089992200190028,0.12035751342773438
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_26__kitchen_pan__SU8SAHTT.mp4,32,32,4,4,0,292.75,0.0058317263135993815,0.09965654462575912
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_26__kitchen_pan__SU8SAHTT.mp4,32,32,4,4,0,243.75,0.0067256671189572,0.04256502538919449
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_26__kitchen_pan__SU8SAHTT.mp4,32,32,4,4,0,234.25,0.007703584203896507,0.1202186718583107
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/07_14__hugging_happy__VOX29AK0.mp4,32,25,4,3,0,247.0,0.013104410828976325,0.06754116714000702
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/07_14__hugging_happy__VOX29AK0.mp4,32,32,4,4,0,201.25,0.017607916844624157,0.0395459309220314
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/07_14__hugging_happy__VOX29AK0.mp4,32,32,4,4,0,200.0,0.011416838118623943,0.12023836374282837
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_27__walking_outside_cafe_disgusted__78M8S6M6.mp4,32,32,4,4,0,193.0,0.0011113211209126022,0.08471100777387619
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_27__walking_outside_cafe_disgusted__78M8S6M6.mp4,32,32,4,4,0,149.75,0.001514025680190246,0.047626182436943054
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_27__walking_outside_cafe_disgusted__78M8S6M6.mp4,32,32,4,4,0,153.0,0.0008528811756969726,0.12073000520467758
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_26__walk_down_hall_angry__L5BVR5L9.mp4,32,32,4,4,0,163.25,0.0012826799566545751,0.08288834989070892
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_26__walk_down_hall_angry__L5BVR5L9.mp4,32,32,4,4,0,125.0,0.0018429209573304311,0.038149259984493256
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_26__walk_down_hall_angry__L5BVR5L9.mp4,32,32,4,4,0,124.25,0.0011490675286624048,0.12033603340387344
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__walking_and_outside_surprised__H0VQHGS3.mp4,32,32,4,4,0,268.75,0.0719596211222161,0.12545767426490784
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__walking_and_outside_surprised__H0VQHGS3.mp4,32,32,4,4,0,211.5,0.012311115521109178,0.05041918903589249
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__walking_and_outside_surprised__H0VQHGS3.mp4,32,32,4,4,0,204.25,0.012723025921445762,0.12119574844837189
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_15__podium_speech_happy__N864L40U.mp4,32,32,4,4,0,197.0,0.0034823120097089095,0.05918112397193909
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_15__podium_speech_happy__N864L40U.mp4,32,32,4,4,0,147.75,0.004136762739472272,0.027805857360363007
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/02_15__podium_speech_happy__N864L40U.mp4,32,32,4,4,0,149.0,0.003992537969772199,0.12252265959978104
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_07__outside_talking_pan_laughing__P9QFO50U.mp4,32,29,4,3,0,231.25,0.01693761321281187,0.08492927998304367
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_07__outside_talking_pan_laughing__P9QFO50U.mp4,32,32,4,4,0,187.25,0.01222374994771071,0.030985139310359955
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/14_07__outside_talking_pan_laughing__P9QFO50U.mp4,32,32,4,4,0,181.0,0.01098263183102707,0.1214565709233284
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_13__meeting_serious__GBYWJW06.mp4,32,32,4,4,0,135.5,0.0023328806148100742,0.0810994803905487
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_13__meeting_serious__GBYWJW06.mp4,32,32,4,4,0,96.0,0.0015834735170156054,0.04451323300600052
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_13__meeting_serious__GBYWJW06.mp4,32,32,4,4,0,124.5,0.0007389920066886815,0.123180091381073
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_02__kitchen_pan__O9WOC1KJ.mp4,32,32,4,4,0,269.5,0.007159453763243947,0.09572401642799377
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_02__kitchen_pan__O9WOC1KJ.mp4,32,32,4,4,0,211.75,0.012337127301947706,0.042173586785793304
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/06_02__kitchen_pan__O9WOC1KJ.mp4,32,32,4,4,0,211.75,0.06293045272484063,0.11959845572710037
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/25_26__walking_down_street_outside_angry__XKQAYTLI.mp4,32,32,4,4,0,200.5,0.00045531409057149,0.14460278302431107
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/25_26__walking_down_street_outside_angry__XKQAYTLI.mp4,32,32,4,4,0,133.5,0.00720901193524859,0.08493305742740631
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/25_26__walking_down_street_outside_angry__XKQAYTLI.mp4,32,32,4,4,0,129.5,0.007552759534238351,0.11951650679111481
+haar,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__podium_speech_happy__Q9NSXM88.mp4,32,32,4,4,0,188.0,0.003888483364476645,0.0538971871137619
+mtcnn,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__podium_speech_happy__Q9NSXM88.mp4,32,32,4,4,0,143.0,0.0036164180861683985,0.030530601739883423
+retinaface,train,DFD,fake,wide,DeepFakeDetection,DFD_manipulated_sequences/DFD_manipulated_sequences/03_14__podium_speech_happy__Q9NSXM88.mp4,32,32,4,4,0,146.0,0.0033216646295890643,0.12209051847457886
+haar,train,DFD,real,wide,real,DFD_original sequences/10__outside_talking_pan_laughing.mp4,32,32,4,4,0,165.5,0.008586408183241493,0.08501210063695908
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/10__outside_talking_pan_laughing.mp4,32,29,4,3,0,146.0,0.008232237584793977,0.03375512361526489
+retinaface,train,DFD,real,wide,real,DFD_original sequences/10__outside_talking_pan_laughing.mp4,32,30,4,3,0,148.75,0.005784396483896106,0.12027914077043533
+haar,train,DFD,real,wide,real,DFD_original sequences/15__exit_phone_room.mp4,32,32,4,4,0,158.5,0.0478175696556791,0.06726574897766113
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/15__exit_phone_room.mp4,32,32,4,4,0,117.25,0.0031679398864541226,0.027806267142295837
+retinaface,train,DFD,real,wide,real,DFD_original sequences/15__exit_phone_room.mp4,32,32,4,4,0,115.0,0.003013414905887269,0.12038453668355942
+haar,train,DFD,real,wide,real,DFD_original sequences/06__walking_outside_cafe_disgusted.mp4,32,32,4,4,0,219.0,0.012581304672229572,0.09962942451238632
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/06__walking_outside_cafe_disgusted.mp4,32,32,4,4,0,164.0,0.004996859495554518,0.04413386434316635
+retinaface,train,DFD,real,wide,real,DFD_original sequences/06__walking_outside_cafe_disgusted.mp4,32,32,4,4,0,164.75,0.004934557366950885,0.1235862448811531
+haar,train,DFD,real,wide,real,DFD_original sequences/13__walking_down_street_outside_angry.mp4,32,32,4,4,0,210.5,0.0009363302376553717,0.15933503955602646
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/13__walking_down_street_outside_angry.mp4,32,32,4,4,0,146.75,0.0024423924933396077,0.10840443521738052
+retinaface,train,DFD,real,wide,real,DFD_original sequences/13__walking_down_street_outside_angry.mp4,32,32,4,4,0,150.0,0.00237682622620444,0.12358316034078598
+haar,train,DFD,real,wide,real,DFD_original sequences/26__outside_talking_still_laughing.mp4,32,32,4,4,0,182.75,0.010525249590098484,0.08304520696401596
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/26__outside_talking_still_laughing.mp4,32,32,4,4,0,154.0,0.00992327475793036,0.035974882543087006
+retinaface,train,DFD,real,wide,real,DFD_original sequences/26__outside_talking_still_laughing.mp4,32,32,4,4,0,152.5,0.009497845688810297,0.12367059290409088
+haar,train,DFD,real,wide,real,DFD_original sequences/12__talking_angry_couch.mp4,32,32,4,4,0,270.5,0.007755447151490364,0.09223422408103943
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/12__talking_angry_couch.mp4,32,32,4,4,0,215.0,0.0060955906720867176,0.053204797208309174
+retinaface,train,DFD,real,wide,real,DFD_original sequences/12__talking_angry_couch.mp4,32,32,4,4,0,204.5,0.007375775480714733,0.12258703261613846
+haar,train,DFD,real,wide,real,DFD_original sequences/14__kitchen_still.mp4,32,32,4,4,0,304.0,0.0020935407999922457,0.09783408045768738
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/14__kitchen_still.mp4,32,32,4,4,0,241.5,0.005126032671185833,0.04477556049823761
+retinaface,train,DFD,real,wide,real,DFD_original sequences/14__kitchen_still.mp4,32,32,4,4,0,233.25,0.004545781128164186,0.12456846237182617
+haar,train,DFD,real,wide,real,DFD_original sequences/06__talking_angry_couch.mp4,32,27,4,3,0,234.75,0.008304117730662872,0.08334856480360031
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/06__talking_angry_couch.mp4,32,32,4,4,0,194.5,0.008554551048763882,0.0420273095369339
+retinaface,train,DFD,real,wide,real,DFD_original sequences/06__talking_angry_couch.mp4,32,32,4,4,0,200.5,0.007588541469423577,0.12245378643274307
+haar,train,DFD,real,wide,real,DFD_original sequences/18__walking_down_street_outside_angry.mp4,32,32,4,4,0,200.0,0.0004947388131993825,0.15080783516168594
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/18__walking_down_street_outside_angry.mp4,32,32,4,4,0,119.75,0.002642411446877345,0.07305411994457245
+retinaface,train,DFD,real,wide,real,DFD_original sequences/18__walking_down_street_outside_angry.mp4,32,32,4,4,0,120.5,0.0028302672912576534,0.12237361073493958
+haar,train,DFD,real,wide,real,DFD_original sequences/27__kitchen_pan.mp4,32,32,4,4,0,262.5,0.008296675200125852,0.09884576499462128
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/27__kitchen_pan.mp4,32,32,4,4,0,186.25,0.00965242287342231,0.0448622927069664
+retinaface,train,DFD,real,wide,real,DFD_original sequences/27__kitchen_pan.mp4,32,32,4,4,0,195.0,0.1631303923475048,0.12216613441705704
+haar,train,DFD,real,wide,real,DFD_original sequences/10__podium_speech_happy.mp4,32,32,4,4,0,207.25,0.002578312320775783,0.05939337611198425
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/10__podium_speech_happy.mp4,32,32,4,4,0,168.0,0.0031452368338124198,0.02688370645046234
+retinaface,train,DFD,real,wide,real,DFD_original sequences/10__podium_speech_happy.mp4,32,32,4,4,0,165.75,0.0017194523473196858,0.12121362239122391
+haar,train,DFD,real,wide,real,DFD_original sequences/22__talking_against_wall.mp4,32,32,4,4,0,296.25,0.0016659368003442078,0.09625228494405746
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/22__talking_against_wall.mp4,32,32,4,4,0,237.75,0.0022903420259112123,0.0375412181019783
+retinaface,train,DFD,real,wide,real,DFD_original sequences/22__talking_against_wall.mp4,32,32,4,4,0,220.5,0.002315197719073169,0.1224401518702507
+haar,train,DFD,real,wide,real,DFD_original sequences/18__kitchen_still.mp4,32,32,4,4,0,265.25,0.0022971265728383723,0.12295262515544891
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/18__kitchen_still.mp4,32,32,4,4,0,224.5,0.002962927368588552,0.04703265428543091
+retinaface,train,DFD,real,wide,real,DFD_original sequences/18__kitchen_still.mp4,32,32,4,4,0,208.25,0.001083670182216244,0.12275776267051697
+haar,train,DFD,real,wide,real,DFD_original sequences/26__exit_phone_room.mp4,32,32,4,4,0,187.0,0.005703758407187524,0.06522808969020844
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/26__exit_phone_room.mp4,32,32,4,4,0,141.75,0.0025906295334167146,0.031762607395648956
+retinaface,train,DFD,real,wide,real,DFD_original sequences/26__exit_phone_room.mp4,32,32,4,4,0,142.25,0.00221501027785553,0.12278268486261368
+haar,train,DFD,real,wide,real,DFD_original sequences/14__talking_angry_couch.mp4,32,28,4,3,0,232.5,0.005900328814908555,0.08114565163850784
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/14__talking_angry_couch.mp4,32,32,4,4,0,201.0,0.1697241701034537,0.04269164800643921
+retinaface,train,DFD,real,wide,real,DFD_original sequences/14__talking_angry_couch.mp4,32,32,4,4,0,177.5,0.13379856866431208,0.11929579079151154
+haar,train,DFD,real,wide,real,DFD_original sequences/14__outside_talking_pan_laughing.mp4,32,32,4,4,0,221.0,0.009511185142677646,0.0864136591553688
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/14__outside_talking_pan_laughing.mp4,32,32,4,4,0,171.5,0.010638370576160095,0.03359988331794739
+retinaface,train,DFD,real,wide,real,DFD_original sequences/14__outside_talking_pan_laughing.mp4,32,32,4,4,0,171.5,0.007900252265467533,0.11838655173778534
+haar,train,DFD,real,wide,real,DFD_original sequences/26__outside_talking_pan_laughing.mp4,32,30,4,3,0,191.25,0.013278340713975764,0.08484569936990738
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/26__outside_talking_pan_laughing.mp4,32,32,4,4,0,158.25,0.007084688397115308,0.03438641130924225
+retinaface,train,DFD,real,wide,real,DFD_original sequences/26__outside_talking_pan_laughing.mp4,32,32,4,4,0,155.75,0.006933957282259097,0.12054798752069473
+haar,train,DFD,real,wide,real,DFD_original sequences/15__walking_down_street_outside_angry.mp4,32,32,4,4,0,210.0,0.00045226382606930877,0.19090858101844788
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/15__walking_down_street_outside_angry.mp4,32,32,4,4,0,141.25,0.0018132147730596996,0.21893750131130219
+retinaface,train,DFD,real,wide,real,DFD_original sequences/15__walking_down_street_outside_angry.mp4,32,32,4,4,0,137.75,0.0011577899642884106,0.11903394758701324
+haar,train,DFD,real,wide,real,DFD_original sequences/06__outside_talking_still_laughing.mp4,32,32,4,4,0,187.75,0.007421811856732866,0.08284228295087814
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/06__outside_talking_still_laughing.mp4,32,32,4,4,0,151.5,0.006731258047963621,0.03219921886920929
+retinaface,train,DFD,real,wide,real,DFD_original sequences/06__outside_talking_still_laughing.mp4,32,32,4,4,0,147.0,0.0062608414103819815,0.11845807731151581
+haar,train,DFD,real,wide,real,DFD_original sequences/17__walking_and_outside_surprised.mp4,32,31,4,3,0,139.25,0.2417594237191495,0.13187234848737717
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/17__walking_and_outside_surprised.mp4,32,32,4,4,0,279.25,0.016681856598928884,0.06542589515447617
+retinaface,train,DFD,real,wide,real,DFD_original sequences/17__walking_and_outside_surprised.mp4,32,32,4,4,0,265.75,0.016309845314312225,0.1202954649925232
+haar,train,DFD,real,wide,real,DFD_original sequences/20__walk_down_hall_angry.mp4,32,32,4,4,0,98.5,0.12333718895577381,0.06341494619846344
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/20__walk_down_hall_angry.mp4,32,32,4,4,0,80.5,0.004645099810001812,0.030058346688747406
+retinaface,train,DFD,real,wide,real,DFD_original sequences/20__walk_down_hall_angry.mp4,32,32,4,4,0,86.25,0.004435250287646349,0.11937238276004791
+haar,train,DFD,real,wide,real,DFD_original sequences/22__outside_talking_pan_laughing.mp4,32,32,4,4,0,206.0,0.009677813841582521,0.10028772801160812
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/22__outside_talking_pan_laughing.mp4,32,32,4,4,0,173.25,0.009914090597435213,0.040380850434303284
+retinaface,train,DFD,real,wide,real,DFD_original sequences/22__outside_talking_pan_laughing.mp4,32,32,4,4,0,166.0,0.009271665051543983,0.11963588744401932
+haar,train,DFD,real,wide,real,DFD_original sequences/12__outside_talking_pan_laughing.mp4,32,32,4,4,0,203.25,0.006011566198415058,0.09751257300376892
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/12__outside_talking_pan_laughing.mp4,32,32,4,4,0,171.25,0.0068696905949262015,0.04236336052417755
+retinaface,train,DFD,real,wide,real,DFD_original sequences/12__outside_talking_pan_laughing.mp4,32,32,4,4,0,167.75,0.00634405866210185,0.12115953117609024
+haar,train,DFD,real,wide,real,DFD_original sequences/20__kitchen_still.mp4,32,32,4,4,0,418.5,0.002282404763083622,0.11237366497516632
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/20__kitchen_still.mp4,32,32,4,4,0,226.25,0.0033313585444495154,0.04517301172018051
+retinaface,train,DFD,real,wide,real,DFD_original sequences/20__kitchen_still.mp4,32,32,4,4,0,225.75,0.007899333428438612,0.11983577162027359
+haar,train,DFD,real,wide,real,DFD_original sequences/19__kitchen_still.mp4,32,32,4,4,0,263.75,0.007875466802174616,0.10459646582603455
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/19__kitchen_still.mp4,32,32,4,4,0,224.25,0.004680940776895701,0.04420208930969238
+retinaface,train,DFD,real,wide,real,DFD_original sequences/19__kitchen_still.mp4,32,32,4,4,0,222.75,0.00578474753471816,0.12010864168405533
+haar,train,DFD,real,wide,real,DFD_original sequences/20__outside_talking_still_laughing.mp4,32,32,4,4,0,181.0,0.002726437397984006,0.08547739684581757
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/20__outside_talking_still_laughing.mp4,32,32,4,4,0,156.0,0.002856812633318175,0.03733234852552414
+retinaface,train,DFD,real,wide,real,DFD_original sequences/20__outside_talking_still_laughing.mp4,32,32,4,4,0,163.25,0.002699326748049059,0.12015876173973083
+haar,train,DFD,real,wide,real,DFD_original sequences/18__walking_outside_cafe_disgusted.mp4,32,32,4,4,0,143.5,0.005242727571925271,0.12232301384210587
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/18__walking_outside_cafe_disgusted.mp4,32,32,4,4,0,117.75,0.005725505094623785,0.04691170156002045
+retinaface,train,DFD,real,wide,real,DFD_original sequences/18__walking_outside_cafe_disgusted.mp4,32,32,4,4,0,119.5,0.005143047229460599,0.11926238238811493
+haar,train,DFD,real,wide,real,DFD_original sequences/17__talking_angry_couch.mp4,32,28,4,3,0,228.75,0.011963075247954744,0.08730799704790115
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/17__talking_angry_couch.mp4,32,32,4,4,0,192.5,0.0061374104857777265,0.036066412925720215
+retinaface,train,DFD,real,wide,real,DFD_original sequences/17__talking_angry_couch.mp4,32,32,4,4,0,187.5,0.0027661381541410307,0.11942104995250702
+haar,train,DFD,real,wide,real,DFD_original sequences/26__walk_down_hall_angry.mp4,32,32,4,4,0,136.0,0.0005616096015938923,0.062067799270153046
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/26__walk_down_hall_angry.mp4,32,32,4,4,0,114.25,0.0009140151449671238,0.031129926443099976
+retinaface,train,DFD,real,wide,real,DFD_original sequences/26__walk_down_hall_angry.mp4,32,32,4,4,0,114.25,0.0006225656279082185,0.12328207492828369
+haar,train,DFD,real,wide,real,DFD_original sequences/26__secret_conversation.mp4,32,21,4,1,0,167.0,0.1621353641017718,0.09079354256391525
+mtcnn,train,DFD,real,wide,real,DFD_original sequences/26__secret_conversation.mp4,32,32,4,4,0,146.0,0.004110867530978556,0.07411952316761017
+retinaface,train,DFD,real,wide,real,DFD_original sequences/26__secret_conversation.mp4,32,32,4,4,0,140.0,0.08331363402074139,0.1234724372625351

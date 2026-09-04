@@ -1,0 +1,75 @@
+using   haar      cv2 cascade, the loader's current default
+using   mtcnn     facenet-pytorch, GPU, batched per clip
+
+180 videos, 6 groups, modes protocol,train,eval, 2 detector(s), target 224px
+
+  20/180 videos
+  40/180 videos
+  60/180 videos
+  80/180 videos
+  100/180 videos
+  120/180 videos
+  140/180 videos
+  160/180 videos
+  180/180 videos
+
+det     mode     corpus     class shape   vids   frame% clip ok% clip 0%  box px   ->224  jitter
+------------------------------------------------------------------------------------------------
+haar    eval     CelebDFv3  fake  square    30     95.0     93.3     1.7     162    1.06   0.014
+haar    eval     CelebDFv3  fake  wide      30     98.6     97.5     0.8     151    1.14   0.007
+haar    eval     CelebDFv3  real  square    30     97.2     91.7     0.0     167    1.03   0.009
+haar    eval     CelebDFv3  real  wide      30     95.0     89.7     3.4     160    1.08   0.009
+haar    eval     DFD        fake  wide      30     93.5     83.3     1.7     196    0.88   0.013
+haar    eval     DFD        real  wide      30     89.5     80.0     4.2     194    0.89   0.008
+haar    protocol CelebDFv3  fake  square    30     95.4     80.0     0.0     162    1.06   0.032
+haar    protocol CelebDFv3  fake  wide      30     98.9     80.0     0.0     152    1.13   0.033
+haar    protocol CelebDFv3  real  square    30     95.9     76.7     0.0     168    1.03   0.042
+haar    protocol CelebDFv3  real  wide      30     96.1     73.3     3.3     159    1.08   0.039
+haar    protocol DFD        fake  wide      30     97.6     56.7     0.0     196    0.88   0.110
+haar    protocol DFD        real  wide      30     95.5     43.3     0.0     208    0.83   0.096
+haar    train    CelebDFv3  fake  square    30     94.9     91.7     3.3     161    1.07   0.011
+haar    train    CelebDFv3  fake  wide      30     98.3     98.3     1.7     156    1.10   0.006
+haar    train    CelebDFv3  real  square    30     97.1     95.0     0.0     168    1.02   0.006
+haar    train    CelebDFv3  real  wide      30     97.2     91.5     1.7     158    1.09   0.007
+haar    train    DFD        fake  wide      30     98.0     96.7     0.0     198    0.87   0.005
+haar    train    DFD        real  wide      30     97.2     93.3     0.0     207    0.83   0.008
+mtcnn   eval     CelebDFv3  fake  square    30    100.0    100.0     0.0     133    1.29   0.012
+mtcnn   eval     CelebDFv3  fake  wide      30    100.0    100.0     0.0     126    1.37   0.008
+mtcnn   eval     CelebDFv3  real  square    30     99.4     98.3     0.0     134    1.29   0.007
+mtcnn   eval     CelebDFv3  real  wide      30     99.6     99.1     0.0     126    1.37   0.008
+mtcnn   eval     DFD        fake  wide      30     99.3     95.0     0.0     152    1.13   0.012
+mtcnn   eval     DFD        real  wide      30     94.4     88.3     1.7     169    1.02   0.008
+mtcnn   protocol CelebDFv3  fake  square    30    100.0    100.0     0.0     132    1.30   0.026
+mtcnn   protocol CelebDFv3  fake  wide      30    100.0    100.0     0.0     124    1.38   0.028
+mtcnn   protocol CelebDFv3  real  square    30     99.7     93.3     0.0     136    1.26   0.035
+mtcnn   protocol CelebDFv3  real  wide      30     99.8     96.7     0.0     124    1.38   0.035
+mtcnn   protocol DFD        fake  wide      30     99.5     86.7     0.0     149    1.15   0.109
+mtcnn   protocol DFD        real  wide      30     98.6     66.7     0.0     168    1.03   0.102
+mtcnn   train    CelebDFv3  fake  square    30    100.0    100.0     0.0     134    1.28   0.009
+mtcnn   train    CelebDFv3  fake  wide      30    100.0    100.0     0.0     125    1.37   0.006
+mtcnn   train    CelebDFv3  real  square    30     99.5     99.2     0.0     137    1.26   0.006
+mtcnn   train    CelebDFv3  real  wide      30    100.0    100.0     0.0     123    1.40   0.005
+mtcnn   train    DFD        fake  wide      30     99.9     99.2     0.0     151    1.14   0.006
+mtcnn   train    DFD        real  wide      30     99.7     99.2     0.0     166    1.04   0.005
+
+Resampling gap between classes (crop-scale leak check)
+  haar    eval     CelebDFv3  square real x1.03  fake x1.06  ratio 1.03
+  haar    eval     CelebDFv3  wide   real x1.08  fake x1.14  ratio 1.06
+  haar    eval     DFD        wide   real x0.89  fake x0.88  ratio 0.99
+  haar    protocol CelebDFv3  square real x1.03  fake x1.06  ratio 1.04
+  haar    protocol CelebDFv3  wide   real x1.08  fake x1.13  ratio 1.04
+  haar    protocol DFD        wide   real x0.83  fake x0.88  ratio 1.06
+  haar    train    CelebDFv3  square real x1.02  fake x1.07  ratio 1.04
+  haar    train    CelebDFv3  wide   real x1.09  fake x1.10  ratio 1.02
+  haar    train    DFD        wide   real x0.83  fake x0.87  ratio 1.04
+  mtcnn   eval     CelebDFv3  square real x1.29  fake x1.29  ratio 1.00
+  mtcnn   eval     CelebDFv3  wide   real x1.37  fake x1.37  ratio 1.00
+  mtcnn   eval     DFD        wide   real x1.02  fake x1.13  ratio 1.11
+  mtcnn   protocol CelebDFv3  square real x1.26  fake x1.30  ratio 1.03
+  mtcnn   protocol CelebDFv3  wide   real x1.38  fake x1.38  ratio 1.00
+  mtcnn   protocol DFD        wide   real x1.03  fake x1.15  ratio 1.13
+  mtcnn   train    CelebDFv3  square real x1.26  fake x1.28  ratio 1.02
+  mtcnn   train    CelebDFv3  wide   real x1.40  fake x1.37  ratio 0.98
+  mtcnn   train    DFD        wide   real x1.04  fake x1.14  ratio 1.10
+
+wrote E:\PhD\Deepfake Video 3D-CNN+BCNN\scripts\face_detector_reports\per_video.csv and E:\PhD\Deepfake Video 3D-CNN+BCNN\scripts\face_detector_reports\summary.json

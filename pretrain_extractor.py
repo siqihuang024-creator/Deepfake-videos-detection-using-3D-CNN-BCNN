@@ -138,7 +138,7 @@ def main():
     parser.add_argument("--hidden-dim", type=int, default=None)
     parser.add_argument("--active-datasets", nargs="+", default=None, metavar="NAME")
     parser.add_argument(
-        "--frame-mode", choices=["face", "letterbox"], default=None,
+        "--frame-mode", choices=["face", "letterbox", "decimate"], default=None,
         help="'face' crops the tracked box as every run up to v15 did. "
              "'letterbox' keeps the whole frame, rescaled to fit and padded, "
              "and skips face detection entirely.",
@@ -170,6 +170,12 @@ def main():
              "run more epochs. Unlike train_3d_bcnn.py's --train-subset this "
              "does not drop any training video.",
     )
+    parser.add_argument(
+        "--decimate-step", type=int, default=None, metavar="N",
+        help="Keep every Nth pixel on both axes for --frame-mode decimate. "
+             "N=2 turns DFD's 1920x1080 into 960x540 with the aspect ratio "
+             "held and no interpolation anywhere in the path.",
+    )
     parser.add_argument("--crop-padding", choices=["clamp", "replicate"], default=None)
     parser.add_argument("--face-crop", choices=["on", "off"], default=None)
     parser.add_argument("--face-margin", type=float, default=None)
@@ -194,6 +200,8 @@ def main():
         config["data"]["active_datasets"] = list(args.active_datasets)
     if args.frame_mode is not None:
         config["data"]["frame_mode"] = args.frame_mode
+    if args.decimate_step is not None:
+        config["data"]["decimate_step"] = args.decimate_step
     if args.letterbox_size is not None:
         config["data"]["letterbox_size"] = [int(v) for v in args.letterbox_size]
     if args.crop_padding is not None:

@@ -1,0 +1,53 @@
+using   haar      cv2 cascade, the loader's current default
+using   mtcnn     facenet-pytorch, GPU, batched per clip
+D:\Python\lib\site-packages\torchvision\models\_utils.py:209: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  f"The parameter '{pretrained_param}' is deprecated since 0.13 and may be removed in the future, "
+D:\Python\lib\site-packages\torchvision\models\_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=None`.
+  warnings.warn(msg)
+using   retinaface facexlib ResNet50, the detector Yermakov et al. 2025 use
+
+180 videos, 6 groups, modes train, 3 detector(s), target 256px
+
+  20/180 videos
+  40/180 videos
+  60/180 videos
+  80/180 videos
+  100/180 videos
+  120/180 videos
+  140/180 videos
+  160/180 videos
+  180/180 videos
+
+det     mode     corpus     class shape   vids   frame% clip ok% clip 0%  box px   ->256  jitter
+------------------------------------------------------------------------------------------------
+haar    train    CelebDFv3  fake  square    30     94.9     91.7     3.3     161    1.22   0.011
+haar    train    CelebDFv3  fake  wide      30     98.3     98.3     1.7     156    1.26   0.006
+haar    train    CelebDFv3  real  square    30     97.1     95.0     0.0     168    1.17   0.006
+haar    train    CelebDFv3  real  wide      30     97.2     91.5     1.7     158    1.24   0.007
+haar    train    DFD        fake  wide      30     98.0     96.7     0.0     198    1.00   0.005
+haar    train    DFD        real  wide      30     97.2     93.3     0.0     207    0.95   0.008
+mtcnn   train    CelebDFv3  fake  square    30    100.0    100.0     0.0     134    1.47   0.009
+mtcnn   train    CelebDFv3  fake  wide      30    100.0    100.0     0.0     125    1.57   0.006
+mtcnn   train    CelebDFv3  real  square    30     99.5     99.2     0.0     137    1.44   0.006
+mtcnn   train    CelebDFv3  real  wide      30    100.0    100.0     0.0     123    1.60   0.005
+mtcnn   train    DFD        fake  wide      30     99.9     99.2     0.0     151    1.30   0.006
+mtcnn   train    DFD        real  wide      30     99.7     99.2     0.0     166    1.19   0.005
+retinaface train    CelebDFv3  fake  square    30    100.0    100.0     0.0     131    1.50   0.007
+retinaface train    CelebDFv3  fake  wide      30    100.0    100.0     0.0     128    1.53   0.005
+retinaface train    CelebDFv3  real  square    30     99.5     99.2     0.0     140    1.41   0.004
+retinaface train    CelebDFv3  real  wide      30    100.0    100.0     0.0     124    1.59   0.005
+retinaface train    DFD        fake  wide      30     99.9     99.2     0.0     150    1.31   0.005
+retinaface train    DFD        real  wide      30     99.8     99.2     0.0     165    1.19   0.005
+
+Resampling gap between classes (crop-scale leak check)
+  haar    train    CelebDFv3  square real x1.17  fake x1.22  ratio 1.04
+  haar    train    CelebDFv3  wide   real x1.24  fake x1.26  ratio 1.02
+  haar    train    DFD        wide   real x0.95  fake x1.00  ratio 1.04
+  mtcnn   train    CelebDFv3  square real x1.44  fake x1.47  ratio 1.02
+  mtcnn   train    CelebDFv3  wide   real x1.60  fake x1.57  ratio 0.98
+  mtcnn   train    DFD        wide   real x1.19  fake x1.30  ratio 1.10
+  retinaface train    CelebDFv3  square real x1.41  fake x1.50  ratio 1.07
+  retinaface train    CelebDFv3  wide   real x1.59  fake x1.53  ratio 0.97
+  retinaface train    DFD        wide   real x1.19  fake x1.31  ratio 1.10
+
+wrote E:\PhD\Deepfake Video 3D-CNN+BCNN\scripts\face_detector_reports\per_video.csv and E:\PhD\Deepfake Video 3D-CNN+BCNN\scripts\face_detector_reports\summary.json

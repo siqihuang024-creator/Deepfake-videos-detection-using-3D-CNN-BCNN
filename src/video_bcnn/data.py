@@ -63,12 +63,26 @@ class VideoClipDataset(Dataset):
         # smaller in the input and of a padding fraction that is visible to the
         # model -- CelebDFv3's reals are 99.8% wide while 59.6% of its fakes are
         # square, so padding is class-correlated and results need stratifying.
+        # "decimate" also keeps the whole frame, but never resamples it: it
+        # takes every Nth pixel along both axes and feeds the result straight
+        # to the network. That matters because cv2's INTER_AREA -- what
+        # "letterbox" uses on any downscale -- is a low-pass filter, and it
+        # averaged 4.6 input pixels into each output pixel on the DFD run that
+        # failed. Manipulation traces are high-frequency, so the resize was
+        # discarding the evidence before conv1 ever saw it. Discarding pixels
+        # instead aliases those frequencies rather than removing them.
+        # It does NOT change how much of the input the face occupies: that
+        # ratio is fixed by the frame, and stays at 1.2% of the 22x22 grid
+        # either way. This mode addresses the frequency problem, not dilution.
         self.frame_mode = str(config.get("frame_mode", "face"))
-        if self.frame_mode not in ("face", "letterbox"):
+        if self.frame_mode not in ("face", "letterbox", "decimate"):
             raise ValueError(
-                "Unknown frame_mode {!r}; expected 'face' or "
-                "'letterbox'.".format(self.frame_mode)
+                "Unknown frame_mode {!r}; expected 'face', 'letterbox' or "
+                "'decimate'.".format(self.frame_mode)
             )
+        self.decimate_step = int(config.get("decimate_step", 2))
+        if self.decimate_step < 1:
+            raise ValueError("decimate_step must be a positive integer.")
         size = config.get("letterbox_size", (768, 432))
         self.letterbox_size = (int(size[0]), int(size[1]))
         if min(self.letterbox_size) < 32:
@@ -182,7 +196,7 @@ class VideoClipDataset(Dataset):
         return filled
 
     def _prepare_boxes(self, frames):
-        if self.frame_mode == "letterbox":
+        if self.frame_mode in ("letterbox", "decimate"):
             # The whole frame is kept, so there is no box to find and no
             # detection to fail. The audit keys stay so downstream reporting
             # does not have to special-case the mode.
@@ -238,7 +252,7 @@ class VideoClipDataset(Dataset):
         happens, so a wide-context crop needs `"replicate"`, which pads with the
         edge pixels and always returns the full requested square.
         """
-        if self.frame_mode == "letterbox":
+        if self.frame_mode in ("letterbox", "decimate"):
             return frame
         frame_height, frame_width = frame.shape[:2]
         x, y, width, height = [float(value) for value in box]
@@ -289,13 +303,33 @@ class VideoClipDataset(Dataset):
             left, target_width - new_width - left, cv2.BORDER_REPLICATE,
         )
 
+    def _decimate(self, bgr_frame):
+        """Keep every Nth pixel on both axes; no filtering, no interpolation.
+
+        Plain slicing, not cv2.INTER_NEAREST: nearest-neighbour maps through
+        float coordinates and rounds, so its sample positions drift on any
+        non-integer ratio. Slicing is the literal operation -- the surviving
+        pixels keep their original values exactly.
+
+        Both axes, so 1920x1080 becomes 960x540 and the aspect ratio holds.
+        Decimating one axis alone would squeeze every face 2:1.
+        """
+        step = self.decimate_step
+        if step == 1:
+            return bgr_frame
+        return bgr_frame[::step, ::step]
+
     def _transform(self, bgr_frame, flip):
         if self.frame_mode == "letterbox":
             bgr_frame = self._letterbox(bgr_frame)
+        elif self.frame_mode == "decimate":
+            bgr_frame = self._decimate(bgr_frame)
         image = Image.fromarray(cv2.cvtColor(bgr_frame, cv2.COLOR_BGR2RGB))
         if flip:
             image = ImageOps.mirror(image)
         if self.frame_mode == "face":
+            # Only the face path resamples. Sending a decimated frame through
+            # Resize would interpolate away exactly what decimating preserved.
             image = self.resize(image)
             image = self.center_crop(image)
         return self.normalize(self.to_tensor(image))

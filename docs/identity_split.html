@@ -1,0 +1,355 @@
+<title>Identity-Disjoint Splitting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+  :root {
+    --paper:   #FCFCFD;
+    --surface: #F3F5F8;
+    --ink:     #15191F;
+    --ink-2:   #5A626E;
+    --rule:    #E1E5EA;
+    --accent:  #2E5C7E;
+    --keep:    #2F6B52;
+    --drop:    #9C4A38;
+    --warn:    #8A6612;
+    --keep-bg: #EAF2ED;
+    --drop-bg: #F7EBE7;
+    --warn-bg: #F7F0DF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:   #14171C;
+      --surface: #1B1F26;
+      --ink:     #E6E9ED;
+      --ink-2:   #98A1AE;
+      --rule:    #272C34;
+      --accent:  #83B4D8;
+      --keep:    #77BA98;
+      --drop:    #E09585;
+      --warn:    #D5B460;
+      --keep-bg: #1A2721;
+      --drop-bg: #2B1E1A;
+      --warn-bg: #292317;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:   #14171C;
+    --surface: #1B1F26;
+    --ink:     #E6E9ED;
+    --ink-2:   #98A1AE;
+    --rule:    #272C34;
+    --accent:  #83B4D8;
+    --keep:    #77BA98;
+    --drop:    #E09585;
+    --warn:    #D5B460;
+    --keep-bg: #1A2721;
+    --drop-bg: #2B1E1A;
+    --warn-bg: #292317;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.6rem;
+  }
+
+  /* ---- masthead ---- */
+  .masthead { display: flex; flex-direction: column; gap: .85rem; }
+  .masthead h1 {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(1.85rem, 1.3rem + 2.2vw, 2.5rem);
+    line-height: 1.14;
+    letter-spacing: -.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 1.05rem;
+    color: var(--ink-2);
+    max-width: 34rem;
+    margin: 0;
+  }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: .4rem 1.4rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .72rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    border-top: 1px solid var(--rule);
+    padding-top: .8rem;
+  }
+
+  /* ---- sections ---- */
+  section { display: flex; flex-direction: column; gap: .95rem; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+  h2 {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.32rem;
+    line-height: 1.25;
+    margin: -.35rem 0 0;
+    text-wrap: balance;
+  }
+  h3 {
+    font-size: .95rem;
+    font-weight: 600;
+    margin: .5rem 0 -.4rem;
+  }
+  p { margin: 0; max-width: 40rem; }
+  ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .45rem; max-width: 40rem; }
+  li::marker { color: var(--ink-2); }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .87em; }
+  code { background: var(--surface); padding: .1em .34em; border-radius: 3px; }
+  strong { font-weight: 600; }
+  a { color: var(--accent); text-underline-offset: .18em; }
+
+  /* ---- the rule callout ---- */
+  .rule-box {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    padding: 1.1rem 1.3rem;
+    display: flex; flex-direction: column; gap: .6rem;
+  }
+  .rule-box p { max-width: none; }
+  .rule-box .n {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--accent); font-weight: 600; margin-right: .5rem;
+  }
+
+  /* ---- filename decomposition ---- */
+  .decomp {
+    background: var(--surface);
+    padding: 1.5rem 1.3rem 1.2rem;
+    overflow-x: auto;
+  }
+  .decomp-line {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 1.22rem;
+    font-weight: 500;
+    letter-spacing: .01em;
+    white-space: nowrap;
+    margin: 0 0 .1rem;
+  }
+  .seg-t { color: var(--drop); }
+  .seg-d { color: var(--accent); }
+  .seg-x { color: var(--ink-2); }
+  .decomp-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: .55rem 1.4rem;
+    margin-top: .9rem;
+    font-size: .88rem;
+  }
+  .decomp-legend div { display: flex; gap: .55rem; align-items: baseline; }
+  .swatch {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600; font-size: .82rem; flex: none;
+  }
+
+  /* ---- tables ---- */
+  .tw { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .88rem; }
+  caption {
+    text-align: left;
+    font-size: .8rem;
+    color: var(--ink-2);
+    padding-bottom: .5rem;
+  }
+  th, td { text-align: left; padding: .52rem .7rem .52rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--ink-2); font-weight: 500;
+    border-bottom: 1px solid var(--ink-2);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  .num { text-align: right; font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; padding-right: 1.1rem; }
+  td.file { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .8rem; white-space: nowrap; padding-right: 1.1rem; }
+
+  .verdict { font-weight: 600; white-space: nowrap; font-size: .82rem; padding: .12rem .5rem; border-radius: 2px; }
+  .v-keep { color: var(--keep); background: var(--keep-bg); }
+  .v-drop { color: var(--drop); background: var(--drop-bg); }
+  .v-warn { color: var(--warn); background: var(--warn-bg); }
+
+  tr.hl td { background: var(--keep-bg); }
+
+  /* ---- stat row ---- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .stats div { background: var(--paper); padding: .85rem .9rem; display: flex; flex-direction: column; gap: .18rem; }
+  .stats .k {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .66rem; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-2);
+  }
+  .stats .v {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: 1.5rem; font-weight: 600; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stats .v.bad { color: var(--drop); }
+  .stats .s { font-size: .76rem; color: var(--ink-2); }
+
+  /* ---- references ---- */
+  .refs { font-size: .85rem; display: flex; flex-direction: column; gap: .7rem; }
+  .refs p { max-width: none; padding-left: 1.4rem; text-indent: -1.4rem; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 0; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <h1>Identity-Disjoint Splitting</h1>
+    <p class="standfirst">How CelebDFv3 and DFD are partitioned into train, validation and test — the rule, the precedent it follows, and the two places where each corpus falls short of it.</p>
+    <div class="meta">
+      <span>Step 0 · Follow-up</span>
+      <span>CelebDFv3 (Celeb-DF++) · DFD</span>
+      <span>4 September 2026</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">The rule</p>
+    <h2>Split people, not videos — and a forged video contains two people</h2>
+    <div class="rule-box">
+      <p><span class="n">1</span>An identity is assigned to exactly one split. All of that person's real videos follow them; a person is never divided across splits.</p>
+      <p><span class="n">2</span>A forged video is admitted to a split only if <strong>both</strong> the identity being altered <strong>and</strong> the identity supplying the face belong to that split. Every other forgery is discarded.</p>
+    </div>
+    <p>Identities are shuffled with a fixed seed (42) and cut 70 / 15 / 15. Both corpora go through the same code path, <code>scripts/build_manifest.py</code>.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Why rule 2 exists</p>
+    <h2>The filename already tells you there are two subjects</h2>
+    <div class="decomp">
+      <p class="decomp-line"><span class="seg-t">id23</span><span class="seg-x">_</span><span class="seg-d">id0</span><span class="seg-x">_0001.mp4</span></p>
+      <div class="decomp-legend">
+        <div><span class="swatch seg-t">id23</span><span>The <strong>altered</strong> subject. The footage, body, background, gestures and timing are all his.</span></div>
+        <div><span class="swatch seg-d">id0</span><span>The <strong>donor</strong> subject. Her facial features are transferred onto his face.</span></div>
+      </div>
+    </div>
+    <p>Play that file and you see a person whose build, posture and setting belong to id23, wearing id0's face. Information about both people is present in every frame. Filtering on the altered subject alone therefore leaves the donor's face free to cross between splits — in either direction.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Worked example</p>
+    <h2>Identity id23, assigned to the test split</h2>
+    <p>His ten real videos go to test. The 252 forgeries that involve him — as altered subject or as donor — are then sorted by rule 2:</p>
+    <div class="tw">
+      <table>
+        <thead>
+          <tr><th>File</th><th>Altered</th><th>Donor</th><th>Verdict</th><th class="num">Videos</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hl"><td class="file">id22_id23_0001.mp4</td><td>id22 · test</td><td>id23 · test</td><td><span class="verdict v-keep">Kept in test</span></td><td class="num">276</td></tr>
+          <tr class="hl"><td class="file">AniTalker/id23_0000_…mp4</td><td>id23 · test</td><td>none — driven externally</td><td><span class="verdict v-keep">Kept in test</span></td><td class="num">345</td></tr>
+          <tr><td class="file">id23_id0_0001.mp4</td><td>id23 · test</td><td><strong>id0 · train</strong></td><td><span class="verdict v-drop">Discarded</span></td><td class="num">1 167</td></tr>
+          <tr><td class="file">id0_id23_0004.mp4</td><td>id0 · train</td><td><strong>id23 · test</strong></td><td><span class="verdict v-drop">Discarded</span></td><td class="num">984</td></tr>
+          <tr><td class="file">id23_id32_0007.mp4</td><td>id23 · test</td><td><strong>id32 · val</strong></td><td><span class="verdict v-warn">Still present</span></td><td class="num">46</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Row 3 would place a face the network trained on into a test question. Row 4 would show the network a test subject's face during training. Both are discarded. Row 5 is the residual defect described below.</p>
+    <p>One identity costs <strong>2 151 discarded videos</strong>. Across CelebDFv3 the donor rule removed 41 % of validation forgeries and 46 % of test forgeries.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Precedent</p>
+    <h2>This is FaceForensics++'s protocol, verified against their files</h2>
+    <p>FF++ does not publish a list of video IDs. It publishes a list of <strong>identity pairs</strong>:</p>
+    <div class="decomp">
+      <p class="decomp-line seg-x">train.json &nbsp;<span style="color:var(--ink)">[["071","054"], ["087","081"], …]</span> &nbsp;360 pairs</p>
+      <p class="decomp-line seg-x">val.json &nbsp;&nbsp;&nbsp;<span style="color:var(--ink)">70 pairs</span></p>
+      <p class="decomp-line seg-x">test.json &nbsp;&nbsp;<span style="color:var(--ink)">70 pairs</span></p>
+    </div>
+    <p>I downloaded these and computed the overlaps counting both roles. Train ∩ val, train ∩ test and <strong>val ∩ test are all zero</strong>. Their ratio, 360 : 70 : 70, is 72 : 14 : 14 — effectively the 70 / 15 / 15 we use.</p>
+    <p>Celeb-DF (CVPR 2020) defines no identity protocol at all; its paper specifies only a fixed 518-video test list. Celeb-DF++ inherits that list for its 178 real test videos and samples forgeries randomly per method. Neither corpus supplies the guarantee, so we impose FF++'s.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">If we don't</p>
+    <h2>The detector learns who, not what</h2>
+    <p>With identities shared across splits, a network can reach a high score by recognising faces it has already seen rather than by locating manipulation artefacts. Dong et al. (CVPR 2023) name this <em>implicit identity leakage</em> and show it is a principal reason binary deepfake classifiers fail to transfer across datasets. The in-dataset number rises; the cross-dataset number collapses. Since generalisation is precisely what our 2×2 cross-corpus matrix is meant to measure, an identity-leaking split would make the whole matrix uninterpretable.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">What it costs — CelebDFv3</p>
+    <h2>Seven validation identities, diluted by 300 subjects that have no forgeries</h2>
+    <p>CelebDFv3 contains 359 real identities, but they are not equivalent: 59 are the celebrities every one of the 22 forgery methods is built from, and 300 are single-video YouTube subjects with <strong>no forgeries at all</strong>. The code shuffles all 359 together before cutting 70 / 15 / 15, so the 300 filler subjects consume places. The 59 that carry the experiment landed at:</p>
+    <div class="stats">
+      <div><span class="k">Train</span><span class="v">40</span><span class="s">68 % of 59</span></div>
+      <div><span class="k">Validation</span><span class="v bad">7</span><span class="s">12 % — id7, id32, id37, id41, id43, id44, id58</span></div>
+      <div><span class="k">Test</span><span class="v">12</span><span class="s">20 % — id8, id11, id22, id23, id25, id26, id31, id48, id51, id54, id56, id59</span></div>
+    </div>
+    <p>The test split holds 164 real and 5 677 forged videos, but only <strong>12 identities carry both classes</strong>. The video-level AUROC standard error is 0.013; the identity-level figure, which is the one that governs, is roughly 0.05–0.11.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">What it costs — DFD</p>
+    <h2>Twenty-eight actors, so fifteen per cent is four people</h2>
+    <p>DFD is cleaner in structure — all 28 actors carry forgeries, so nothing dilutes the ratio — and its filenames follow the same convention (<code>01_02__exit_phone_room__YVGY8LOK.mp4</code>: actor 01 altered, actor 02 donating). The split is 20 train / 4 validation / 4 test. Sorting every DFD forgery by where its two actors live gives:</p>
+    <div class="tw">
+      <table>
+        <caption>All 3 068 DFD forgeries by the split membership of each role.</caption>
+        <thead><tr><th>Altered actor</th><th>Donor actor</th><th class="num">Videos</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>train</td><td>train</td><td class="num">1 894</td><td><span class="verdict v-keep">Training set</span></td></tr>
+          <tr class="hl"><td>test</td><td>test</td><td class="num">54</td><td><span class="verdict v-keep">Only clean test forgeries</span></td></tr>
+          <tr class="hl"><td>val</td><td>val</td><td class="num">17</td><td><span class="verdict v-keep">Only clean val forgeries</span></td></tr>
+          <tr><td colspan="2">four cross-split combinations involving train</td><td class="num">1 030</td><td><span class="verdict v-drop">Discarded</span></td></tr>
+          <tr><td>test ↔ val</td><td>val ↔ test</td><td class="num">73</td><td><span class="verdict v-warn">Still present</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The test split currently reports 93 forgeries because it still contains the 39 test-altered / val-donated files; enforced strictly it is 54. Either way the effective sample size is <strong>four actors</strong>, giving an identity-level 95 % interval near ±0.3. A DFD self-test result of 0.52 and one of 0.80 are statistically the same statement. This is why two successive explanations for DFD's failure — too few identities, then face-detection failure — were each falsified: that cell never had the resolution to support either.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Two defects, two remedies</p>
+    <h2>Proposed adjustments</h2>
+    <ul>
+      <li><strong>Enforce rule 2 between validation and test.</strong> We currently block only donors seen in training. FF++ has zero overlap across all three splits; we have 15 identities crossing val ↔ test in CelebDFv3 and 5 in DFD. Cost: 12–17 % of CelebDFv3 forgeries.</li>
+      <li><strong>Stratify the 59 celebrities separately</strong> from the 300 filler subjects. A 60 / 20 / 20 cut over the 59 yields roughly 35 / 12 / 12 — validation identities rise from 7 to 12, nearly doubling statistical power, at the price of five training identities. Our own ablation showed identity count is not the limiting factor (cutting to 20 cost only 0.03 AUROC).</li>
+      <li><strong>Stop self-testing on DFD.</strong> A model trained on CelebDFv3 has seen no DFD actor, so no hold-out is required: all 28 actors, 363 real and 3 068 forged videos, become the test set. Identities rise from 4 to 28 at no cost, and cross-corpus transfer is what the matrix exists to measure. The DFD self-test cell should be reported as under-powered rather than as a number.</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <section class="refs">
+    <p class="eyebrow">References</p>
+    <p>Rössler, A., Cozzolino, D., Verdoliva, L., Riess, C., Thies, J., Nießner, M. <em>FaceForensics++: Learning to Detect Manipulated Facial Images.</em> ICCV 2019. Official splits: <span class="mono">github.com/ondyari/FaceForensics/tree/master/dataset/splits</span></p>
+    <p>Dong, S., Wang, J., Ji, R., Liang, J., Fan, H., Ge, Z. <em>Implicit Identity Leakage: The Stumbling Block to Improving Deepfake Detection Generalization.</em> CVPR 2023.</p>
+    <p>Li, Y., Yang, X., Sun, P., Qi, H., Lyu, S. <em>Celeb-DF: A Large-Scale Challenging Dataset for DeepFake Forensics.</em> CVPR 2020.</p>
+    <p>Celeb-DF++: <em>A Large-scale Challenging Video DeepFake Benchmark for Generalizable Forensics.</em> arXiv:2507.18015, 2025.</p>
+  </section>
+
+</div>

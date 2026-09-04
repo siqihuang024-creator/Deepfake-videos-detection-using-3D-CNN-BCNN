@@ -1,0 +1,296 @@
+<title>身份级数据划分</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap">
+<style>
+  :root {
+    --paper:   #FCFCFD;
+    --surface: #F3F5F8;
+    --ink:     #15191F;
+    --ink-2:   #5A626E;
+    --rule:    #E1E5EA;
+    --accent:  #2E5C7E;
+    --keep:    #2F6B52;
+    --drop:    #9C4A38;
+    --warn:    #8A6612;
+    --keep-bg: #EAF2ED;
+    --drop-bg: #F7EBE7;
+    --warn-bg: #F7F0DF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:   #14171C;
+      --surface: #1B1F26;
+      --ink:     #E6E9ED;
+      --ink-2:   #98A1AE;
+      --rule:    #272C34;
+      --accent:  #83B4D8;
+      --keep:    #77BA98;
+      --drop:    #E09585;
+      --warn:    #D5B460;
+      --keep-bg: #1A2721;
+      --drop-bg: #2B1E1A;
+      --warn-bg: #292317;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:   #14171C;
+    --surface: #1B1F26;
+    --ink:     #E6E9ED;
+    --ink-2:   #98A1AE;
+    --rule:    #272C34;
+    --accent:  #83B4D8;
+    --keep:    #77BA98;
+    --drop:    #E09585;
+    --warn:    #D5B460;
+    --keep-bg: #1A2721;
+    --drop-bg: #2B1E1A;
+    --warn-bg: #292317;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", "Noto Sans SC", system-ui, -apple-system, "Microsoft YaHei", sans-serif;
+    font-size: 15.5px;
+    line-height: 1.78;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.6rem;
+  }
+
+  .masthead { display: flex; flex-direction: column; gap: .85rem; }
+  .masthead h1 {
+    font-family: "IBM Plex Serif", "Noto Serif SC", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 1.3rem + 2vw, 2.4rem);
+    line-height: 1.22;
+    letter-spacing: .01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .standfirst { font-size: 1.03rem; color: var(--ink-2); max-width: 33rem; margin: 0; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: .4rem 1.4rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-2);
+    border-top: 1px solid var(--rule); padding-top: .8rem;
+  }
+
+  section { display: flex; flex-direction: column; gap: .95rem; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .7rem; font-weight: 500; letter-spacing: .13em; text-transform: uppercase;
+    color: var(--accent); margin: 0;
+  }
+  h2 {
+    font-family: "IBM Plex Serif", "Noto Serif SC", Georgia, serif;
+    font-weight: 700; font-size: 1.28rem; line-height: 1.42;
+    margin: -.35rem 0 0; text-wrap: balance;
+  }
+  p { margin: 0; max-width: 39rem; }
+  ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .55rem; max-width: 39rem; }
+  li::marker { color: var(--ink-2); }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .87em; }
+  code { background: var(--surface); padding: .1em .34em; border-radius: 3px; }
+  strong { font-weight: 700; }
+  a { color: var(--accent); text-underline-offset: .18em; }
+
+  .rule-box {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    padding: 1.1rem 1.3rem;
+    display: flex; flex-direction: column; gap: .7rem;
+  }
+  .rule-box p { max-width: none; }
+  .rule-box .n {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--accent); font-weight: 600; margin-right: .5rem;
+  }
+
+  .decomp { background: var(--surface); padding: 1.5rem 1.3rem 1.2rem; overflow-x: auto; }
+  .decomp-line {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 1.22rem; font-weight: 500; white-space: nowrap; margin: 0 0 .1rem; line-height: 1.5;
+  }
+  .seg-t { color: var(--drop); }
+  .seg-d { color: var(--accent); }
+  .seg-x { color: var(--ink-2); }
+  .decomp-legend {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: .55rem 1.4rem; margin-top: .9rem; font-size: .88rem;
+  }
+  .decomp-legend div { display: flex; gap: .55rem; align-items: baseline; }
+  .swatch { font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 600; font-size: .82rem; flex: none; }
+
+  .tw { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 31rem; font-size: .88rem; }
+  caption { text-align: left; font-size: .8rem; color: var(--ink-2); padding-bottom: .5rem; }
+  th, td { text-align: left; padding: .52rem .7rem .52rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.6; }
+  thead th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--ink-2); font-weight: 500; border-bottom: 1px solid var(--ink-2);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  .num { text-align: right; font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; padding-right: 1.1rem; }
+  td.file { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .8rem; white-space: nowrap; padding-right: 1.1rem; }
+  .verdict { font-weight: 700; white-space: nowrap; font-size: .8rem; padding: .12rem .5rem; border-radius: 2px; }
+  .v-keep { color: var(--keep); background: var(--keep-bg); }
+  .v-drop { color: var(--drop); background: var(--drop-bg); }
+  .v-warn { color: var(--warn); background: var(--warn-bg); }
+  tr.hl td { background: var(--keep-bg); }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: 1px; background: var(--rule);
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  }
+  .stats div { background: var(--paper); padding: .85rem .9rem; display: flex; flex-direction: column; gap: .18rem; }
+  .stats .k { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .66rem; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-2); }
+  .stats .v { font-family: "IBM Plex Serif", Georgia, serif; font-size: 1.5rem; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .stats .v.bad { color: var(--drop); }
+  .stats .s { font-size: .75rem; color: var(--ink-2); line-height: 1.5; }
+
+  .refs { font-size: .85rem; display: flex; flex-direction: column; gap: .7rem; }
+  .refs p { max-width: none; padding-left: 1.4rem; text-indent: -1.4rem; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 0; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <h1>身份级数据划分</h1>
+    <p class="standfirst">CelebDFv3 与 DFD 如何切分训练、验证与测试集——规则本身、它所依据的文献先例，以及两个数据集各自暴露出的问题。</p>
+    <div class="meta">
+      <span>第 0 步 · 后续</span>
+      <span>CelebDFv3 (Celeb-DF++) · DFD</span>
+      <span>2026 年 9 月 4 日</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">规则</p>
+    <h2>划分的单位是人，不是视频；而一条伪造视频里有两个人</h2>
+    <div class="rule-box">
+      <p><span class="n">1</span>每个身份只归属一个划分。此人的全部真视频跟着他走，绝不把一个人拆到两边。</p>
+      <p><span class="n">2</span>一条伪造视频进入某个划分的条件是：<strong>被篡改的人</strong>与<strong>提供人脸的人</strong>同时属于该划分。其余全部剔除不用。</p>
+    </div>
+    <p>身份用固定随机种子（42）打乱后按 70 / 15 / 15 切分。两个数据集走的是同一份代码 <code>scripts/build_manifest.py</code>。</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">规则 2 的由来</p>
+    <h2>文件名本身就说明了里面有两个人</h2>
+    <div class="decomp">
+      <p class="decomp-line"><span class="seg-t">id23</span><span class="seg-x">_</span><span class="seg-d">id0</span><span class="seg-x">_0001.mp4</span></p>
+      <div class="decomp-legend">
+        <div><span class="swatch seg-t">id23</span><span><strong>被篡改的人</strong>。画面、身形、背景、动作、说话节奏都是他的。</span></div>
+        <div><span class="swatch seg-d">id0</span><span><strong>提供人脸的人</strong>。她的五官被移植到了他的脸上。</span></div>
+      </div>
+    </div>
+    <p>播放这条视频，你看到的是一个身形、姿态、场景都属于 id23 的人，长着 id0 的脸——每一帧里都同时存在两个人的信息。因此只按"被篡改的人"过滤是不够的：提供人脸的那个人仍会在两个划分之间双向穿越。</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">实例</p>
+    <h2>以身份 id23 为例，他被分到测试集</h2>
+    <p>他的 10 条真视频进入测试集。牵涉到他的 252 条伪造视频——无论他是被篡改者还是人脸提供者——按规则 2 分流如下：</p>
+    <div class="tw">
+      <table>
+        <thead>
+          <tr><th>文件</th><th>被篡改</th><th>提供人脸</th><th>判定</th><th class="num">条数</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hl"><td class="file">id22_id23_0001.mp4</td><td>id22 · 测试</td><td>id23 · 测试</td><td><span class="verdict v-keep">留在测试集</span></td><td class="num">276</td></tr>
+          <tr class="hl"><td class="file">AniTalker/id23_0000_…mp4</td><td>id23 · 测试</td><td>无——由外部信号驱动</td><td><span class="verdict v-keep">留在测试集</span></td><td class="num">345</td></tr>
+          <tr><td class="file">id23_id0_0001.mp4</td><td>id23 · 测试</td><td><strong>id0 · 训练</strong></td><td><span class="verdict v-drop">剔除</span></td><td class="num">1 167</td></tr>
+          <tr><td class="file">id0_id23_0004.mp4</td><td>id0 · 训练</td><td><strong>id23 · 测试</strong></td><td><span class="verdict v-drop">剔除</span></td><td class="num">984</td></tr>
+          <tr><td class="file">id23_id32_0007.mp4</td><td>id23 · 测试</td><td><strong>id32 · 验证</strong></td><td><span class="verdict v-warn">目前仍保留</span></td><td class="num">46</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>第 3 行会把网络训练时见过的一张脸放进考题；第 4 行会在训练阶段就把测试对象的脸喂给网络。两者都必须剔除。第 5 行是下文所说的残留缺陷。</p>
+    <p>仅 id23 一人就导致 <strong>2 151 条视频被剔除</strong>。在整个 CelebDFv3 上，这条规则移除了验证集 41 %、测试集 46 % 的伪造视频。</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">文献依据</p>
+    <h2>这正是 FaceForensics++ 的做法，已下载其官方文件核对</h2>
+    <p>FF++ 公布的不是视频编号列表，而是<strong>身份对</strong>列表：</p>
+    <div class="decomp">
+      <p class="decomp-line seg-x">train.json &nbsp;<span style="color:var(--ink)">[["071","054"], ["087","081"], …]</span> &nbsp;360 对</p>
+      <p class="decomp-line seg-x">val.json &nbsp;&nbsp;&nbsp;<span style="color:var(--ink)">70 对</span></p>
+      <p class="decomp-line seg-x">test.json &nbsp;&nbsp;<span style="color:var(--ink)">70 对</span></p>
+    </div>
+    <p>我把这三个文件下载下来，把两种角色都计入后统计重叠：训练∩验证、训练∩测试、<strong>验证∩测试，三者全部为 0</strong>。其比例 360 : 70 : 70 即 72 : 14 : 14，与我们采用的 70 / 15 / 15 基本一致。</p>
+    <p>Celeb-DF（CVPR 2020）正文完全没有定义身份协议，只给出一个固定的 518 条视频测试列表；Celeb-DF++ 沿用该列表选取 178 条真实测试视频，伪造视频则按方法随机抽取。两者都不提供这一保证，因此我们采用 FF++ 的协议。</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">若不这样划分</p>
+    <h2>检测器学到的是"这是谁"，而不是"哪里被改过"</h2>
+    <p>一旦身份跨划分共享，网络只要认出见过的人脸就能拿到高分，无需去定位伪造痕迹。Dong 等人（CVPR 2023）将此命名为<em>隐式身份泄漏</em>，并论证它是二分类深度伪造检测器难以跨库迁移的主要原因之一：库内指标上升，跨库指标崩塌。而跨库泛化恰恰是我们 2×2 矩阵要测量的东西——存在身份泄漏的划分会让整个矩阵失去解释力。</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">代价——CelebDFv3</p>
+    <h2>验证集只剩 7 个身份，被 300 个没有伪造视频的对象稀释</h2>
+    <p>CelebDFv3 共有 359 个真实身份，但它们并不等价：其中 59 位名人是全部 22 种伪造方法的素材来源，另外 300 个是每人一条的 YouTube 对象，<strong>完全没有对应的伪造视频</strong>。代码把 359 个身份混在一起打乱后再切 70 / 15 / 15，于是那 300 个"充数"的对象占走了名额。真正承载实验的 59 位名人最终落成：</p>
+    <div class="stats">
+      <div><span class="k">训练</span><span class="v">40</span><span class="s">占 59 的 68 %</span></div>
+      <div><span class="k">验证</span><span class="v bad">7</span><span class="s">12 % — id7, id32, id37, id41, id43, id44, id58</span></div>
+      <div><span class="k">测试</span><span class="v">12</span><span class="s">20 % — id8, id11, id22, id23, id25, id26, id31, id48, id51, id54, id56, id59</span></div>
+    </div>
+    <p>测试集有 164 条真视频与 5 677 条伪造视频，但<strong>两类兼具的身份只有 12 个</strong>。视频级 AUROC 标准误为 0.013，而真正起作用的身份级标准误约在 0.05–0.11。</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">代价——DFD</p>
+    <h2>只有 28 位演员，15 % 就是 4 个人</h2>
+    <p>DFD 的结构反而更干净——28 位演员全部拥有伪造视频，没有任何稀释——文件名遵循同样的约定（<code>01_02__exit_phone_room__YVGY8LOK.mp4</code>：演员 01 被篡改，演员 02 提供人脸）。划分结果是训练 20 / 验证 4 / 测试 4。把全部 DFD 伪造视频按两个角色的归属统计：</p>
+    <div class="tw">
+      <table>
+        <caption>全部 3 068 条 DFD 伪造视频，按两个角色各自所属的划分统计。</caption>
+        <thead><tr><th>被篡改演员</th><th>提供人脸演员</th><th class="num">条数</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td>训练</td><td>训练</td><td class="num">1 894</td><td><span class="verdict v-keep">训练集</span></td></tr>
+          <tr class="hl"><td>测试</td><td>测试</td><td class="num">54</td><td><span class="verdict v-keep">唯一干净的测试伪造视频</span></td></tr>
+          <tr class="hl"><td>验证</td><td>验证</td><td class="num">17</td><td><span class="verdict v-keep">唯一干净的验证伪造视频</span></td></tr>
+          <tr><td colspan="2">涉及训练集的四种跨划分组合</td><td class="num">1 030</td><td><span class="verdict v-drop">剔除</span></td></tr>
+          <tr><td>测试 ↔ 验证</td><td>验证 ↔ 测试</td><td class="num">73</td><td><span class="verdict v-warn">目前仍保留</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>测试集目前报告 93 条伪造视频，是因为其中还含有 39 条"测试被篡改 / 验证提供人脸"的文件；严格执行后只剩 54 条。但无论哪种口径，有效样本量都是<strong>四位演员</strong>，身份级 95 % 置信区间接近 ±0.3。也就是说，DFD 自测得到 0.52 与得到 0.80，在统计上是同一句话。这也解释了为何关于 DFD 失败原因的两次解释——先是"身份太少"，后是"人脸检测失败"——先后都被推翻：那一格实验从来就不具备支撑任何结论的分辨力。</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">两处缺陷，三项调整</p>
+    <h2>建议的修订</h2>
+    <ul>
+      <li><strong>在验证集与测试集之间也执行规则 2。</strong>目前只挡住了训练集中出现过的人脸提供者。FF++ 三个划分两两重叠均为 0，而我们在 CelebDFv3 有 15 个身份、DFD 有 5 个身份跨越验证与测试。代价是 CelebDFv3 损失 12–17 % 的伪造视频。</li>
+      <li><strong>把 59 位名人与 300 个充数对象分层划分。</strong>对这 59 人单独按 60 / 20 / 20 切分可得约 35 / 12 / 12——验证身份从 7 升至 12，统计功效接近翻倍，代价仅是训练身份减少 5 个。我们自己的消融实验已表明身份数量不是瓶颈（削减至 20 个仅损失 0.03 AUROC）。</li>
+      <li><strong>停止在 DFD 上做自测。</strong>在 CelebDFv3 上训练的模型没有见过任何一位 DFD 演员，因此无需留出：全部 28 位演员、363 条真视频与 3 068 条伪造视频都可作为测试集。身份数从 4 增至 28 且不付出任何代价，而跨库迁移正是该矩阵存在的意义。DFD 自测那一格应作为"统计功效不足"报告，而不是给出一个数字。</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <section class="refs">
+    <p class="eyebrow">参考文献</p>
+    <p>Rössler, A., Cozzolino, D., Verdoliva, L., Riess, C., Thies, J., Nießner, M. <em>FaceForensics++: Learning to Detect Manipulated Facial Images.</em> ICCV 2019. 官方划分文件：<span class="mono">github.com/ondyari/FaceForensics/tree/master/dataset/splits</span></p>
+    <p>Dong, S., Wang, J., Ji, R., Liang, J., Fan, H., Ge, Z. <em>Implicit Identity Leakage: The Stumbling Block to Improving Deepfake Detection Generalization.</em> CVPR 2023.</p>
+    <p>Li, Y., Yang, X., Sun, P., Qi, H., Lyu, S. <em>Celeb-DF: A Large-Scale Challenging Dataset for DeepFake Forensics.</em> CVPR 2020.</p>
+    <p>Celeb-DF++: <em>A Large-scale Challenging Video DeepFake Benchmark for Generalizable Forensics.</em> arXiv:2507.18015, 2025.</p>
+  </section>
+
+</div>

@@ -13,6 +13,53 @@ from sklearn.metrics import (
 )
 
 
+def clustered_auroc_interval(labels, scores, clusters, draws=2000, seed=42,
+                             confidence=0.95):
+    """Bootstrap an AUROC interval by resampling clusters, not videos.
+
+    Resampling rows treats every video as an independent observation. They are
+    not: on CelebDFv3 one real clip yields a median of 84 forgeries that share
+    its background, wardrobe, lighting and camera motion, so a test split of
+    5433 fakes carries about 125 independent units. Resampling rows understates
+    the spread several-fold. ``clusters`` is the unit that is actually
+    independent -- the source clip, or the identity.
+
+    Draws that end up with one class are skipped rather than scored, which
+    happens easily when the cluster count is small.
+    """
+    labels = np.asarray(labels)
+    scores = np.asarray(scores)
+    clusters = np.asarray(clusters)
+    groups = {}
+    for index, name in enumerate(clusters):
+        groups.setdefault(name, []).append(index)
+    keys = sorted(groups)
+    members = [np.asarray(groups[key]) for key in keys]
+    rng = np.random.default_rng(seed)
+    samples = []
+    for _ in range(int(draws)):
+        picked = rng.integers(0, len(members), size=len(members))
+        rows = np.concatenate([members[index] for index in picked])
+        if len(np.unique(labels[rows])) < 2:
+            continue
+        samples.append(roc_auc_score(labels[rows], scores[rows]))
+    tail = (1.0 - float(confidence)) / 2.0
+    point = (float(roc_auc_score(labels, scores))
+             if len(np.unique(labels)) == 2 else math.nan)
+    if not samples:
+        return {"auroc": point, "low": math.nan, "high": math.nan,
+                "standard_error": math.nan, "clusters": len(keys), "draws": 0}
+    samples = np.asarray(samples)
+    return {
+        "auroc": point,
+        "low": float(np.quantile(samples, tail)),
+        "high": float(np.quantile(samples, 1.0 - tail)),
+        "standard_error": float(samples.std(ddof=1)),
+        "clusters": len(keys),
+        "draws": int(samples.size),
+    }
+
+
 def calibrate_threshold(real_anomaly_scores, false_positive_rate):
     scores = np.asarray(real_anomaly_scores, dtype=np.float64)
     if not len(scores):

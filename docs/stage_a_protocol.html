@@ -1,0 +1,360 @@
+<title>阶段 A 实验协议</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&family=Source+Sans+3:wght@400;600;700&family=Spectral:wght@600;700&display=swap">
+<style>
+  :root {
+    --paper:     #FAFBFA;
+    --surface:   #EFF3F1;
+    --ink:       #12171A;
+    --ink-2:     #59635F;
+    --rule:      #DEE5E1;
+    --accent:    #17565B;
+    --accent-bg: #E5EFEE;
+    --gate:      #8A6206;
+    --gate-bg:   #F8F1DD;
+    --stop:      #8E3F31;
+    --stop-bg:   #F7E9E5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #101413;
+      --surface:   #181E1C;
+      --ink:       #E4E9E6;
+      --ink-2:     #93A09B;
+      --rule:      #262E2B;
+      --accent:    #74C0C2;
+      --accent-bg: #13272A;
+      --gate:      #D6AD5C;
+      --gate-bg:   #262110;
+      --stop:      #DC9483;
+      --stop-bg:   #291B17;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:     #101413;
+    --surface:   #181E1C;
+    --ink:       #E4E9E6;
+    --ink-2:     #93A09B;
+    --rule:      #262E2B;
+    --accent:    #74C0C2;
+    --accent-bg: #13272A;
+    --gate:      #D6AD5C;
+    --gate-bg:   #262110;
+    --stop:      #DC9483;
+    --stop-bg:   #291B17;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Sans 3", "Noto Sans SC", system-ui, "Microsoft YaHei", sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 50rem; margin: 0 auto; padding: 3.5rem 1.5rem 6rem; display: flex; flex-direction: column; gap: 2.4rem; }
+
+  /* masthead */
+  .masthead { display: flex; flex-direction: column; gap: .7rem; }
+  .masthead h1 {
+    font-family: Spectral, "Noto Serif SC", Georgia, serif;
+    font-weight: 700; font-size: clamp(1.9rem, 1.3rem + 2.2vw, 2.5rem);
+    line-height: 1.2; margin: 0; text-wrap: balance;
+  }
+  .standfirst { color: var(--ink-2); font-size: 1.05rem; max-width: 36rem; margin: 0; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: .35rem 1.4rem;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .71rem; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2);
+    border-top: 1px solid var(--rule); padding-top: .8rem; margin-top: .3rem;
+  }
+
+  /* steps: number rail */
+  .step { display: grid; grid-template-columns: 3.1rem 1fr; gap: 0 1.1rem; align-items: start; }
+  .step > .num {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 1.5rem; font-weight: 600; line-height: 1.25;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+    border-top: 2px solid var(--accent); padding-top: .5rem;
+  }
+  .step.gate > .num { color: var(--gate); border-top-color: var(--gate); }
+  .step.out  > .num { color: var(--ink-2); border-top-color: var(--rule); }
+  .step > .body { display: flex; flex-direction: column; gap: .8rem; padding-top: .5rem; border-top: 1px solid var(--rule); }
+  .step h2 {
+    font-family: Spectral, "Noto Serif SC", Georgia, serif;
+    font-weight: 700; font-size: 1.3rem; line-height: 1.45; margin: 0; text-wrap: balance;
+  }
+  .tag {
+    display: inline-block; font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;
+    padding: .12rem .5rem; border-radius: 2px; vertical-align: .18em; margin-left: .5rem;
+  }
+  .tag-gate { color: var(--gate); background: var(--gate-bg); }
+  .tag-out  { color: var(--ink-2); background: var(--surface); }
+
+  p { margin: 0; }
+  ul, ol { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .4rem; }
+  li::marker { color: var(--ink-2); }
+  code {
+    font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .84em;
+    background: var(--surface); padding: .1em .35em; border-radius: 3px;
+  }
+  strong { font-weight: 700; }
+
+  /* source line */
+  .src {
+    border-left: 2px solid var(--accent);
+    background: var(--accent-bg);
+    padding: .6rem .9rem;
+    font-size: .89rem;
+    line-height: 1.65;
+  }
+  .src b {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); display: block; margin-bottom: .15rem; font-weight: 600;
+  }
+  .step.gate .src { border-left-color: var(--gate); background: var(--gate-bg); }
+  .step.gate .src b { color: var(--gate); }
+
+  .warn {
+    border-left: 2px solid var(--stop); background: var(--stop-bg);
+    padding: .6rem .9rem; font-size: .89rem; line-height: 1.65;
+  }
+
+  /* tables */
+  .tw { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 26rem; font-size: .88rem; }
+  th, td { text-align: left; padding: .45rem .8rem .45rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.55; }
+  thead th {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .66rem; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--ink-2); font-weight: 500; border-bottom: 1px solid var(--ink-2);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  .n { text-align: right; font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; padding-right: 1rem; }
+  td.k { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .82rem; white-space: nowrap; padding-right: 1rem; }
+
+  /* references */
+  .refs { display: flex; flex-direction: column; gap: .6rem; font-size: .86rem; }
+  .refs p { padding-left: 1.5rem; text-indent: -1.5rem; }
+  .refs .grade {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .68rem; color: var(--accent); font-weight: 600; margin-right: .4rem;
+  }
+  h3 {
+    font-family: Spectral, "Noto Serif SC", Georgia, serif;
+    font-size: 1.15rem; font-weight: 700; margin: 0; padding-top: .5rem; border-top: 1px solid var(--rule);
+  }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 0; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <h1>阶段 A 实验协议</h1>
+    <p class="standfirst">3D-CNN 特征提取器的有监督预训练——每一步的规格、判定标准，以及它所依据的文献。</p>
+    <div class="meta">
+      <span>Stage A · Feature extractor pre-training</span>
+      <span>CelebDFv3 (Celeb-DF++) · DFD</span>
+      <span>2026-09-04</span>
+    </div>
+  </header>
+
+  <section class="step">
+    <div class="num">0</div>
+    <div class="body">
+      <h2>交付物与判定原则</h2>
+      <p>阶段 A 唯一的产出是一个<strong>冻结后交给阶段 B 的特征提取器</strong>。分类头（<code>DeterministicHead</code>，feature_dim → 512 → 1）训完即丢弃。</p>
+      <p>因此判定标准<strong>不是 AUROC 高</strong>，而是「AUROC 高，且这个高不是来自数据集捷径」。头可以重训，<strong>提取器没学到的东西阶段 B 永远拿不回来</strong>——它是被冻结带走的。</p>
+      <div class="warn">前一轮整帧实验就是败在这里：CelebDFv3 拿到 0.819，但只看画布填充比例的零学习对照是 0.828。网络把容量全花在捷径上，真正的伪造特征一点没学。本协议的第 3 步就是为了防止这件事重演。</div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">1</div>
+    <div class="body">
+      <h2>数据划分</h2>
+      <p>三条规则：</p>
+      <ol>
+        <li>身份是划分的最小单位，一个人的全部视频只进一个划分。</li>
+        <li>一条伪造视频进入某划分的条件是<strong>被篡改者与人脸提供者同属该划分</strong>，否则剔除。<code>train↔val</code>、<code>train↔test</code>、<code>val↔test</code> 三组全部互斥。</li>
+        <li>59 位名人与 300 个 YouTube 身份<strong>分开分层</strong>——后者没有任何派生假视频，混在一起洗牌会稀释名额。</li>
+      </ol>
+      <div class="tw">
+        <table>
+          <thead><tr><th>数据集 / 划分</th><th class="n">身份</th><th class="n">真</th><th class="n">假</th><th class="n">源片段</th></tr></thead>
+          <tbody>
+            <tr><td>CelebDFv3 train</td><td class="n">35 名人 + 210 油管</td><td class="n">554</td><td class="n">28 150</td><td class="n">344</td></tr>
+            <tr><td>CelebDFv3 val</td><td class="n">12 + 45</td><td class="n">166</td><td class="n">5 075</td><td class="n">121</td></tr>
+            <tr><td>CelebDFv3 test</td><td class="n">12 + 45</td><td class="n">170</td><td class="n">5 433</td><td class="n">125</td></tr>
+            <tr><td>DFD train</td><td class="n">24 演员</td><td class="n">309</td><td class="n">2 327</td><td class="n">—</td></tr>
+            <tr><td>DFD val</td><td class="n">4 演员</td><td class="n">54</td><td class="n">54</td><td class="n">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>名人按 60/20/20、YouTube 身份按 70/15/15，种子 42。相比现行划分，训练假视频只减少 7%，而<strong>验证集的两类兼具身份从 7 涨到 12</strong>。DFD 不设测试集：28 位演员切出的 4 人测试集置信区间宽达 ±0.3，不具备分辨力。</p>
+      <div class="src">
+        <b>依据</b>
+        规则 1–2 照搬 <strong>FaceForensics++（Rössler et al., ICCV 2019）</strong>：其官方 <code>dataset/splits/*.json</code> 存的是身份对而非视频编号（360 / 70 / 70 对），实测三组两两重叠全为 0，比例 72:14:14。为什么必须如此见 <strong>Dong et al., Implicit Identity Leakage, CVPR 2023</strong>。规则 3 是针对本数据集结构的推导，无直接文献。
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">2</div>
+    <div class="body">
+      <h2>预处理</h2>
+      <div class="tw">
+        <table>
+          <thead><tr><th>步骤</th><th>规格</th><th>出处</th></tr></thead>
+          <tbody>
+            <tr><td class="k">detect</td><td>dlib</td><td>DeepfakeBench §4.1</td></tr>
+            <tr><td class="k">landmarks</td><td>81 点，<code>shape_predictor_81_face_landmarks.dat</code></td><td>DeepfakeBench repo</td></tr>
+            <tr><td class="k">align</td><td>基于 landmarks 的相似变换</td><td>DeepfakeBench §4.1</td></tr>
+            <tr><td class="k">box</td><td>在<em>对齐后</em>的人脸上重算</td><td>步骤顺序</td></tr>
+            <tr><td class="k">margin</td><td><strong>×1.3</strong></td><td><strong>FF++，非 DeepfakeBench</strong></td></tr>
+            <tr><td class="k">resize</td><td><strong>256 × 256</strong></td><td>DeepfakeBench §4.1</td></tr>
+            <tr><td class="k">padding</td><td><code>replicate</code></td><td>本项目</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>需要的代码改动：<code>face_margin</code> 0.25 → <strong>0.15</strong>（代码算的是 <code>(1+2m)w</code>，所以 0.25 实际是 ×1.5，v9 至 v15 全部偏离协议）；<code>center_crop</code> 224 → 256；新增 landmark 对齐。</p>
+      <div class="src">
+        <b>依据</b>
+        <strong>DeepfakeBench（Yan et al., NeurIPS 2023 D&amp;B）</strong>——选它是因为 Celeb-DF++ 论文声明其基线「following the default settings and pre-processing procedures in DeepfakeBench」，只有对齐口径才有可比性。<strong>×1.3 这个数字不在 DeepfakeBench 的论文和 README 里</strong>，须单独引 FF++，不得暗示它来自 DeepfakeBench。
+      </div>
+    </div>
+  </section>
+
+  <section class="step gate">
+    <div class="num">3</div>
+    <div class="body">
+      <h2>捷径对照<span class="tag tag-gate">门禁 · 训练前必做</span></h2>
+      <p>在写下第一个训练命令之前，用<strong>不含任何伪造信息的单个标量</strong>去给验证集排序，看能得到多少 AUROC。三个必测：</p>
+      <ul>
+        <li><strong>重采样系数</strong> <code>256 / (1.3 × 人脸框宽)</code></li>
+        <li><strong>原始画幅</strong>（宽、高、长宽比）——裁剪后应当已经失效</li>
+        <li><strong>人脸框像素宽</strong></li>
+      </ul>
+      <p><strong>放行条件：三个都落在 0.5 ± 身份级置信区间内。</strong>任何一个显著偏离，先修预处理，不许开始训练。</p>
+      <p>已知必须复查的两处：整帧流程下「画布填充比例」拿到 <strong>0.828</strong>；未配对的 300 条 <code>Real_YouTube</code> 中有 220 条落在名人视频从不使用的分辨率上，<strong>判真精度 100%</strong>。这两条捷径按理都会被「裁剪 + 固定 256×256」消灭，但必须实测确认，不能推断。</p>
+      <div class="src">
+        <b>依据</b>
+        这类「用输入的一个片段去预测标签」的检验在 NLP 有正式名称 <em>partial-input baseline</em>：<strong>Poliak et al., *SEM 2018</strong>（只看假设句在 SNLI 拿到 71%，随机为 33%）与 <strong>Gururangan et al., NAACL 2018</strong>。deepfake 领域的同类发现见 <strong>Smeu et al., CVPR 2025</strong>——两个最常用的音视频数据集中，假视频开头的一小段静音「based on this feature alone, we can separate the real and fake samples almost perfectly」。
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">4</div>
+    <div class="body">
+      <h2>采样</h2>
+      <div class="tw">
+        <table>
+          <tbody>
+            <tr><td class="k">clip_length</td><td>8 帧，<strong>连续</strong></td></tr>
+            <tr><td class="k">train_clip_strides</td><td><code>[1, 2]</code>，每次随机选一个</td></tr>
+            <tr><td class="k">eval_clips_per_video</td><td>8，<code>eval_clip_stride: 2</code></td></tr>
+            <tr><td class="k">train_balance_keys</td><td><code>[dataset, class_name]</code>，每 epoch 真假等量</td></tr>
+            <tr><td class="k">horizontal_flip</td><td>0.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>必须声明的协议偏离：</strong>DeepfakeBench 取 32 帧<em>独立</em>抽样，我们取 8 段 × 8 帧<em>连续</em>——时序连续性正是本文的贡献所在，无法取消。评分侧一致：每条视频输出一个分数（clip logits 取平均）。</p>
+      <p>配对不需要额外构造：核对结果显示<strong>六个（数据集, 划分）单元中，每条假视频的源真视频都在同一划分内，覆盖率 100%</strong>——这是身份划分的自动结果，因为假视频与其源真视频身份相同。</p>
+      <div class="src">
+        <b>依据</b>
+        <strong>Yermakov et al., WACV 2026</strong>：「training on paired real-fake data from the same source video is essential for mitigating shortcut learning」。注意其配对用于<em>训练集构造</em>，不涉及评估。
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">5</div>
+    <div class="body">
+      <h2>训练</h2>
+      <p><strong>两次独立运行，每个数据集一个。</strong>不得合并训练——合并后的提取器会让 2×2 矩阵的跨库格失效。</p>
+      <div class="tw">
+        <table>
+          <tbody>
+            <tr><td class="k">architecture</td><td>3d，<code>conv_channels [16, 24, 32]</code>，<code>spatial_kernel 5</code>，<code>temporal_kernel 3</code></td></tr>
+            <tr><td class="k">feature_dim</td><td>15 488（<code>32 × 22 × 22</code>，<code>AdaptiveAvgPool2d(22)</code> 使其与输入尺寸无关）</td></tr>
+            <tr><td class="k">head</td><td><code>DeterministicHead</code>：15488 → 512 → 1，<code>dropout 0.2</code>。<strong>训完丢弃</strong></td></tr>
+            <tr><td class="k">objective</td><td>BCE-with-logits，<strong>无 KL 项</strong></td></tr>
+            <tr><td class="k">optimiser</td><td><code>lr 1e-4</code>，<code>gradient_clip_norm 5.0</code>，<code>lr_gamma 0.95</code> 每 epoch</td></tr>
+            <tr><td class="k">epochs</td><td>60，<code>early_stopping_patience 8</code></td></tr>
+            <tr><td class="k">selection_metric</td><td><code>macro_dataset_auroc</code>，<code>min_improvement 0.002</code></td></tr>
+            <tr><td class="k">seed</td><td>42</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>缓存人脸框与 landmarks 之后 GPU 才是瓶颈，届时 <code>--batch-size</code> 可以从 1 上调。运行方式一律 <code>nohup python -u …</code>——VS Code 终端重连会发送 Ctrl+C 杀掉任务。</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">6</div>
+    <div class="body">
+      <h2>评估</h2>
+      <ul>
+        <li><strong>评估集剔掉 <code>Real_YouTube</code></strong>（val 45 条、test 45 条）。它们没有派生假视频，且带 100% 精度的分辨率标记；剔除后评估集恰好成为严格一一对应的配对结构（val 121 对、test 125 对）。<strong>训练集保留</strong>——多 60% 的真视频，而其危险来源已被裁剪消灭（须经第 3 步确认）。</li>
+        <li><strong>主指标</strong>：video-level AUROC，每条视频由 8 段 clip 的 logit 取平均得到一个分数。</li>
+        <li><strong>置信区间</strong>：在<em>源片段</em>与<em>身份</em>两级做聚类 bootstrap。视频级 bootstrap 是错的——test 看似 5 433 条假视频，实际只来自 <strong>125 段源片段</strong>，同一段画面被 22 种方法改了约 43 遍，高度相关。</li>
+        <li><strong>参照系</strong>：Celeb-DF++ 的 GF-eval 平均 video-level AUC 为 72.1%，最佳方法 84.4%。协议不同，<strong>只作量级参考，不可直接比较</strong>。</li>
+      </ul>
+      <div class="src">
+        <b>依据</b>
+        聚类数据下的 ROC 估计：<strong>Obuchowski, Biometrics 53(2):567–578, 1997</strong>。同一测试集上比较两个模型：<strong>DeLong et al., Biometrics 44(3):837–845, 1988</strong>。AUROC 标准误的闭式解：<strong>Hanley &amp; McNeil, Radiology 143(1):29–36, 1982</strong>。评估集剔除未配对真视频一项，无直接文献先例，理由由第 3 步的实测支撑。
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="num">7</div>
+    <div class="body">
+      <h2>成功判据</h2>
+      <p>三条<strong>同时</strong>满足，才允许把提取器交给阶段 B：</p>
+      <ol>
+        <li>验证 AUROC <strong>超过第 3 步的每一个捷径对照</strong>，且超出量大于身份级置信区间。</li>
+        <li>训练损失跌破 <code>ln 2 = 0.6931</code>。这是本项目的经验判据：十次 CelebDFv3 运行中，v9 是第一个做到的，也是最好的一个；DFD 从未做到，其损失停在 0.673–0.920。</li>
+        <li>提取器输出的标准差在训练过程中不塌缩（v6 曾从 0.174 衰减到 0.099，v9 保持在 0.515 平稳）。</li>
+      </ol>
+      <p>任一条不满足，问题出在预处理或数据，<strong>不要靠调超参去补</strong>——我们已经证明这条路走不通：在 12 个测试身份上可分辨的差异约为 ±0.05，而 v7 / v8 / v10 的全部改动都落在这个范围内。</p>
+    </div>
+  </section>
+
+  <section class="step out">
+    <div class="num">—</div>
+    <div class="body">
+      <h2>明确不在本协议范围内<span class="tag tag-out">Stage A 之外</span></h2>
+      <ul>
+        <li>阶段 B：冻结提取器 + 贝叶斯均值场头、仅用真视频的单类训练</li>
+        <li>身份级 k 折交叉验证（属于最终报数阶段，非开发阶段）</li>
+        <li>配对评估（源片段内比较）——统计上成立但领域内无先例，只进补充材料</li>
+        <li>Celeb-DF++ 官方 GF-eval（换泛化轴，作为可比性对照单独进行）</li>
+        <li>TalkingFace 驱动音频的互斥约束——先解析入 manifest 并测量污染程度，暂不强制</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr>
+
+  <section class="refs">
+    <h3>引用清单</h3>
+    <p><span class="grade">[核心]</span> Rössler, A., Cozzolino, D., Verdoliva, L., Riess, C., Thies, J., Nießner, M. <em>FaceForensics++: Learning to Detect Manipulated Facial Images.</em> ICCV 2019.</p>
+    <p><span class="grade">[核心]</span> Yan, Z., Zhang, Y., Yuan, X., Lyu, S., Wu, B. <em>DeepfakeBench: A Comprehensive Benchmark of Deepfake Detection.</em> NeurIPS 2023, Datasets &amp; Benchmarks Track.</p>
+    <p><span class="grade">[核心]</span> Dong, S., Wang, J., Ji, R., Liang, J., Fan, H., Ge, Z. <em>Implicit Identity Leakage: The Stumbling Block to Improving Deepfake Detection Generalization.</em> CVPR 2023. <em>（本项目目前仅核对至摘要，引用不应超出摘要主张。）</em></p>
+    <p><span class="grade">[核心]</span> Smeu, S., Boldisor, D.-A., Oneata, D., Oneata, E. <em>Circumventing Shortcuts in Audio-visual Deepfake Detection Datasets with Unsupervised Learning.</em> CVPR 2025.</p>
+    <p><span class="grade">[核心]</span> Yermakov, A. et al. <em>Deepfake Detection that Generalizes Across Benchmarks.</em> WACV 2026.</p>
+    <p><span class="grade">[方法]</span> Poliak, A., Naradowsky, J., Haldar, A., Rudinger, R., Van Durme, B. <em>Hypothesis Only Baselines in Natural Language Inference.</em> *SEM 2018.</p>
+    <p><span class="grade">[方法]</span> Gururangan, S., Swayamdipta, S., Levy, O., Schwartz, R., Bowman, S., Smith, N. A. <em>Annotation Artifacts in Natural Language Inference Data.</em> NAACL 2018.</p>
+    <p><span class="grade">[统计]</span> Obuchowski, N. A. <em>Nonparametric Analysis of Clustered ROC Curve Data.</em> Biometrics 53(2):567–578, 1997.</p>
+    <p><span class="grade">[统计]</span> DeLong, E. R., DeLong, D. M., Clarke-Pearson, D. L. <em>Comparing the areas under two or more correlated ROC curves: a nonparametric approach.</em> Biometrics 44(3):837–845, 1988.</p>
+    <p><span class="grade">[统计]</span> Hanley, J. A., McNeil, B. J. <em>The meaning and use of the area under a ROC curve.</em> Radiology 143(1):29–36, 1982.</p>
+    <p><span class="grade">[数据集]</span> Li, Y., Yang, X., Sun, P., Qi, H., Lyu, S. <em>Celeb-DF: A Large-Scale Challenging Dataset for DeepFake Forensics.</em> CVPR 2020. ／ <em>Celeb-DF++.</em> arXiv:2507.18015, 2025. ／ DFD 命名规范见 FaceForensics 仓库 <code>dataset/README.md</code>。</p>
+  </section>
+
+</div>

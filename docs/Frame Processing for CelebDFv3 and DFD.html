@@ -1,0 +1,271 @@
+<title>Frame Processing for CelebDFv3 and DFD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#FBFBFA; --surface:#FFFFFF; --band:#F1F2F0;
+    --ink:#1A1C1A; --muted:#5C625C; --faint:#8D938D;
+    --rule:#DFE1DE; --rule-strong:#B7BBB6;
+    --accent:#3D6B4E; --warn:#9A5A2B; --warn-soft:#F5EBE1;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#12140F; --surface:#191C16; --band:#20241D;
+      --ink:#E6E8E2; --muted:#9BA298; --faint:#717869;
+      --rule:#282D22; --rule-strong:#3D4436;
+      --accent:#8FBE9E; --warn:#D19A6B; --warn-soft:#2A1F16;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12140F; --surface:#191C16; --band:#20241D;
+    --ink:#E6E8E2; --muted:#9BA298; --faint:#717869;
+    --rule:#282D22; --rule-strong:#3D4436;
+    --accent:#8FBE9E; --warn:#D19A6B; --warn-soft:#2A1F16;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    font-size:14.5px; line-height:1.68; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:800px; margin:0 auto; padding:0 26px 60px}
+  header{padding:48px 0 16px; border-bottom:1px solid var(--rule-strong)}
+  h1{font-family:"Source Serif 4",Georgia,serif; font-weight:600;
+    font-size:clamp(24px,3.2vw,30px); line-height:1.24; margin:0; text-wrap:balance}
+  .deck{margin:9px 0 0; color:var(--muted); font-size:14px; max-width:42em}
+  h2{font-family:"Source Serif 4",Georgia,serif; font-weight:600; font-size:18px;
+    margin:30px 0 3px; display:flex; gap:10px; align-items:baseline; text-wrap:balance}
+  h2 .n{font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:500;
+    color:var(--accent); letter-spacing:.09em; flex:none}
+  p{margin:8px 0; max-width:42em}
+  code,.m{font-family:"IBM Plex Mono",monospace; font-size:.9em; font-variant-numeric:tabular-nums}
+  strong{font-weight:600}
+  .k{font-weight:600; color:var(--accent)}
+
+  .tw{overflow-x:auto; margin:14px 0; border:1px solid var(--rule); background:var(--surface)}
+  table{border-collapse:collapse; width:100%; font-size:12.5px}
+  caption{caption-side:top; text-align:left; padding:8px 14px 7px; font-size:12px;
+    line-height:1.55; color:var(--muted); border-bottom:1px solid var(--rule)}
+  caption b{font-family:"IBM Plex Mono",monospace; color:var(--accent);
+    font-weight:500; margin-right:8px; font-size:10.5px; letter-spacing:.06em}
+  th,td{padding:6px 14px; text-align:left; border-bottom:1px solid var(--rule); white-space:nowrap}
+  thead th{font-size:11px; font-weight:500; color:var(--muted);
+    border-bottom:1px solid var(--rule-strong)}
+  tbody td{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+  tbody td:first-child, td.t{font-family:"IBM Plex Sans",sans-serif; white-space:normal}
+  tbody tr:last-child td{border-bottom:0}
+  td.bad{color:var(--warn); background:var(--warn-soft)}
+  td.good{color:var(--accent); font-weight:500}
+
+  ol.tight{margin:8px 0; padding-left:20px; max-width:42em}
+  ol.tight li{margin:5px 0; padding-left:3px}
+  ol.tight li::marker{font-family:"IBM Plex Mono",monospace; font-size:.85em; color:var(--accent)}
+
+  figure{margin:14px 0; padding:12px 14px 8px; border:1px solid var(--rule);
+    background:var(--surface); overflow-x:auto}
+  figcaption{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.55}
+  svg{display:block; min-width:620px}
+  .sv-lab{font-family:"IBM Plex Sans",sans-serif; font-size:11.5px; fill:var(--ink)}
+  .sv-mut{font-family:"IBM Plex Mono",monospace; font-size:10px; fill:var(--muted)}
+  .sv-acc{font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--accent)}
+  .sv-warn{font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--warn)}
+
+  footer{margin-top:30px; padding-top:12px; border-top:1px solid var(--rule);
+    color:var(--faint); font-size:11.5px; max-width:42em; line-height:1.7}
+  footer .r{display:block; margin-top:5px}
+  @media (max-width:620px){ .wrap{padding:0 16px 48px} }
+</style>
+
+<div class="wrap">
+
+<header>
+  <h1>Frame Processing for CelebDFv3 and DFD</h1>
+  <p class="deck">Published practice on these two corpora, measurements on the proposed
+  892&times;500 centre crop, and a revised proposal. CelebDFv3 is Celeb-DF++.</p>
+</header>
+
+<h2><span class="n">01</span>Published practice</h2>
+
+<p>Work on these corpora follows one pipeline: <strong>detect the face, crop it with a 1.3
+margin, resize to a fixed square</strong>. None uses whole frames.</p>
+
+<div class="tw">
+  <table>
+    <caption><b>Table 1</b>Preprocessing in the standard references.</caption>
+    <thead><tr><th>Source</th><th>Preprocessing</th><th>Network input</th></tr></thead>
+    <tbody>
+      <tr><td class="t">FaceForensics++ (ICCV 2019)</td>
+          <td class="t">Face tracking, conservative crop enlarged &times;1.3</td>
+          <td>299&times;299</td></tr>
+      <tr><td class="t">DeepfakeBench (NeurIPS 2023)</td>
+          <td class="t">DLIB detection and alignment, margin 1.3</td>
+          <td>256&times;256, 32 frames/video</td></tr>
+      <tr><td class="t">Celeb-DF++ (2025) &mdash; this corpus</td>
+          <td class="t">Follows the DeepfakeBench defaults</td>
+          <td>inherits the above</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>The third row governs comparability: the benchmark's own published baselines were produced
+under those defaults &mdash; GF-eval 71.7% frame-AUC and 72.1% video-AUC, GFD-eval 69.4% and
+73.7%. Our results can only be placed beside those figures if the preprocessing matches.</p>
+
+<h2><span class="n">02</span>The 892&times;500 centre crop, measured</h2>
+
+<p>892&times;500 is the median of the <em>real</em> videos; the fakes and the second corpus differ.</p>
+
+<p><span class="k">Most of CelebDFv3 cannot supply it.</span> The crop needs a source at least 892
+wide <em>and</em> 500 tall. Only <strong>6.5%</strong> of CelebDFv3 qualifies (3,533 of 54,086):
+23,059 videos are 256&times;256 and 8,579 are 512&times;512, and even the wide fakes at
+856&times;478 fall short on both axes. The largest crop every CelebDFv3 video can supply is
+<span class="m">256&times;208</span>. DFD qualifies at 100%.</p>
+
+<p><span class="k">In DFD the face is not at the centre.</span> Across 40 sampled videos, a face
+was found in 39; the median box is <span class="m">213&times;213</span> px, 11% of frame width,
+with its centre a median <span class="m">251 px above</span> the frame centre. A centred
+892&times;500 crop holds the face fully in 1 of 39 videos and partially in 37 &mdash; heads sit in
+the upper third of a framed shot, so a 500-px band through the middle cuts at the jaw.</p>
+
+<h2><span class="n">03</span>Result of the whole-frame runs</h2>
+
+<p>The detector is trained in two stages. <strong>Stage A</strong> pre-trains the feature
+extractor: the 3D-CNN is given an ordinary deterministic classification head and trained on
+real/fake labels; the head is then discarded and only the extractor weights are kept.
+<strong>Stage B</strong> freezes that extractor, attaches the Bayesian fully-connected head, and
+trains one-class on real videos only. What follows is Stage A.</p>
+
+<p>Frames were letterboxed: scaled by <span class="m">min(W&#8348;/W, H&#8348;/H)</span> to fit
+inside the canvas, with the short side made up by <strong>edge-pixel replication</strong>
+(<span class="m">cv2.BORDER_REPLICATE</span>) split evenly on both sides. Two extractors, one per
+corpus, 60 epochs each at 896&times;504.</p>
+
+<p>As a control we built a ranker that reads only the share of the canvas occupied by that
+replicated border, ignoring image content entirely. Neither network exceeded it.</p>
+
+<div class="tw">
+  <table>
+    <caption><b>Table 2</b>Stage A validation AUROC against the padding-only control on the same split.</caption>
+    <thead><tr><th>Corpus</th><th>Network</th><th>Padding-only control</th><th>Difference</th></tr></thead>
+    <tbody>
+      <tr><td>CelebDFv3</td><td>0.819</td><td class="bad">0.828</td><td class="bad">&minus;0.009</td></tr>
+      <tr><td>DFD</td><td>0.480</td><td>0.500</td><td class="bad">&minus;0.020</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>Possible explanations differ by corpus, and both need further experiments to confirm.</p>
+
+<ol class="tight">
+  <li><strong>CelebDFv3.</strong> Real videos are 93.9% wide and fakes 65.1% square, so border
+  share is correlated with the label; 13 of the 22 forgery methods emit no wide video at all.
+  The network may be relying substantially on that correlation rather than on manipulation traces.</li>
+  <li><strong>DFD.</strong> Every video is 1920&times;1080, so no such correlation exists, and the
+  network learned little that transfers &mdash; training loss settled at 0.673 against
+  <span class="m">ln 2 = 0.693</span>. One possible cause is the small share of the input the face
+  occupies: with a 213 px face box and a &times;0.47 scale, roughly <strong>2.2%</strong> of the
+  input pixels, against about 6% for CelebDFv3.</li>
+</ol>
+
+<h2><span class="n">04</span>Revised proposal: face crop</h2>
+
+<p>Adopt the published pipeline: <strong>detect the face, enlarge the box &times;1.3, resize to
+256&times;256</strong>. The 1.3 margin was established by FaceForensics++ (R&ouml;ssler et al.,
+ICCV 2019), fixed as the default by DeepfakeBench (Yan et al., NeurIPS 2023 Datasets &amp;
+Benchmarks), and used to produce the Celeb-DF++ baselines in Table 1. Adopting it is what makes
+our results comparable to mainstream work.</p>
+
+<p>It also improves the resampling situation. Frame size differs across the corpora by a factor
+of 3.75; face size barely differs at all.</p>
+
+<div class="tw">
+  <table>
+    <caption><b>Table 3</b>Median face box per group and the scale needed to reach a 256&times;256 crop.</caption>
+    <thead><tr><th>Group</th><th>Frame width</th><th>Face width</th><th>&times;1.3 box</th><th>Scale to 256</th></tr></thead>
+    <tbody>
+      <tr><td>DFD, real and fake</td><td>1920</td><td>213</td><td>277</td><td>&times;0.92</td></tr>
+      <tr><td>CelebDFv3 real, wide</td><td>856</td><td>156</td><td>203</td><td>&times;1.26</td></tr>
+      <tr><td>CelebDFv3 fake, FaceSwap</td><td>850</td><td>160</td><td>208</td><td>&times;1.23</td></tr>
+      <tr><td>CelebDFv3 fake, TalkingFace</td><td>512</td><td>169</td><td>220</td><td>&times;1.16</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<figure>
+  <svg viewBox="0 0 720 150" role="img" aria-label="Resampling factor per group: whole-frame letterboxing spans a factor of 4.2, face cropping spans 1.36.">
+    <line x1="393.7" y1="18" x2="393.7" y2="126" stroke="var(--rule-strong)" stroke-width="1"/>
+    <text class="sv-mut" x="393.7" y="11" text-anchor="middle">native</text>
+
+    <text class="sv-lab" x="30" y="36">Whole frame &rarr; 896&times;504</text>
+    <text class="sv-mut" x="690" y="36" text-anchor="end">4.2&times; spread</text>
+    <line x1="99.8" y1="50" x2="655.4" y2="50" stroke="var(--warn)" stroke-width="6" opacity="0.16"/>
+    <circle cx="99.8" cy="50" r="4" fill="var(--warn)"/>
+    <circle cx="397.5" cy="50" r="4" fill="var(--warn)"/>
+    <circle cx="412.5" cy="50" r="4" fill="var(--warn)"/>
+    <circle cx="655.4" cy="50" r="4" fill="var(--warn)"/>
+    <text class="sv-warn" x="99.8" y="67" text-anchor="middle">DFD &times;0.47</text>
+    <text class="sv-warn" x="405" y="67" text-anchor="middle">CelebDFv3 wide &times;1.01&ndash;1.05</text>
+    <text class="sv-warn" x="658" y="67" text-anchor="end">square &times;1.97</text>
+
+    <text class="sv-lab" x="30" y="88">Face crop &times;1.3 &rarr; 256&times;256</text>
+    <text class="sv-mut" x="690" y="88" text-anchor="end">1.36&times; spread</text>
+    <line x1="363.2" y1="102" x2="483.1" y2="102" stroke="var(--accent)" stroke-width="6" opacity="0.2"/>
+    <circle cx="363.2" cy="102" r="4" fill="var(--accent)"/>
+    <circle cx="452.2" cy="102" r="4" fill="var(--accent)"/>
+    <circle cx="473.9" cy="102" r="4" fill="var(--accent)"/>
+    <circle cx="483.1" cy="102" r="4" fill="var(--accent)"/>
+    <text class="sv-acc" x="352" y="119" text-anchor="end">DFD &times;0.92</text>
+    <text class="sv-acc" x="494" y="119">CelebDFv3 &times;1.16&ndash;1.26</text>
+
+    <line x1="30" y1="134" x2="690" y2="134" stroke="var(--rule)" stroke-width="1"/>
+    <text class="sv-mut" x="126.1" y="146" text-anchor="middle">0.5</text>
+    <text class="sv-mut" x="256" y="146" text-anchor="middle">0.7</text>
+    <text class="sv-mut" x="393.7" y="146" text-anchor="middle">1.0</text>
+    <text class="sv-mut" x="523.5" y="146" text-anchor="middle">1.4</text>
+    <text class="sv-mut" x="661.2" y="146" text-anchor="middle">2.0</text>
+  </svg>
+  <figcaption>Resampling factor, log scale. Anything off the centre line loses or invents detail.</figcaption>
+</figure>
+
+<p>Two further consequences. There is no padding, so the border-share correlation disappears and
+all 22 forgery methods stay usable &mdash; against 9 that survive a shape-controlled subset of the
+whole-frame data. And the face occupies 59% of the input rather than 2.2&ndash;6%. 256&times;256
+is also the native size of CelebDFv3's own square fakes.</p>
+
+<h2><span class="n">05</span>Costs</h2>
+
+<ol class="tight">
+  <li><strong>Detection failure is silent.</strong> A wrong box feeds a wrong crop and raises no
+  error &mdash; so we log per-video detection rate and box stability, and withhold what falls
+  below threshold.</li>
+  <li><strong>The crop discards background,</strong> where blending boundaries and background
+  inconsistency also live. The 1.3 margin keeps some of it; this is a trade, not a free gain.</li>
+  <li><strong>Cropping can introduce its own shortcut</strong> if the detector behaves differently
+  on fakes &mdash; so we check the per-class distribution of box size, as we did for border share.</li>
+</ol>
+
+<p>The 1.3 margin is a convention, not an optimum; we adopt it for comparability and can ablate it
+later against that baseline. For the detector we start with DLIB to match the protocol, measure
+detection rate first, and substitute a stronger detector with a noted deviation if it fails on
+DFD's 1080p scenes, as the Haar cascade did.</p>
+
+<h2><span class="n">06</span>Next steps</h2>
+
+<ol class="tight">
+  <li>Cache face boxes for both corpora in one offline pass, with the detection-rate report.</li>
+  <li>Re-score the two existing whole-frame extractors on a shape-matched subset, so that result
+  stands as a measured ablation.</li>
+  <li>Re-run Stage A at face crop &times;1.3 &rarr; 256&times;256, one extractor per corpus.</li>
+  <li>Stage B, then the 2&times;2 matrix, reported alongside the baselines in Section 01.</li>
+</ol>
+
+<footer>
+Resolution figures come from a census of all 57,517 videos in the two corpora. Face measurements
+are Haar-cascade boxes on the mid-frame of 35&ndash;40 randomly sampled videos per group, seed 42;
+they establish <em>scale</em>, not detection quality &mdash; choosing the production detector is
+step 1.
+<span class="r">R&ouml;ssler et al., <em>FaceForensics++</em>, ICCV 2019 &middot;
+Yan et al., <em>DeepfakeBench</em>, NeurIPS 2023 Datasets &amp; Benchmarks &middot;
+<em>Celeb-DF++</em>, arXiv:2507.18015, 2025</span>
+</footer>
+
+</div>

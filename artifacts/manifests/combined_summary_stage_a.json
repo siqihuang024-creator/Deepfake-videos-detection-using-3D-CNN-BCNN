@@ -1,0 +1,134 @@
+{
+  "identity_protocol": "Dataset-local identity splits. DFD val/test fakes are donor-safe in the strict manifest; fake videos are never assigned to training.",
+  "identities": {
+    "DFD": {
+      "train": 20,
+      "val": 4,
+      "test": 4
+    },
+    "CelebDFv3": {
+      "train": 245,
+      "val": 57,
+      "test": 57
+    }
+  },
+  "videos": {
+    "CelebDFv3:excluded_donor:fake": 14538,
+    "CelebDFv3:test:fake": 5433,
+    "CelebDFv3:test:real": 170,
+    "CelebDFv3:train:fake": 28150,
+    "CelebDFv3:train:real": 554,
+    "CelebDFv3:val:fake": 5075,
+    "CelebDFv3:val:real": 166,
+    "DFD:excluded_donor:fake": 1103,
+    "DFD:test:fake": 54,
+    "DFD:test:real": 54,
+    "DFD:train:fake": 1894,
+    "DFD:train:real": 264,
+    "DFD:val:fake": 17,
+    "DFD:val:real": 45
+  },
+  "fake_methods": {
+    "CelebDFv3:FaceReenact/DaGAN": 1947,
+    "CelebDFv3:FaceReenact/FSRT": 1947,
+    "CelebDFv3:FaceReenact/HyperReenact": 1947,
+    "CelebDFv3:FaceReenact/LIA": 1948,
+    "CelebDFv3:FaceReenact/LivePortrait": 1948,
+    "CelebDFv3:FaceReenact/MCNET": 1947,
+    "CelebDFv3:FaceReenact/TPSMM": 1948,
+    "CelebDFv3:FaceSwap/BlendFace": 1948,
+    "CelebDFv3:FaceSwap/Celeb-DF-v2": 5639,
+    "CelebDFv3:FaceSwap/GHOST": 1948,
+    "CelebDFv3:FaceSwap/HifiFace": 1948,
+    "CelebDFv3:FaceSwap/InSwapper": 1948,
+    "CelebDFv3:FaceSwap/MobileFaceSwap": 1953,
+    "CelebDFv3:FaceSwap/SimSwap": 1953,
+    "CelebDFv3:FaceSwap/UniFace": 1948,
+    "CelebDFv3:TalkingFace/AniTalker": 2950,
+    "CelebDFv3:TalkingFace/EDTalk": 2865,
+    "CelebDFv3:TalkingFace/EchoMimic": 2885,
+    "CelebDFv3:TalkingFace/FLOAT": 2950,
+    "CelebDFv3:TalkingFace/IP_LAP": 2935,
+    "CelebDFv3:TalkingFace/Real3DPortrait": 2744,
+    "CelebDFv3:TalkingFace/SadTalker": 2950,
+    "DFD:DeepFakeDetection": 3068
+  },
+  "roots": {
+    "DFD": "E:\\PhD\\Deepfake Video TCN+BCNN\\Datasets\\DFD-Kaggle",
+    "CelebDFv3": "E:\\PhD\\Deepfake Video TCN+BCNN\\Datasets\\CelebDFv3\\CelebDFv3"
+  },
+  "audit": {
+    "DFD": {
+      "donor_identities_crossing": {
+        "train/val": 0,
+        "train/test": 0,
+        "val/test": 0
+      },
+      "splits": {
+        "train": {
+          "identities": 20,
+          "identities_with_both_classes": 20,
+          "real": 264,
+          "fake": 1894,
+          "source_clips": 249,
+          "fakes_whose_source_real_is_in_split": 1894
+        },
+        "val": {
+          "identities": 4,
+          "identities_with_both_classes": 2,
+          "real": 45,
+          "fake": 17,
+          "source_clips": 11,
+          "fakes_whose_source_real_is_in_split": 17
+        },
+        "test": {
+          "identities": 4,
+          "identities_with_both_classes": 3,
+          "real": 54,
+          "fake": 54,
+          "source_clips": 32,
+          "fakes_whose_source_real_is_in_split": 54
+        }
+      },
+      "excluded": {
+        "excluded_donor": 1103
+      }
+    },
+    "CelebDFv3": {
+      "donor_identities_crossing": {
+        "train/val": 0,
+        "train/test": 0,
+        "val/test": 0
+      },
+      "splits": {
+        "train": {
+          "identities": 245,
+          "identities_with_both_classes": 35,
+          "real": 554,
+          "fake": 28150,
+          "source_clips": 344,
+          "fakes_whose_source_real_is_in_split": 28150
+        },
+        "val": {
+          "identities": 57,
+          "identities_with_both_classes": 12,
+          "real": 166,
+          "fake": 5075,
+          "source_clips": 121,
+          "fakes_whose_source_real_is_in_split": 5075
+        },
+        "test": {
+          "identities": 57,
+          "identities_with_both_classes": 12,
+          "real": 170,
+          "fake": 5433,
+          "source_clips": 125,
+          "fakes_whose_source_real_is_in_split": 5433
+        }
+      },
+      "excluded": {
+        "excluded_donor": 14538
+      }
+    }
+  }
+}

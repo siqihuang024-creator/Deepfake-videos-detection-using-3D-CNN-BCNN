@@ -1,0 +1,263 @@
+<title>CelebDFv3 与 DFD 画面处理方案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600&family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#FBFBFA; --surface:#FFFFFF; --band:#F1F2F0;
+    --ink:#1A1C1A; --muted:#5C625C; --faint:#8D938D;
+    --rule:#DFE1DE; --rule-strong:#B7BBB6;
+    --accent:#3D6B4E; --warn:#9A5A2B; --warn-soft:#F5EBE1;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#12140F; --surface:#191C16; --band:#20241D;
+      --ink:#E6E8E2; --muted:#9BA298; --faint:#717869;
+      --rule:#282D22; --rule-strong:#3D4436;
+      --accent:#8FBE9E; --warn:#D19A6B; --warn-soft:#2A1F16;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12140F; --surface:#191C16; --band:#20241D;
+    --ink:#E6E8E2; --muted:#9BA298; --faint:#717869;
+    --rule:#282D22; --rule-strong:#3D4436;
+    --accent:#8FBE9E; --warn:#D19A6B; --warn-soft:#2A1F16;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans SC",system-ui,sans-serif;
+    font-size:14.5px; line-height:1.8; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:800px; margin:0 auto; padding:0 26px 60px}
+  header{padding:48px 0 16px; border-bottom:1px solid var(--rule-strong)}
+  h1{font-family:"Noto Serif SC",Georgia,serif; font-weight:600;
+    font-size:clamp(23px,3.1vw,29px); line-height:1.32; margin:0; text-wrap:balance}
+  .deck{margin:9px 0 0; color:var(--muted); font-size:14px; max-width:40em}
+  h2{font-family:"Noto Serif SC",Georgia,serif; font-weight:600; font-size:18px;
+    margin:30px 0 3px; display:flex; gap:10px; align-items:baseline; text-wrap:balance}
+  h2 .n{font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:500;
+    color:var(--accent); letter-spacing:.09em; flex:none}
+  p{margin:8px 0; max-width:40em}
+  code,.m{font-family:"IBM Plex Mono",monospace; font-size:.9em; font-variant-numeric:tabular-nums}
+  strong{font-weight:700}
+  .k{font-weight:700; color:var(--accent)}
+
+  .tw{overflow-x:auto; margin:14px 0; border:1px solid var(--rule); background:var(--surface)}
+  table{border-collapse:collapse; width:100%; font-size:12.5px}
+  caption{caption-side:top; text-align:left; padding:8px 14px 7px; font-size:12px;
+    line-height:1.6; color:var(--muted); border-bottom:1px solid var(--rule)}
+  caption b{font-family:"IBM Plex Mono",monospace; color:var(--accent);
+    font-weight:500; margin-right:8px; font-size:10.5px; letter-spacing:.06em}
+  th,td{padding:6px 14px; text-align:left; border-bottom:1px solid var(--rule); white-space:nowrap}
+  thead th{font-size:11px; font-weight:500; color:var(--muted);
+    border-bottom:1px solid var(--rule-strong)}
+  tbody td{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+  tbody td:first-child, td.t{font-family:"Noto Sans SC",sans-serif; white-space:normal}
+  tbody tr:last-child td{border-bottom:0}
+  td.bad{color:var(--warn); background:var(--warn-soft)}
+  td.good{color:var(--accent); font-weight:500}
+
+  ol.tight{margin:8px 0; padding-left:22px; max-width:40em}
+  ol.tight li{margin:5px 0; padding-left:3px}
+  ol.tight li::marker{font-family:"IBM Plex Mono",monospace; font-size:.85em; color:var(--accent)}
+
+  figure{margin:14px 0; padding:12px 14px 8px; border:1px solid var(--rule);
+    background:var(--surface); overflow-x:auto}
+  figcaption{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.6}
+  svg{display:block; min-width:620px}
+  .sv-lab{font-family:"Noto Sans SC",sans-serif; font-size:11.5px; fill:var(--ink)}
+  .sv-mut{font-family:"IBM Plex Mono",monospace; font-size:10px; fill:var(--muted)}
+  .sv-cn{font-family:"Noto Sans SC",sans-serif; font-size:10px; fill:var(--muted)}
+  .sv-acc{font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--accent)}
+  .sv-warn{font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--warn)}
+
+  footer{margin-top:30px; padding-top:12px; border-top:1px solid var(--rule);
+    color:var(--faint); font-size:11.5px; max-width:40em; line-height:1.8}
+  footer .r{display:block; margin-top:5px}
+  @media (max-width:620px){ .wrap{padding:0 16px 48px} }
+</style>
+
+<div class="wrap">
+
+<header>
+  <h1>CelebDFv3 与 DFD 的视频画面处理方案</h1>
+  <p class="deck">已发表工作在这两个数据集上的做法、对 892&times;500 居中裁剪方案的实测，
+  以及修订后的方案。CelebDFv3 即 Celeb-DF++。</p>
+</header>
+
+<h2><span class="n">01</span>已发表工作的做法</h2>
+
+<p>这两个数据集上的工作流程是一致的：<strong>检测人脸，按 1.3 倍边距裁剪，
+缩放到固定的方形尺寸</strong>。没有工作使用整帧输入。</p>
+
+<div class="tw">
+  <table>
+    <caption><b>表 1</b>标准参考文献中的预处理流程。</caption>
+    <thead><tr><th>来源</th><th>预处理</th><th>网络输入</th></tr></thead>
+    <tbody>
+      <tr><td class="t">FaceForensics++（ICCV 2019）</td>
+          <td class="t">人脸跟踪，保守裁剪，边距扩大 &times;1.3</td>
+          <td>299&times;299</td></tr>
+      <tr><td class="t">DeepfakeBench（NeurIPS 2023）</td>
+          <td class="t">DLIB 检测与对齐，边距 1.3</td>
+          <td>256&times;256，每视频 32 帧</td></tr>
+      <tr><td class="t">Celeb-DF++（2025）&mdash; 即本数据集</td>
+          <td class="t">沿用 DeepfakeBench 的默认设置</td>
+          <td>同上</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>第三行决定了可比性：该基准自己公布的基线，正是在这套默认设置下产生的 &mdash;
+GF-eval 帧级 71.7%、视频级 72.1%，GFD-eval 69.4% 与 73.7%。
+只有预处理一致，我们的结果才能与这些数字并列。</p>
+
+<h2><span class="n">02</span>892&times;500 居中裁剪的实测</h2>
+
+<p>892&times;500 是<em>真实视频</em>的中位尺寸；伪造视频与另一个数据集的情况不同。</p>
+
+<p><span class="k">CelebDFv3 大部分视频裁不出这个尺寸。</span>裁剪要求源视频至少 892 宽<em>且</em>
+500 高，而 CelebDFv3 仅 <strong>6.5%</strong> 满足（3,533 / 54,086）：23,059 段为
+256&times;256、8,579 段为 512&times;512，连宽幅伪造（856&times;478）两个方向也都不够。
+所有视频都能裁出的最大尺寸是 <span class="m">256&times;208</span>。DFD 则 100% 满足。</p>
+
+<p><span class="k">DFD 的人脸不在画面中心。</span>抽取 40 段视频，39 段检出人脸，
+框中位尺寸 <span class="m">213&times;213</span> px（占画面宽度 11%），
+脸心中位位于画面中心<span class="m">上方 251 px</span>。居中裁 892&times;500，
+39 段中仅 1 段完整框住人脸、37 段只框住一部分 &mdash;
+人头位于取景画面的上三分之一，穿过正中的 500 px 高的带子会从下巴切过。</p>
+
+<h2><span class="n">03</span>整帧实验的结果</h2>
+
+<p>检测器分两阶段训练。<strong>Stage A</strong> 是特征提取器的预训练：给 3D-CNN
+接一个普通的确定性分类头，用真／假标签做二分类；训完丢掉分类头，只保留提取器权重。
+<strong>Stage B</strong> 冻结该提取器，换上贝叶斯全连接头，仅用真实视频做单类训练。
+以下报告的是 Stage A。</p>
+
+<p>补边方式为 letterbox：每帧按 <span class="m">min(W&#8348;/W, H&#8348;/H)</span>
+等比缩放至恰好放入画布，短边不足的部分用<strong>边缘像素复制</strong>
+（<span class="m">cv2.BORDER_REPLICATE</span>）在两侧均分补齐。
+两个提取器各训 60 轮，画布 896&times;504，每个数据集一个。</p>
+
+<p>作为对照，我们构造了一个只读取画布上被复制边框占据的比例、完全不看画面内容的排序基线。
+两个网络都没有超过它。</p>
+
+<div class="tw">
+  <table>
+    <caption><b>表 2</b>Stage A 验证集 AUROC 与同一划分上的纯补边对照。</caption>
+    <thead><tr><th>数据集</th><th>网络</th><th>纯补边对照</th><th>差值</th></tr></thead>
+    <tbody>
+      <tr><td>CelebDFv3</td><td>0.819</td><td class="bad">0.828</td><td class="bad">&minus;0.009</td></tr>
+      <tr><td>DFD</td><td>0.480</td><td>0.500</td><td class="bad">&minus;0.020</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p>两个数据集可能的原因不同，且都还需要进一步实验确认。</p>
+
+<ol class="tight">
+  <li><strong>CelebDFv3。</strong>真实视频 93.9% 为宽幅、伪造视频 65.1% 为方形，
+  补边比例因而与类别相关；22 种伪造方法中有 13 种完全不产出宽幅视频。
+  网络有可能在相当程度上依赖了这一相关性，而非伪造痕迹本身。</li>
+  <li><strong>DFD。</strong>全部视频为 1920&times;1080，不存在上述相关性，
+  网络也没有学到可迁移的信息 &mdash; 训练损失停在 0.673，而
+  <span class="m">ln 2 = 0.693</span>。一个可能的原因是人脸在输入中占比过小：
+  按 213 px 的人脸框与 &times;0.47 的缩放计算，约为输入像素的 <strong>2.2%</strong>，
+  而 CelebDFv3 约为 6%。</li>
+</ol>
+
+<h2><span class="n">04</span>修订方案：人脸裁剪</h2>
+
+<p>采用已发表工作的流程：<strong>检测人脸，把框放大 &times;1.3，缩放到 256&times;256</strong>。
+1.3 倍边距由 FaceForensics++（R&ouml;ssler 等，ICCV 2019）确立，
+DeepfakeBench（Yan 等，NeurIPS 2023 Datasets &amp; Benchmarks）将其固定为默认设置，
+表 1 中 Celeb-DF++ 的基线也是在该设置下产生的。采用它，我们的结果才与主流工作可比。</p>
+
+<p>它同时改善了缩放问题。两个数据集的画面尺寸相差 3.75 倍，但人脸尺寸几乎没有差别。</p>
+
+<div class="tw">
+  <table>
+    <caption><b>表 3</b>各组人脸框中位尺寸，以及裁到 256&times;256 所需的缩放系数。</caption>
+    <thead><tr><th>组别</th><th>画面宽</th><th>脸宽</th><th>&times;1.3 后</th><th>缩放到 256</th></tr></thead>
+    <tbody>
+      <tr><td>DFD 真实与伪造</td><td>1920</td><td>213</td><td>277</td><td>&times;0.92</td></tr>
+      <tr><td>CelebDFv3 真实，宽幅</td><td>856</td><td>156</td><td>203</td><td>&times;1.26</td></tr>
+      <tr><td>CelebDFv3 伪造，FaceSwap</td><td>850</td><td>160</td><td>208</td><td>&times;1.23</td></tr>
+      <tr><td>CelebDFv3 伪造，TalkingFace</td><td>512</td><td>169</td><td>220</td><td>&times;1.16</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<figure>
+  <svg viewBox="0 0 720 150" role="img" aria-label="各组视频的重采样系数：整帧方案跨度 4.2 倍，人脸裁剪跨度 1.36 倍。">
+    <line x1="393.7" y1="18" x2="393.7" y2="126" stroke="var(--rule-strong)" stroke-width="1"/>
+    <text class="sv-cn" x="393.7" y="11" text-anchor="middle">原生尺度</text>
+
+    <text class="sv-lab" x="30" y="36">整帧 &rarr; 896&times;504</text>
+    <text class="sv-cn" x="690" y="36" text-anchor="end">跨度 4.2 倍</text>
+    <line x1="99.8" y1="50" x2="655.4" y2="50" stroke="var(--warn)" stroke-width="6" opacity="0.16"/>
+    <circle cx="99.8" cy="50" r="4" fill="var(--warn)"/>
+    <circle cx="397.5" cy="50" r="4" fill="var(--warn)"/>
+    <circle cx="412.5" cy="50" r="4" fill="var(--warn)"/>
+    <circle cx="655.4" cy="50" r="4" fill="var(--warn)"/>
+    <text class="sv-warn" x="99.8" y="67" text-anchor="middle">DFD &times;0.47</text>
+    <text class="sv-warn" x="405" y="67" text-anchor="middle">CelebDFv3 宽幅 &times;1.01&ndash;1.05</text>
+    <text class="sv-warn" x="658" y="67" text-anchor="end">方形 &times;1.97</text>
+
+    <text class="sv-lab" x="30" y="88">人脸裁剪 &times;1.3 &rarr; 256&times;256</text>
+    <text class="sv-cn" x="690" y="88" text-anchor="end">跨度 1.36 倍</text>
+    <line x1="363.2" y1="102" x2="483.1" y2="102" stroke="var(--accent)" stroke-width="6" opacity="0.2"/>
+    <circle cx="363.2" cy="102" r="4" fill="var(--accent)"/>
+    <circle cx="452.2" cy="102" r="4" fill="var(--accent)"/>
+    <circle cx="473.9" cy="102" r="4" fill="var(--accent)"/>
+    <circle cx="483.1" cy="102" r="4" fill="var(--accent)"/>
+    <text class="sv-acc" x="352" y="119" text-anchor="end">DFD &times;0.92</text>
+    <text class="sv-acc" x="494" y="119">CelebDFv3 &times;1.16&ndash;1.26</text>
+
+    <line x1="30" y1="134" x2="690" y2="134" stroke="var(--rule)" stroke-width="1"/>
+    <text class="sv-mut" x="126.1" y="146" text-anchor="middle">0.5</text>
+    <text class="sv-mut" x="256" y="146" text-anchor="middle">0.7</text>
+    <text class="sv-mut" x="393.7" y="146" text-anchor="middle">1.0</text>
+    <text class="sv-mut" x="523.5" y="146" text-anchor="middle">1.4</text>
+    <text class="sv-mut" x="661.2" y="146" text-anchor="middle">2.0</text>
+  </svg>
+  <figcaption>重采样系数，对数刻度。偏离中线即意味着丢失细节或凭空插值。</figcaption>
+</figure>
+
+<p>另有两点。流程中没有补边，补边比例与类别的相关性随之消失，22 种伪造方法全部可用 &mdash;
+而在整帧数据上做形状对照后只剩 9 种。人脸在输入中的占比也从 2.2%&ndash;6% 提高到 59%。
+此外，256&times;256 正是 CelebDFv3 方形伪造视频的原生尺寸。</p>
+
+<h2><span class="n">05</span>代价</h2>
+
+<ol class="tight">
+  <li><strong>检测失败是静默的。</strong>框错了会喂进错误的裁剪且不报错 &mdash;
+  因此记录逐视频检出率与框稳定性，低于阈值的剔除。</li>
+  <li><strong>裁剪会丢掉背景</strong>，而融合边界与背景不一致也是取证线索。
+  1.3 倍边距保留了一部分；这是取舍，不是白得的收益。</li>
+  <li><strong>裁剪本身可能引入新的捷径</strong> &mdash; 若检测器在伪造视频上行为不同，
+  则需像检查补边比例那样，检查框尺寸的类间分布。</li>
+</ol>
+
+<p>1.3 倍边距是约定而非最优值，采用它是为了可比，日后可作为消融实验在此基线上调整。
+检测器先用 DLIB 以保持协议一致，并首先测量检出率；若它像 Haar 级联那样在 DFD 的 1080p
+全场景上失效，则替换为更强的检测器并注明这一偏离。</p>
+
+<h2><span class="n">06</span>下一步</h2>
+
+<ol class="tight">
+  <li>离线一次性缓存两个数据集的人脸框，并输出检出率报告。</li>
+  <li>用现有两个整帧模型在形状配对子集上重新打分，使该结果作为一次实测消融留档。</li>
+  <li>按人脸裁剪 &times;1.3 &rarr; 256&times;256 重跑 Stage A，每个数据集一个提取器。</li>
+  <li>Stage B 与 2&times;2 矩阵，结果与第 01 节所列基线并列报告。</li>
+</ol>
+
+<footer>
+分辨率数据来自两个数据集全部 57,517 段视频的完整普查。人脸尺寸是在每组随机抽取的
+35&ndash;40 段视频的中间帧上、用 Haar 级联检测得到的框，随机种子 42；
+这些数字只能确定<em>尺度</em>，不能确定检测质量 &mdash; 选定正式使用的检测器是第 1 步的工作。
+<span class="r">R&ouml;ssler et al., <em>FaceForensics++</em>, ICCV 2019 &middot;
+Yan et al., <em>DeepfakeBench</em>, NeurIPS 2023 Datasets &amp; Benchmarks &middot;
+<em>Celeb-DF++</em>, arXiv:2507.18015, 2025</span>
+</footer>
+
+</div>
