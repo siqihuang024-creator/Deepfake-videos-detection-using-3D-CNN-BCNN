@@ -106,7 +106,10 @@ def read_box_cache(directory):
             continue
         if len(boxes) == 0:
             continue
-        widths[item.stem] = float(np.median(boxes[:, 2] - boxes[:, 0]))
+        # cache_face_boxes.py stores [x, y, w, h], the cascade's convention and
+        # the one _crop_box reads, so column 2 is already the width. Subtracting
+        # column 0 treated them as corners and returned w - x.
+        widths[item.stem] = float(np.median(boxes[:, 2]))
     return widths
 
 

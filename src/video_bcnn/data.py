@@ -96,6 +96,23 @@ class VideoClipDataset(Dataset):
         self.face_detector_scale_factor = float(config.get("face_detector_scale_factor", 1.1))
         self.face_detector_min_neighbors = int(config.get("face_detector_min_neighbors", 5))
         self.box_smoothing_alpha = float(config.get("box_smoothing_alpha", 0.6))
+        # Boxes and 81-point landmarks detected once by scripts/cache_face_boxes.py.
+        # Without this the only detector here is the Haar cascade below, which is
+        # not the protocol: DeepfakeBench specifies dlib, and alignment needs
+        # landmarks a cascade never produces. A missing entry raises rather than
+        # falling back, so a run cannot silently be Haar-without-alignment while
+        # its config claims otherwise.
+        cache_root = config.get("face_box_cache")
+        self.face_box_cache = Path(cache_root) if cache_root else None
+        self.align_landmarks = bool(config.get("align_landmarks", False))
+        if self.align_landmarks and self.face_box_cache is None:
+            raise ValueError(
+                "align_landmarks needs face_box_cache: alignment consumes the "
+                "landmarks the cache stores, and the Haar cascade emits none."
+            )
+        # One decompressed .npz per video, held per worker. Videos are revisited
+        # every epoch and the arrays are small next to a decoded clip.
+        self.detection_store = {}
         self.horizontal_flip_probability = float(config.get("horizontal_flip_probability", 0.5))
         # Overfit diagnostics need the same frames every epoch, so the random
         # training clip position can be pinned to the middle of the video.
@@ -129,6 +146,97 @@ class VideoClipDataset(Dataset):
             if self.detector.empty():
                 raise RuntimeError("OpenCV Haar face cascade could not be initialized.")
         return self.detector
+
+    def _cache_path(self, video_path):
+        """Where cache_face_boxes.py filed this video: <cache>/<dataset>/<rel>.npz."""
+        video_path = Path(video_path)
+        for name, root in self.dataset_roots.items():
+            try:
+                relative = video_path.relative_to(root)
+            except ValueError:
+                continue
+            return self.face_box_cache / name / (relative.as_posix() + ".npz")
+        raise UnreadableVideoError(
+            "{} sits under none of the configured dataset roots, so its "
+            "detections cannot be located.".format(video_path)
+        )
+
+    def _cached_detections(self, video_path):
+        """Frame indices, boxes and landmarks as detected offline.
+
+        Boxes are [x, y, w, h] in the source frame's pixels, matching both the
+        cascade's convention and `_crop_box`. Landmarks are (frames, 81, 2).
+        """
+        key = str(video_path)
+        stored = self.detection_store.get(key)
+        if stored is not None:
+            return stored
+        path = self._cache_path(video_path)
+        if not path.exists():
+            raise UnreadableVideoError(
+                "No cached detections at {}. Run scripts/cache_face_boxes.py "
+                "over this manifest, or clear face_box_cache from the config."
+                .format(path)
+            )
+        with np.load(path) as handle:
+            indices = np.asarray(handle["frame_indices"], dtype=np.int64)
+            boxes = np.asarray(handle["boxes"], dtype=np.float64).reshape(-1, 4)
+            landmarks = np.asarray(handle["landmarks"], dtype=np.float64)
+            stride = int(handle["detect_stride"]) if "detect_stride" in handle else 1
+        order = np.argsort(indices)
+        stored = (indices[order], boxes[order],
+                  landmarks[order] if len(landmarks) == len(indices) else landmarks,
+                  max(stride, 1))
+        self.detection_store[key] = stored
+        return stored
+
+    @staticmethod
+    def _align_on_eyes(frame, box, landmark):
+        """Rotate the frame so the eye line is level, about the box centre.
+
+        The protocol aligns before taking the box, and rotating about the box's
+        own centre leaves that centre fixed, so the box survives the warp
+        unchanged and its width keeps meaning what the margin assumes. The
+        81-point predictor is dlib's 68 plus 13 forehead points, so the eye
+        indices are the usual 36-41 and 42-47.
+        """
+        if landmark is None or len(landmark) < 48:
+            return frame
+        left = np.asarray(landmark[36:42], dtype=np.float64).mean(axis=0)
+        right = np.asarray(landmark[42:48], dtype=np.float64).mean(axis=0)
+        delta = right - left
+        if not np.isfinite(delta).all() or np.allclose(delta, 0.0):
+            return frame
+        angle = float(np.degrees(np.arctan2(delta[1], delta[0])))
+        x, y, width, height = [float(value) for value in box]
+        centre = (x + width / 2.0, y + height / 2.0)
+        matrix = cv2.getRotationMatrix2D(centre, angle, 1.0)
+        return cv2.warpAffine(
+            frame, matrix, (frame.shape[1], frame.shape[0]),
+            flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE,
+        )
+
+    @staticmethod
+    def _interpolate_at(indices, values, wanted):
+        """Linear interpolation between the two detections bracketing `wanted`.
+
+        Detection runs every `detect_stride` frames, so most requested frames
+        have no entry of their own. A face moves a few pixels between adjacent
+        frames -- well inside what the EMA smoother already absorbs -- so
+        interpolating is closer to the truth than snapping to the nearest
+        detected frame. Queries outside the detected range clamp to the end.
+        """
+        position = int(np.searchsorted(indices, wanted))
+        if position <= 0:
+            return values[0].copy()
+        if position >= len(indices):
+            return values[-1].copy()
+        left, right = position - 1, position
+        if indices[right] == wanted:
+            return values[right].copy()
+        span = float(indices[right] - indices[left])
+        fraction = 0.0 if span <= 0 else float(wanted - indices[left]) / span
+        return (1.0 - fraction) * values[left] + fraction * values[right]
 
     @staticmethod
     def _max_start(frame_count, clip_length, stride):
@@ -195,7 +303,29 @@ class VideoClipDataset(Dataset):
                 filled.append((1.0 - fraction) * raw_boxes[left] + fraction * raw_boxes[right])
         return filled
 
-    def _prepare_boxes(self, frames):
+    def _cached_boxes(self, frames, frame_indices, video_path):
+        """Boxes and landmarks for these frames, read from the offline cache."""
+        indices, boxes, landmarks, stride = self._cached_detections(video_path)
+        if len(indices) == 0:
+            # The detector found nothing anywhere in this video. Say so instead
+            # of inventing a face: the centre square keeps the shapes valid and
+            # the audit carries the failure downstream.
+            return ([self._center_square_box(frame) for frame in frames],
+                    [None] * len(frames), len(frames))
+        has_landmarks = len(landmarks) == len(indices) and landmarks.ndim == 3
+        picked, points, misses = [], [], 0
+        for wanted in frame_indices:
+            picked.append(self._interpolate_at(indices, boxes, int(wanted)))
+            points.append(self._interpolate_at(indices, landmarks, int(wanted))
+                          if has_landmarks else None)
+            # Detection ran every `stride` frames, so the nearest entry should
+            # never be farther than that. Farther means the scheduled detection
+            # there failed, which is a miss however smooth the interpolation.
+            nearest = int(np.min(np.abs(indices - int(wanted))))
+            misses += int(nearest > stride)
+        return picked, points, misses
+
+    def _prepare_boxes(self, frames, frame_indices=None, video_path=None):
         if self.frame_mode in ("letterbox", "decimate"):
             # The whole frame is kept, so there is no box to find and no
             # detection to fail. The audit keys stay so downstream reporting
@@ -209,9 +339,15 @@ class VideoClipDataset(Dataset):
                 "center_x_jitter": 0.0, "center_y_jitter": 0.0,
                 "width_jitter": 0.0, "height_jitter": 0.0,
             }
-            return boxes, audit
-        raw_boxes = [self._detect_box(frame) for frame in frames]
-        filled = self._interpolate_missing_boxes(raw_boxes, frames)
+            return boxes, [None] * len(frames), audit
+        if self.face_box_cache is not None:
+            filled, points, misses = self._cached_boxes(
+                frames, frame_indices, video_path)
+        else:
+            raw_boxes = [self._detect_box(frame) for frame in frames]
+            filled = self._interpolate_missing_boxes(raw_boxes, frames)
+            points = [None] * len(frames)
+            misses = sum(box is None for box in raw_boxes)
         boxes, previous = [], None
         alpha = self.box_smoothing_alpha
         for detected in filled:
@@ -229,16 +365,15 @@ class VideoClipDataset(Dataset):
                 height / float(frame_height),
             ])
         normalized = np.asarray(normalized, dtype=np.float64)
-        misses = sum(box is None for box in raw_boxes)
         audit = {
             "any_miss": float(misses > 0),
-            "miss_fraction": float(misses) / float(len(raw_boxes)),
+            "miss_fraction": float(misses) / float(max(len(frames), 1)),
             "center_x_jitter": float(normalized[:, 0].std()),
             "center_y_jitter": float(normalized[:, 1].std()),
             "width_jitter": float(normalized[:, 2].std()),
             "height_jitter": float(normalized[:, 3].std()),
         }
-        return boxes, audit
+        return boxes, points, audit
 
     def _crop_box(self, frame, box):
         """Cut the margin-expanded box out of the frame.
@@ -464,10 +599,16 @@ class VideoClipDataset(Dataset):
         finally:
             capture.release()
         clips, audits = [], []
-        for frames in decoded_clips:
-            boxes, audit = self._prepare_boxes(frames)
+        for frames, indices in zip(decoded_clips, clip_indices):
+            boxes, points, audit = self._prepare_boxes(frames, indices, video_path)
             flip = self.training and np.random.random() < self.horizontal_flip_probability
-            tensors = [self._transform(self._crop_box(frame, box), flip) for frame, box in zip(frames, boxes)]
+            tensors = []
+            for frame, box, landmark in zip(frames, boxes, points):
+                if self.align_landmarks:
+                    # Align first, then take the box, per the protocol's step
+                    # order. Rotating about the box centre leaves the box valid.
+                    frame = self._align_on_eyes(frame, box, landmark)
+                tensors.append(self._transform(self._crop_box(frame, box), flip))
             clips.append(torch.stack(tensors, dim=1))
             audits.append(audit)
         return clips, audits, fps if np.isfinite(fps) and fps > 0.0 else 0.0

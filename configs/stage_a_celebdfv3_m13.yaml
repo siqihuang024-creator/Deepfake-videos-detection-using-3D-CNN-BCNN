@@ -26,6 +26,14 @@ data:
   # exception. Clamping would return a rectangle that the later resize then
   # trims asymmetrically, undoing the scale normalisation the crop exists for.
   crop_padding: replicate
+  # dlib boxes and 81-point landmarks detected once by
+  # scripts/cache_face_boxes.py. Without these two keys the loader falls back
+  # to its Haar cascade with no alignment, which is off protocol -- so a
+  # missing cache entry raises rather than degrading quietly.
+  face_box_cache: artifacts/face_cache
+  align_landmarks: true
+  # Cascade parameters, unused while face_box_cache is set. Kept so removing
+  # the cache reproduces the older runs exactly.
   face_detector_scale_factor: 1.1
   face_detector_min_neighbors: 5
   box_smoothing_alpha: 0.6
