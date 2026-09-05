@@ -1,46 +1,38 @@
-"""Ask whether the extractor's output separates real from fake at all.
+"""Ask whether the extractor's features carry real/fake information.
 
-Stage A trains an extractor behind ``DeterministicHead``, and that head is
+This is Stage A's acceptance test, not a one-off debugging aid. Stage A hands
+Stage B an extractor and throws its head away, and that head is
 ``fc1 -> dropout -> out`` with **no activation between the two linear layers**
-(``model.py:253-255``). A composition of two linear maps onto one output is a
-single linear functional, so the head's 7.9M parameters are an
-over-parameterised way of writing one 15488-dimensional weight vector. Stage A
-is therefore already a linear probe on the extractor's features, and a training
-BCE pinned at ln 2 says one thing precisely: **those features are not linearly
-separable**, even while the extractor is being trained to make them so.
+(``model.py:253-255``) -- a composition of two linear maps onto one output, so
+it is a single linear functional however many parameters it holds. "Did Stage A
+work" therefore means exactly: can a linear classifier separate real from fake
+from these features, on identities it has not seen? Training BCE cannot answer
+that, and a 62-video validation split has an interval that covers chance.
 
-That is surprising enough to check directly. Any n points in general position
-in R^15488 are linearly separable when n is far below 15488, and the 4-identity
-diagnostic had 71 videos. A model that still cannot fit them is more likely to
-be emitting nearly the same vector for every video -- collapse -- than to be
-facing a hard problem.
+Two traps this script exists to avoid, both of which its first version fell
+into:
 
-So this script loads a checkpoint, extracts one feature vector per video, and
-reports three things:
+  * A probe fitted and scored on the same videos is meaningless when the
+    feature dimension dwarfs the sample count. Measured: 60 videos in 15488
+    dimensions gave 0.9422 from an *untrained* extractor. So the probe is
+    cross-validated with folds split by identity, and ``--random-init`` keeps
+    an untrained reference beside every number.
 
-  1. Collapse. Within-class variance against the mean feature norm. A ratio
-     near zero means every video maps to the same point.
-  2. Separation. Distance between the real and fake centroids, in units of the
-     within-class spread -- a Fisher-style ratio, unlike the raw L2 in
-     ``_feature_diagnostics`` which says nothing without a scale to read it in.
-  3. Linear separability. A logistic regression fitted on these very features
-     and scored on them. This is the ceiling Stage A's linear head could ever
-     reach. If the probe reaches 1.0 while training sat at ln 2, the features
-     are fine and the failure is in optimising through the convolutions; if the
-     probe also fails, the representation is the problem.
-
-``--random-init`` repeats everything with a freshly initialised extractor. That
-is the reference that matters: if training moved none of these numbers, the
-convolutions learned nothing at all.
+  * Comparing a per-dimension spread against a whole-vector L2 norm mixes
+    scales and manufactures apparent collapse -- the norm of a d-vector grows
+    like sqrt(d), which understated the spread 124-fold at d = 15488. The norm
+    is divided by sqrt(feature_dim) first, so ``relative_variation`` is the
+    honest "how much do videos differ, relative to how large the features are".
 
 Usage:
     python scripts/feature_diagnostics.py \
         --checkpoint artifacts/run_stage_a_dfd_decimate_pretrain/checkpoints/best.pt \
         --manifest artifacts/manifests/combined_manifest_stage_a.csv \
-        --split val --max-videos 60 --random-init
+        --split train --max-videos 60 --random-init
 """
 
 import argparse
+import math
 import sys
 from pathlib import Path
 
@@ -51,14 +43,18 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
+from video_bcnn.data import load_manifest  # noqa: E402
 from video_bcnn.experiment import (  # noqa: E402
     active_records, make_dataset, select_records,
 )
-from video_bcnn.data import load_manifest  # noqa: E402
 from video_bcnn.utils import (  # noqa: E402
     override_dataset_roots, resolve_device,
 )
 from train_3d_bcnn import build_model  # noqa: E402
+
+# Ridge strengths as multiples of the Gram matrix's mean diagonal, so one grid
+# means the same thing whatever the feature dimension turns out to be.
+RIDGE_GRID = (1e-3, 1e-2, 1e-1, 1.0, 10.0)
 
 
 def auroc(labels, scores):
@@ -68,12 +64,12 @@ def auroc(labels, scores):
     positive, negative = scores[labels == 1], scores[labels == 0]
     if len(positive) == 0 or len(negative) == 0:
         return float("nan")
-    order = np.argsort(np.concatenate([positive, negative]), kind="mergesort")
+    values = np.concatenate([positive, negative])
+    order = np.argsort(values, kind="mergesort")
     ranks = np.empty(len(order), dtype=float)
     ranks[order] = np.arange(1, len(order) + 1)
-    # Average the ranks inside each tie group, otherwise duplicated scores -- which
-    # is exactly what collapsed features produce -- bias the statistic.
-    values = np.concatenate([positive, negative])
+    # Average the ranks inside each tie group, otherwise duplicated scores --
+    # which is what near-constant features produce -- bias the statistic.
     for value in np.unique(values):
         mask = values == value
         if mask.sum() > 1:
@@ -83,67 +79,105 @@ def auroc(labels, scores):
                  / (len(positive) * len(negative)))
 
 
-def collect_features(extractor, dataset, device, limit=None):
-    """One mean-pooled feature vector per video, plus its label."""
-    features, labels, paths = [], [], []
+def collect_features(extractor, dataset, device):
+    """One mean-pooled feature vector per video, with its label and identity."""
+    features, labels, identities = [], [], []
     extractor.eval()
-    total = len(dataset) if limit is None else min(limit, len(dataset))
     with torch.no_grad():
-        for index in range(total):
+        for index in range(len(dataset)):
             item = dataset[index]
             if item is None:
                 continue
-            clips = item["clips"].to(device)
-            vector = extractor(clips).double().mean(dim=0).cpu()
+            vector = extractor(item["clips"].to(device)).double().mean(dim=0).cpu()
             features.append(vector)
             labels.append(int(item["label"]))
-            paths.append(item["path"])
-            if (index + 1) % 10 == 0 or index + 1 == total:
-                print("  {}/{} videos".format(index + 1, total), flush=True)
+            # Falling back to the path keeps every video in its own fold rather
+            # than silently merging them when a manifest carries no identity.
+            identities.append(item.get("target_id") or item["path"])
+            if (index + 1) % 10 == 0 or index + 1 == len(dataset):
+                print("  {}/{} videos".format(index + 1, len(dataset)), flush=True)
     if not features:
         raise RuntimeError("No video was readable.")
-    return torch.stack(features), np.asarray(labels), paths
+    return torch.stack(features), np.asarray(labels), identities
 
 
-def linear_probe(features, labels, steps=400, weight_decay=1e-3, seed=42):
-    """Best AUROC a linear map on these features can reach, fitted on them.
+def ridge_scores(train_x, train_y, test_x, strength):
+    """Closed-form ridge in the dual, so an n x n system is solved, not d x d.
 
-    Fitted and scored on the same videos on purpose: the question is whether a
-    linear separator exists at all, not whether it generalises. Stage A's head
-    is linear, so this is the ceiling that head could ever have hit.
+    With 48 training videos and 15488 features the primal is hopeless and any
+    iterative fit brings a learning rate to argue about. The dual is exact:
+    w = X'a with a = (XX' + lambda I)^-1 y, and predictions never form w.
+    Standardisation uses the training fold's statistics alone, or the held-out
+    videos would leak into their own normalisation.
     """
-    torch.manual_seed(seed)
-    x = features.float()
-    x = (x - x.mean(dim=0)) / x.std(dim=0).clamp_min(1e-6)
-    y = torch.tensor((labels == 1).astype("float32"))
-    weight = torch.zeros(x.shape[1], requires_grad=True)
-    bias = torch.zeros(1, requires_grad=True)
-    optimiser = torch.optim.Adam([weight, bias], lr=0.05)
-    loss_fn = torch.nn.BCEWithLogitsLoss()
-    for _ in range(steps):
-        optimiser.zero_grad(set_to_none=True)
-        logits = x @ weight + bias
-        loss = loss_fn(logits, y) + weight_decay * weight.square().sum()
-        loss.backward()
-        optimiser.step()
-    with torch.no_grad():
-        scores = (x @ weight + bias).numpy()
-    return auroc(labels, scores), float(loss.detach())
+    mean = train_x.mean(dim=0)
+    scale = train_x.std(dim=0).clamp_min(1e-8)
+    a = (train_x - mean) / scale
+    b = (test_x - mean) / scale
+    centred = train_y - train_y.mean()
+    gram = a @ a.T
+    lam = strength * float(torch.diagonal(gram).mean())
+    eye = torch.eye(gram.shape[0], dtype=gram.dtype)
+    alpha = torch.linalg.solve(gram + lam * eye, centred)
+    return (b @ a.T) @ alpha
+
+
+def probe(features, labels, identities, folds=5, seed=42):
+    """Out-of-fold AUROC of a linear probe, with folds split by identity.
+
+    Held out by identity rather than by video because clips of one actor are
+    not independent, and the question is whether the features generalise to a
+    face the extractor has never seen.
+    """
+    x = features.double()
+    y = torch.tensor(labels.astype("float64"))
+    unique = sorted(set(identities))
+    generator = np.random.RandomState(seed)
+    order = generator.permutation(len(unique))
+    fold_of_identity = {unique[position]: index % folds
+                        for index, position in enumerate(order)}
+    fold = np.asarray([fold_of_identity[name] for name in identities])
+    usable = min(folds, len(unique))
+
+    results = {}
+    for strength in RIDGE_GRID:
+        out_of_fold = np.full(len(labels), np.nan)
+        for index in range(usable):
+            test = fold == index
+            train = ~test
+            if test.sum() == 0 or len(np.unique(labels[train])) < 2:
+                continue
+            out_of_fold[test] = ridge_scores(
+                x[train], y[train], x[test], strength).numpy()
+        scored = ~np.isnan(out_of_fold)
+        if scored.sum() < 4 or len(np.unique(labels[scored])) < 2:
+            continue
+        results[strength] = {
+            "out_of_fold": auroc(labels[scored], out_of_fold[scored]),
+            "in_sample": auroc(labels, ridge_scores(x, y, x, strength).numpy()),
+            "scored": int(scored.sum()),
+        }
+    return results, len(unique)
 
 
 def describe(features, labels, name):
-    real = features[labels == 1]
-    fake = features[labels == 0]
-    report = {"videos": int(len(features)), "real": int(len(real)),
-              "fake": int(len(fake))}
+    dimension = features.shape[1]
     norms = features.norm(dim=1)
-    report["mean_feature_norm"] = float(norms.mean())
-    # Spread between videos, relative to how large the vectors are. A collapsed
-    # extractor emits one point, so this ratio goes to zero however large the
-    # raw variance looks in absolute terms.
-    spread = features.std(dim=0).mean()
-    report["between_video_std"] = float(spread)
-    report["spread_over_norm"] = float(spread / max(norms.mean(), 1e-12))
+    # A per-dimension quantity needs a per-dimension reference: the L2 norm of
+    # a d-vector grows like sqrt(d), so dividing a per-dimension spread by the
+    # raw norm understates it 124-fold at d = 15488.
+    per_dimension_rms = float(norms.mean()) / math.sqrt(dimension)
+    spread = float(features.std(dim=0).mean())
+    report = {
+        "videos": int(len(features)),
+        "real": int((labels == 1).sum()),
+        "fake": int((labels == 0).sum()),
+        "mean_feature_norm": float(norms.mean()),
+        "per_dimension_rms": per_dimension_rms,
+        "between_video_std": spread,
+        "relative_variation": spread / max(per_dimension_rms, 1e-12),
+    }
+    real, fake = features[labels == 1], features[labels == 0]
     if len(real) and len(fake):
         centroid_real, centroid_fake = real.mean(dim=0), fake.mean(dim=0)
         gap = float((centroid_real - centroid_fake).norm())
@@ -152,8 +186,8 @@ def describe(features, labels, name):
             (fake - centroid_fake).norm(dim=1)]).mean())
         report["centroid_l2"] = gap
         report["within_class_radius"] = within
-        # Fisher-style: how far apart the classes sit measured in units of how
-        # scattered each class is. Below ~0.2 the classes overlap almost fully.
+        # Scale-free: the class gap in units of within-class scatter, so a
+        # uniform growth in feature magnitude leaves it unchanged.
         report["separation_ratio"] = gap / max(within, 1e-12)
         cosine = torch.dot(centroid_real, centroid_fake) / (
             centroid_real.norm() * centroid_fake.norm() + 1e-12)
@@ -163,6 +197,26 @@ def describe(features, labels, name):
         print("  {:<26} {}".format(
             key, value if isinstance(value, int) else "{:.6g}".format(value)))
     return report
+
+
+def report_probe(features, labels, identities, name):
+    results, identity_count = probe(features, labels, identities)
+    print("\n  linear probe on {} identities, folds split by identity".format(
+        identity_count))
+    print("  {:>10}  {:>15}  {:>12}".format("ridge", "held-out AUROC", "in-sample"))
+    best = None
+    for strength in sorted(results):
+        entry = results[strength]
+        print("  {:>10.0e}  {:>15.4f}  {:>12.4f}".format(
+            strength, entry["out_of_fold"], entry["in_sample"]))
+        if best is None or entry["out_of_fold"] > best[1]:
+            best = (strength, entry["out_of_fold"])
+    if best is None:
+        print("  too few identities or one class only; no probe fitted [{}]".format(name))
+        return float("nan")
+    print("  best held-out AUROC {:.4f} at ridge {:.0e}   [{}]".format(
+        best[1], best[0], name))
+    return best[1]
 
 
 def main():
@@ -176,10 +230,14 @@ def main():
     parser.add_argument("--dataset-root", action="append", default=None,
                         metavar="NAME=PATH")
     parser.add_argument("--device", default=None)
+    parser.add_argument("--save-features", default=None,
+                        help="Write the extracted features to this .npz so the "
+                             "probe can be re-analysed without decoding again.")
     parser.add_argument(
         "--random-init", action="store_true",
-        help="Also report an untrained extractor, so the trained numbers have "
-             "a reference. If they match, the convolutions learned nothing.")
+        help="Also report an untrained extractor. Without that reference a high "
+             "probe score cannot be told apart from the free separability any "
+             "high-dimensional feature offers.")
     args = parser.parse_args()
 
     payload = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
@@ -212,30 +270,37 @@ def main():
     extractor, _ = build_model(config, device)
     extractor.load_state_dict(payload["extractor"])
     print("\nextracting features with the trained extractor...")
-    features, labels, _ = collect_features(extractor, dataset, device)
+    features, labels, identities = collect_features(extractor, dataset, device)
     describe(features, labels, "trained extractor")
-    probe, probe_loss = linear_probe(features, labels)
-    print("  {:<26} {:.4f}   (BCE {:.4f})".format(
-        "linear probe AUROC", probe, probe_loss))
+    trained = report_probe(features, labels, identities, "trained")
 
     if args.random_init:
         fresh, _ = build_model(config, device)
         print("\nextracting features with an untrained extractor...")
-        base_features, base_labels, _ = collect_features(fresh, dataset, device)
+        base_features, base_labels, base_identities = collect_features(
+            fresh, dataset, device)
         describe(base_features, base_labels, "random init (reference)")
-        base_probe, base_loss = linear_probe(base_features, base_labels)
-        print("  {:<26} {:.4f}   (BCE {:.4f})".format(
-            "linear probe AUROC", base_probe, base_loss))
-        print("\ntraining moved the linear probe by {:+.4f}".format(probe - base_probe))
+        baseline = report_probe(base_features, base_labels, base_identities,
+                                "random init")
+        print("\ntraining moved the held-out probe by {:+.4f}  ({:.4f} -> {:.4f})"
+              .format(trained - baseline, baseline, trained))
 
-    print("\n" + "=" * 68)
+    if args.save_features:
+        path = Path(args.save_features)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(path, features=features.numpy(), labels=labels,
+                            identities=np.asarray(identities))
+        print("\nwrote {}".format(path))
+
+    print("\n" + "=" * 70)
     print("How to read this:")
-    print("  spread_over_norm near 0      -> collapse: every video maps to one point")
-    print("  separation_ratio below ~0.2  -> the classes overlap almost entirely")
-    print("  linear probe AUROC near 1.0  -> features ARE separable; the failure")
-    print("                                  is in optimising through the convs")
-    print("  linear probe AUROC near 0.5  -> the representation itself carries")
-    print("                                  no class information")
+    print("  held-out AUROC is the number that matters. In-sample is printed")
+    print("  only to show how much free separability the dimension supplies.")
+    print("  trained ~ random init  -> the convolutions learned nothing usable")
+    print("  trained >> random init -> the features do carry class information")
+    print("                            and the training loop is what is failing")
+    print("  relative_variation ~ 0 -> collapse: every video maps to one point")
+    print("  separation_ratio       -> class gap in units of within-class scatter")
     return 0
 
 
