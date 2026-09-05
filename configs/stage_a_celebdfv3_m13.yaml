@@ -1,0 +1,91 @@
+# Ablation: the x1.3 margin, kept solely as the route to a comparable number.
+#
+# Everything matches stage_a_celebdfv3.yaml except face_margin. The main runs
+# use x2.0 because the blending boundary Face X-ray detects lies outside the
+# inner face and x1.3 clips it, but the Celeb-DF++ baselines we would like to
+# report beside were produced under a fixed preprocessing, and a x2.0 number
+# cannot sit in their table without a note. This config is the only route back
+# to that comparison, so it exists before it is needed rather than after.
+#
+# face_margin is a per-side fraction and total width is (1+2m)w, so 0.15 gives
+# x1.3 -- the FF++ figure, which is not DeepfakeBench's.
+seed: 42
+device: cuda
+
+data:
+  active_datasets: [CelebDFv3]
+  dataset_roots:
+    DFD: E:/PhD/Deepfake Video TCN+BCNN/Datasets/DFD-Kaggle
+    CelebDFv3: E:/PhD/Deepfake Video TCN+BCNN/Datasets/CelebDFv3/CelebDFv3
+
+  frame_mode: face
+  face_crop: true
+  face_margin: 0.15
+  # Off-centre faces are common (16% of CelebDFv3 faces sit more than 30% off
+  # centre) and a wide margin makes edge overrun the rule rather than the
+  # exception. Clamping would return a rectangle that the later resize then
+  # trims asymmetrically, undoing the scale normalisation the crop exists for.
+  crop_padding: replicate
+  face_detector_scale_factor: 1.1
+  face_detector_min_neighbors: 5
+  box_smoothing_alpha: 0.6
+
+  # 'max' means the largest balance group, which for supervised Stage A is
+  # the fake pool -- 28150 clips per class per epoch on CelebDFv3. The
+  # whole-frame runs used 1000, and every training video still stays in
+  # the pool; a smaller budget just means more epochs see more of it.
+  train_samples_per_dataset_per_epoch: 1000
+  clip_length: 8
+  train_clip_strides: [1, 2]
+  selection_clips_per_video: 4
+  eval_clips_per_video: 8
+  eval_clip_stride: 2
+  selection_max_fakes_per_dataset: 1000
+
+  horizontal_flip_probability: 0.5
+  normalize_mean: [0.485, 0.456, 0.406]
+  normalize_std: [0.229, 0.224, 0.225]
+  num_workers: 2
+
+model:
+  architecture: 3d
+  # 256/256 so CenterCrop is a no-op and the square crop reaches the network
+  # whole. DeepfakeBench Sec. 4.1 specifies 256x256.
+  input_resize: 256
+  center_crop: 256
+  # build_model defaults to activation='sigmoid', norm='none' -- the
+  # pre-v9 architecture. Three conv3d layers behind sigmoid barely pass a
+  # gradient to the first one; v9 reached 0.7774 only after relu and batch
+  # norm, and every run since has carried both on the command line. Written
+  # here so a run that omits the flags still gets the architecture we mean.
+  activation: relu
+  norm: batch
+  conv_channels: [16, 24, 32]
+  spatial_kernel_size: 5
+  temporal_kernel_size: 3
+  spatial_pool_kernel_size: 4
+  spatial_pool_stride: 2
+  feature_dim: 15488
+  hidden_dim: 512
+  dropout: 0.2
+  prior_std: 0.1
+  posterior_rho_init: -5.0
+  observation_std: 1.0
+
+train:
+  epochs: 60
+  physical_batch_size: 1
+  learning_rate: 0.0001
+  momentum: 0.9
+  gradient_clip_norm: 5.0
+  lr_gamma: 0.95
+  lr_step_interval: 1
+  kl_weight: 0.001
+  report_mc_uncertainty_samples: 0
+  calibration_false_positive_rate: 0.05
+  selection_metric: macro_dataset_auroc
+  selection_min_metric_improvement: 0.002
+  early_stopping_patience: 8
+  checkpoint_dir: artifacts/run_stage_a_celebdfv3_m13/checkpoints
+  log_dir: artifacts/run_stage_a_celebdfv3_m13/logs
+  report_dir: artifacts/run_stage_a_celebdfv3_m13/reports
