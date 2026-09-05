@@ -1,0 +1,111 @@
+# Experiment 2: DFD through the same face-crop pipeline as CelebDFv3.
+#
+# This is the middle cell of the design. Experiment 1 (stage_a_dfd.yaml, whole
+# frame) and experiment 3 (stage_a_celebdfv3.yaml, face crop) differ in two
+# variables at once, so neither can be attributed. This run holds the dataset
+# at DFD and changes only the input mode, and it holds the input mode at the
+# face crop and changes only the dataset against experiment 3. Every pair then
+# moves exactly one variable.
+#
+# Why x2.0 rather than the x1.3 of FF++ / DeepfakeBench: face_margin is a
+# per-side fraction and the crop spans (1 + 2m) box widths, so 0.50 gives x2.0.
+# The evidence a detector needs is the blending boundary, which Face X-ray (Li
+# et al., CVPR 2020) shows lies outside the inner face, and a x1.3 crop clips
+# part of it along with the neck and shoulders. x1.5 (face_margin 0.25) is what
+# every run from v9 to v15 actually used -- despite those runs claiming x1.3 --
+# and is therefore the only empirically validated setting here, so it stays
+# available as the ablation.
+#
+# Known cost of matching CelebDFv3's canvas (plan A). The face lands on
+# 256/(1+2m) = 128 px whatever the source resolution, but it gets there
+# differently: CelebDFv3's median box is 129 px, so its pixels pass through at
+# a resampling factor of 0.99, while DFD's ~200 px box at 1080p is reduced by
+# 0.64 and arrives softened by cv2.INTER_AREA. Geometry is matched, effective
+# resolution is not. If this run underperforms experiment 3, that 0.64 is the
+# first variable to try -- a 400 px canvas would hold DFD's face at its native
+# scale, and AdaptiveAvgPool keeps feature_dim at 15488 either way.
+#
+# Before trusting any number from this run, re-run scripts/shortcut_controls.py
+# at this margin. A wider crop overruns the frame edge more often, replicate
+# padding fills the overrun, and the whole-frame run of 2026-09-02 was beaten
+# by a ranker reading nothing but the padding share: 0.828 against the model's
+# 0.819.
+seed: 42
+device: cuda
+
+data:
+  active_datasets: [DFD]
+  dataset_roots:
+    DFD: E:/PhD/Deepfake Video TCN+BCNN/Datasets/DFD-Kaggle
+    CelebDFv3: E:/PhD/Deepfake Video TCN+BCNN/Datasets/CelebDFv3/CelebDFv3
+
+  frame_mode: face
+  face_crop: true
+  face_margin: 0.50
+  crop_padding: replicate
+  # Identical to stage_a_celebdfv3.yaml so the two runs differ in the dataset
+  # and nothing else. data.py runs Haar online -- cache_face_boxes.py writes
+  # .npz files that the loader has no path to read yet.
+  face_detector_scale_factor: 1.1
+  face_detector_min_neighbors: 5
+  box_smoothing_alpha: 0.6
+
+  train_samples_per_dataset_per_epoch: 1000
+  clip_length: 8
+  train_clip_strides: [1, 2]
+  selection_clips_per_video: 4
+  eval_clips_per_video: 8
+  eval_clip_stride: 2
+  # DFD's strict-donor validation split holds 45 real and 17 fake videos.
+  selection_max_fakes_per_dataset: 1000
+
+  horizontal_flip_probability: 0.5
+  normalize_mean: [0.485, 0.456, 0.406]
+  normalize_std: [0.229, 0.224, 0.225]
+  num_workers: 2
+
+model:
+  architecture: 3d
+  # 256/256 so CenterCrop is a no-op and the square crop reaches the network
+  # whole. DeepfakeBench Sec. 4.1 specifies 256x256.
+  input_resize: 256
+  center_crop: 256
+  # build_model defaults to activation='sigmoid', norm='none' -- the pre-v9
+  # architecture, whose three conv3d layers behind sigmoid barely pass a
+  # gradient to the first one. Named here so a launch that forgets the flags
+  # still gets the architecture this experiment means.
+  activation: relu
+  norm: batch
+  conv_channels: [16, 24, 32]
+  spatial_kernel_size: 5
+  temporal_kernel_size: 3
+  spatial_pool_kernel_size: 4
+  spatial_pool_stride: 2
+  feature_dim: 15488
+  hidden_dim: 512
+  dropout: 0.2
+  prior_std: 0.1
+  posterior_rho_init: -5.0
+  observation_std: 1.0
+
+train:
+  epochs: 60
+  physical_batch_size: 1
+  learning_rate: 0.0001
+  momentum: 0.9
+  gradient_clip_norm: 5.0
+  # Constant and slower decay were both tested on the whole-frame run and both
+  # were worse at every stage, so 0.95 stays.
+  lr_gamma: 0.95
+  lr_step_interval: 1
+  kl_weight: 0.001
+  report_mc_uncertainty_samples: 0
+  calibration_false_positive_rate: 0.05
+  selection_metric: macro_dataset_auroc
+  selection_min_metric_improvement: 0.002
+  # 17 validation fakes cannot rank a checkpoint reliably, so selection leans
+  # on a long patience rather than on small AUROC moves.
+  early_stopping_patience: 12
+  checkpoint_dir: artifacts/run_stage_a_dfd_face/checkpoints
+  log_dir: artifacts/run_stage_a_dfd_face/logs
+  report_dir: artifacts/run_stage_a_dfd_face/reports
