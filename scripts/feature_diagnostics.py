@@ -160,6 +160,32 @@ def probe(features, labels, identities, folds=5, seed=42):
     return results, len(unique)
 
 
+def spread_by_identity(rows, budget, seed=42):
+    """Pick videos round-robin across identities, not off the head of the list.
+
+    The manifest is sorted, so slicing it gave 30 reals from one actor and 30
+    fakes from another -- two identities, and a fold split by identity then had
+    only one class to train on. Round-robin maximises how many identities a
+    fixed budget covers, which is what the probe's folds need.
+    """
+    groups = {}
+    for row in rows:
+        groups.setdefault(row.get("target_id") or row["path"], []).append(row)
+    names = sorted(groups)
+    generator = np.random.RandomState(seed)
+    for name in names:
+        generator.shuffle(groups[name])
+    picked, depth = [], 0
+    while len(picked) < budget and any(len(groups[n]) > depth for n in names):
+        for name in names:
+            if len(picked) >= budget:
+                break
+            if len(groups[name]) > depth:
+                picked.append(groups[name][depth])
+        depth += 1
+    return picked
+
+
 def describe(features, labels, name):
     dimension = features.shape[1]
     norms = features.norm(dim=1)
@@ -258,10 +284,17 @@ def main():
     reals = [row for row in records if int(row["label"]) == 1]
     fakes = [row for row in records if int(row["label"]) == 0]
     half = max(args.max_videos // 2, 1)
-    records = reals[:half] + fakes[:half]
-    print("scoring {} videos from split {!r} ({} real, {} fake), {} clips each"
-          .format(len(records), args.split, len(reals[:half]), len(fakes[:half]),
-                  args.clips_per_video))
+    chosen_real = spread_by_identity(reals, half)
+    chosen_fake = spread_by_identity(fakes, half)
+    records = chosen_real + chosen_fake
+    covered = sorted({row.get("target_id") or row["path"] for row in records})
+    print("scoring {} videos from split {!r} ({} real, {} fake) across {} "
+          "identities, {} clips each".format(
+              len(records), args.split, len(chosen_real), len(chosen_fake),
+              len(covered), args.clips_per_video))
+    if len(covered) < 4:
+        print("WARNING: {} identities is too few for a fold split; raise "
+              "--max-videos or pick a split with more actors.".format(len(covered)))
 
     config["data"]["num_workers"] = 0
     dataset = make_dataset(records, config, training=False,
