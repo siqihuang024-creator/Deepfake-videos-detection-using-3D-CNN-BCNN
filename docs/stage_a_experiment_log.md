@@ -127,19 +127,35 @@ Two instrument bugs found and fixed before any number was trusted:
 
 ### Results
 
-| | v9 (CelebDFv3, face crop) | DFD run 2 (whole frame) |
-|---|---|---|
-| checkpoint | `run_celeb_supervised_3d_t8_k3_v9_bn` ep 38 | `..._decimate_pretrain` ep 9 |
-| recorded end-to-end val AUROC | 0.7773 | 0.6157 |
-| **held-out probe, trained** | **0.7322** | **0.4778** |
-| held-out probe, random init | 0.5422 | 0.4878 |
-| **change from training** | **+0.1900** | **−0.0100** |
-| separation_ratio trained / random | 0.684 / 0.486 | 0.240 / 0.226 |
-| relative_variation | 0.937 | 0.970 |
+| | v9 | v9arch | run 2 |
+|---|---|---|---|
+| dataset | CelebDFv3 | **DFD** | DFD |
+| input | face crop | **face crop** | whole frame |
+| checkpoint | `..._celeb_..._v9_bn` ep 38 | `..._dfd_..._v9arch` ep 4 | `..._decimate_pretrain` ep 9 |
+| recorded end-to-end val AUROC | 0.7773 | 0.6083 | 0.6157 |
+| identities in the probe | 30 | **4** | 20 |
+| **held-out probe, trained** | **0.7322** | **0.5956** | **0.4778** |
+| held-out probe, random init | 0.5422 | 0.5833 | 0.4878 |
+| **change from training** | **+0.1900** | **+0.0122** | **-0.0100** |
+| separation_ratio trained / random | 0.684 / 0.486 | 0.239 / 0.206 | 0.240 / 0.226 |
+| relative_variation | 0.937 | 0.943 | 0.970 |
+
+The middle column was added to break the confound in the first comparison: v9
+differed from the whole-frame run in **both** dataset and input mode. DFD put
+through the same face-crop pipeline that works on CelebDFv3 moves the probe by
++0.012 -- an order of magnitude below v9's +0.190, and the same size as the
+whole-frame run's -0.010. **The failure follows the dataset, not the input
+mode**, which matches the cross-dataset matrix: only CelebDFv3 self-test beats
+chance.
+
+Two caveats on that column. The checkpoint is epoch 4, so how long the run
+actually trained has to be confirmed before it counts as a fair test. And its
+validation split holds only 4 identities, which makes the fold structure thin
+and the interval wide -- "no detectable signal", not "zero".
 
 The probe reads **0.7322 on v9 against its true 0.7773**, so it tracks real
 performance rather than merely reporting a positive. On DFD whole-frame it
-reads chance, and training moved it by −0.01: **that run learned nothing**.
+reads chance, and training moved it by -0.01: **that run learned nothing**.
 
 Interval note: 30 vs 30 gives a Hanley–McNeil standard error near 0.075, so
 0.478 carries a 95% interval of about [0.33, 0.63]. The honest statement is
@@ -155,7 +171,9 @@ Interval note: 30 vs 30 gives a Hanley–McNeil standard error near 0.075, so
 | Feature collapse | **eliminated** | `relative_variation` 0.97 |
 | Features separable, optimisation fails | **eliminated** | held-out probe at chance |
 | The representation carries no class information | **established** | trained ≈ random init on both metrics |
-| Whole frame vs DFD-the-dataset | **open** | v9 differs in *both*; resolvable free by probing `run_dfd_supervised_3d_t8_k3_v9arch` |
+| Whole frame vs DFD-the-dataset | **resolved: the dataset** | DFD + face crop moves the probe +0.012 against v9's +0.190 |
+| Identity scarcity explains DFD | eliminated earlier | v11 cut CelebDFv3 to 20 identities and lost 0.03 |
+| Face detection explains DFD | eliminated earlier | the Haar/MTCNN/RetinaFace comparison |
 | Clip-level label noise | **open** | a video-level "fake" label on an 8-frame window with no visible manipulation puts a floor on BCE |
 | Decode corruption | **open** | run 2's log carried `moov atom not found`, `partial file`, `Invalid NAL unit size` and 30 s read timeouts while reporting `skipped=0`; the loader hides failures by repeating the previous frame (`data.py:358-365`). `scripts/scan_decode_health.py` measures the per-class rate and has not been run |
 
