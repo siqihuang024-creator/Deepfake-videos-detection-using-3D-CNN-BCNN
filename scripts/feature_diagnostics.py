@@ -160,6 +160,30 @@ def probe(features, labels, identities, folds=5, seed=42):
     return results, len(unique)
 
 
+def unpack(payload):
+    """Accept both checkpoint layouts this project writes.
+
+    pretrain_extractor.py stores the extractor under "extractor" and the
+    selection metric under "validation_auroc"; train_3d_bcnn.py stores
+    "feature_extractor" and buries the metric inside "validation". A diagnostic
+    that only reads one of them cannot compare a new run against the v9
+    baseline, which is the whole point of having a positive control.
+    """
+    for key in ("extractor", "feature_extractor"):
+        if key in payload:
+            weights = payload[key]
+            break
+    else:
+        raise KeyError(
+            "No extractor weights in this checkpoint; it holds {}.".format(
+                sorted(payload)))
+    metric = payload.get("validation_auroc")
+    if metric is None:
+        validation = payload.get("validation") or {}
+        metric = validation.get("macro_dataset_auroc", validation.get("auroc"))
+    return weights, (float("nan") if metric is None else float(metric))
+
+
 def spread_by_identity(rows, budget, seed=42):
     """Pick videos round-robin across identities, not off the head of the list.
 
@@ -267,10 +291,11 @@ def main():
     args = parser.parse_args()
 
     payload = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
+    weights, recorded = unpack(payload)
     config = override_dataset_roots(payload["config"], args.dataset_root)
     device = resolve_device(args.device or config.get("device", "cpu"))
     print("checkpoint epoch {}, recorded validation AUROC {:.4f}".format(
-        payload.get("epoch"), payload.get("validation_auroc", float("nan"))))
+        payload.get("epoch"), recorded))
     print("architecture: activation={} norm={} conv_channels={} "
           "spatial_output_size={} feature_dim={}".format(
               config["model"].get("activation", "sigmoid"),
@@ -301,7 +326,7 @@ def main():
                            clips_per_video=args.clips_per_video)
 
     extractor, _ = build_model(config, device)
-    extractor.load_state_dict(payload["extractor"])
+    extractor.load_state_dict(weights)
     print("\nextracting features with the trained extractor...")
     features, labels, identities = collect_features(extractor, dataset, device)
     describe(features, labels, "trained extractor")
