@@ -32,6 +32,8 @@ import argparse
 import csv
 import os
 import sys
+import zlib
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import cv2
@@ -75,24 +77,23 @@ def sequential_signatures(path, limit):
     return np.stack(signatures) if signatures else None
 
 
-def seek_clip(path, indices):
-    """The loader's path: one seek to the start, then read forward."""
-    capture = cv2.VideoCapture(str(path))
-    if not capture.isOpened():
-        return None
+def seek_clip(capture, indices):
+    """The loader's path: one seek to the start, then read forward.
+
+    Takes an open capture rather than a path because `_decode_clips` issues
+    every clip's seek on the **same** handle (`data.py:348-355`), and a handle
+    that has already been seeked does not necessarily behave like a fresh one.
+    """
     start, end = int(indices[0]), int(indices[-1])
     wanted = set(int(index) for index in indices)
     got = {}
-    try:
-        capture.set(cv2.CAP_PROP_POS_FRAMES, start)
-        for position in range(start, end + 1):
-            ok, frame = capture.read()
-            if not ok or frame is None:
-                break
-            if position in wanted:
-                got[position] = signature(frame)
-    finally:
-        capture.release()
+    capture.set(cv2.CAP_PROP_POS_FRAMES, start)
+    for position in range(start, end + 1):
+        ok, frame = capture.read()
+        if not ok or frame is None:
+            break
+        if position in wanted:
+            got[position] = signature(frame)
     return [got.get(int(index)) for index in indices]
 
 
@@ -114,31 +115,37 @@ def measure(path, clip_length, stride, clips, limit, generator):
     result = {"frames_decoded": len(truth), "requested": 0, "returned": 0,
               "exact": 0, "offset_sum": 0, "offset_max": 0,
               "frozen_clips": 0, "clips": 0}
-    for _ in range(clips):
-        start = int(generator.randint(0, highest))
-        indices = [start + step * stride for step in range(clip_length)]
-        frames = seek_clip(path, indices)
-        if frames is None:
-            continue
-        result["clips"] += 1
-        matched = []
-        for wanted, frame in zip(indices, frames):
-            result["requested"] += 1
-            if frame is None:
+    capture = cv2.VideoCapture(str(path))
+    if not capture.isOpened():
+        return None
+    starts = [int(generator.randint(0, highest)) for _ in range(clips)]
+    try:
+        for start in starts:
+            indices = [start + step * stride for step in range(clip_length)]
+            frames = seek_clip(capture, indices)
+            if frames is None:
                 continue
-            result["returned"] += 1
-            actual, _ = nearest_index(truth, frame)
-            offset = abs(actual - wanted)
-            if offset == 0:
-                result["exact"] += 1
-            result["offset_sum"] += offset
-            result["offset_max"] = max(result["offset_max"], offset)
-            matched.append(actual)
-        # A clip whose frames land on fewer distinct pictures than it asked for
-        # carries less motion than the model is being told it does; in the worst
-        # case every frame is the same picture and the clip has no motion at all.
-        if matched and len(set(matched)) < len(matched):
-            result["frozen_clips"] += 1
+            result["clips"] += 1
+            matched = []
+            for wanted, frame in zip(indices, frames):
+                result["requested"] += 1
+                if frame is None:
+                    continue
+                result["returned"] += 1
+                actual, _ = nearest_index(truth, frame)
+                offset = abs(actual - wanted)
+                if offset == 0:
+                    result["exact"] += 1
+                result["offset_sum"] += offset
+                result["offset_max"] = max(result["offset_max"], offset)
+                matched.append(actual)
+            # A clip whose frames land on fewer distinct pictures than it asked
+            # for carries less motion than the model is told it does; in the
+            # worst case every frame is the same and the clip has no motion.
+            if matched and len(set(matched)) < len(matched):
+                result["frozen_clips"] += 1
+    finally:
+        capture.release()
     return result
 
 
@@ -161,9 +168,19 @@ def main():
     parser.add_argument("--clips-per-video", type=int, default=4)
     parser.add_argument("--clip-length", type=int, default=8)
     parser.add_argument("--stride", type=int, default=2)
-    parser.add_argument("--max-frames", type=int, default=600,
+    parser.add_argument("--max-frames", type=int, default=1500,
                         help="Cap on frames decoded per video for the ground "
-                             "truth, so one long file cannot dominate the run.")
+                             "truth, so one long file cannot dominate the run. "
+                             "DFD scenes run past 900 frames, and a seek is "
+                             "likelier to go wrong deep into a file.")
+    parser.add_argument(
+        "--workers", type=int, default=1,
+        help="Videos measured concurrently. Training ran 12 DataLoader workers "
+             "seeking at random into 23 GB of 1080p video at once, and the "
+             "30-second read timeouts in its log are what I/O contention looks "
+             "like -- a stalled read the loader then hides by repeating the "
+             "previous frame. One process cannot reproduce that, so match the "
+             "worker count the run actually used.")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output", default="artifacts/seek_fidelity.csv")
     args = parser.parse_args()
@@ -186,26 +203,38 @@ def main():
             pool = [row for row in here if row["label"] == label]
             generator.shuffle(pool)
             chosen.extend(pool[:max(args.videos_per_dataset // 2, 1)])
-        print("\n=== {}: {} videos ===".format(dataset, len(chosen)), flush=True)
-        for position, row in enumerate(chosen, start=1):
+        print("\n=== {}: {} videos, {} at a time ===".format(
+            dataset, len(chosen), max(args.workers, 1)), flush=True)
+
+        def work(row, dataset=dataset):
             path = roots[dataset] / row["path"]
             if not path.exists():
-                continue
-            outcome = measure(path, args.clip_length, args.stride,
-                              args.clips_per_video, args.max_frames, generator)
-            if outcome is None:
-                continue
-            entry = dict(outcome, dataset=dataset, class_name=row["class_name"],
-                         path=row["path"])
-            records.append(entry)
-            bucket = totals.setdefault((dataset, row["class_name"]),
-                                       {key: 0 for key in outcome})
-            bucket["videos"] = bucket.get("videos", 0) + 1
-            for key, value in outcome.items():
-                bucket[key] = bucket[key] + value if key != "offset_max" \
-                    else max(bucket[key], value)
-            if position % 5 == 0 or position == len(chosen):
-                print("  {}/{}".format(position, len(chosen)), flush=True)
+                return row, None
+            # A generator per video, seeded from its path, so the clip starts
+            # do not depend on the order threads happen to finish in.
+            seed = zlib.crc32(row["path"].encode("utf-8")) ^ args.seed
+            return row, measure(path, args.clip_length, args.stride,
+                                args.clips_per_video, args.max_frames,
+                                np.random.RandomState(seed % (2 ** 31)))
+
+        with ThreadPoolExecutor(max_workers=max(args.workers, 1)) as pool:
+            for position, (row, outcome) in enumerate(pool.map(work, chosen),
+                                                      start=1):
+                if outcome is None:
+                    continue
+                records.append(dict(outcome, dataset=dataset,
+                                    class_name=row["class_name"],
+                                    path=row["path"]))
+                bucket = totals.setdefault((dataset, row["class_name"]),
+                                           {key: 0 for key in outcome})
+                bucket["videos"] = bucket.get("videos", 0) + 1
+                for key, value in outcome.items():
+                    if key == "offset_max":
+                        bucket[key] = max(bucket[key], value)
+                    else:
+                        bucket[key] += value
+                if position % 5 == 0 or position == len(chosen):
+                    print("  {}/{}".format(position, len(chosen)), flush=True)
 
     if not records:
         print("nothing measured")
