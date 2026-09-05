@@ -181,7 +181,38 @@ Interval note: 30 vs 30 gives a Hanley–McNeil standard error near 0.075, so
 | Identity scarcity explains DFD | eliminated earlier | v11 cut CelebDFv3 to 20 identities and lost 0.03 |
 | Face detection explains DFD | eliminated earlier | the Haar/MTCNN/RetinaFace comparison |
 | Clip-level label noise | **open** | a video-level "fake" label on an 8-frame window with no visible manipulation puts a floor on BCE |
-| Decode corruption | **open** | run 2's log carried `moov atom not found`, `partial file`, `Invalid NAL unit size` and 30 s read timeouts while reporting `skipped=0`; the loader hides failures by repeating the previous frame (`data.py:358-365`). `scripts/scan_decode_health.py` measures the per-class rate and has not been run |
+| File corruption | **eliminated** | all 2328 DFD videos decode end to end with zero ffmpeg errors, both classes at 0.0% |
+| Seek fidelity | **open, now the live one** | the same files produce NAL errors only through OpenCV's random seek |
+| (superseded) decode corruption | — | run 2's log carried `moov atom not found`, `partial file`, `Invalid NAL unit size` and 30 s read timeouts while reporting `skipped=0`; the loader hides failures by repeating the previous frame (`data.py:358-365`). `scripts/scan_decode_health.py` measures the per-class rate and has not been run |
+
+## 2026-09-05 — decode health scan
+
+`scripts/scan_decode_health.py`, all 2328 DFD videos in the Stage A manifest,
+decoded end to end with `ffmpeg -v error -i FILE -f null -`.
+
+| dataset | class | videos | corrupt | stalled | rate |
+|---|---|---|---|---|---|
+| DFD | fake | 1965 | 0 | 0 | 0.0% |
+| DFD | real | 363 | 0 | 0 | 0.0% |
+
+**Zero corruption.** The counts reconcile: 1894 + 17 + 54 fakes and
+264 + 45 + 54 reals across the three splits.
+
+That inverts the reading of run 2's log. The files are sound, so the
+`Invalid NAL unit size`, `Error splitting the input into NAL units`,
+`missing picture in access unit` and 30-second timeouts came from **how the
+loader reads them**, not from the data. Sequential decode of the same files
+emits nothing; the only difference is that `_decode_clips` seeks to a random
+start with `capture.set(cv2.CAP_PROP_POS_FRAMES, ...)` (`data.py:350`) and
+OpenCV's implementation resumes from the nearest keyframe.
+
+That mechanism is dataset-shaped in exactly the way the failure is: DFD is a
+tens-of-seconds 1080p scene with sparse keyframes, CelebDFv3 a short clip.
+`scripts/seek_fidelity.py` measures it — for each requested frame index, which
+frame actually came back, and how often a clip's eight frames collapse onto
+fewer distinct pictures than it asked for.
+
+---
 
 ## Code facts worth not rediscovering
 
