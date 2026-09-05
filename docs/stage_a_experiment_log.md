@@ -169,6 +169,64 @@ Interval note: 30 vs 30 gives a Hanley–McNeil standard error near 0.075, so
 
 ---
 
+## 2026-09-05 - seek fidelity
+
+`scripts/seek_fidelity.py`, run twice. Each video is decoded straight through
+once to build a per-frame 32x32 grey signature, then the loader's own path is
+taken for the same indices and each returned frame is matched back to the
+sequential frame it actually is.
+
+| run | conditions | exact hit | mean offset | frozen clips |
+|---|---|---|---|---|
+| first | 1 process, fresh capture per clip, 600-frame cap | 100.0% | 0.00 | 0.0% |
+| second | 12 threads, capture reused per video, 1500-frame cap | 100.0% | 0.00 | 0.0% |
+
+Identical on DFD and CelebDFv3, both classes. The second run exists because
+the first differed from training in three ways that all sat on the suspect
+path -- concurrency, handle reuse, and frame range -- and the 30-second read
+timeouts in the training log are what I/O contention looks like rather than
+what a corrupt file looks like. Matching all three changed nothing.
+
+**The reading path is sound.** Whatever produced those messages during training
+did not deliver wrong or repeated frames.
+
+Caveat kept for honesty: this used threads rather than the DataLoader's
+processes, so page-cache behaviour is not identical. It is not being chased
+further -- the diagnostic budget agreed for this question is spent.
+
+---
+
+## Conclusion
+
+Every cheap explanation for the DFD failure is now closed. What remains is the
+finding itself: **DFD is not learnable by this architecture**, with or without
+the face crop, and the same pipeline reaches +0.190 on CelebDFv3.
+
+That is a reportable negative result, not an unfinished experiment. The
+evidence is one calibrated instrument applied to three checkpoints, plus eight
+closed hypotheses.
+
+Open for the supervisor, not for more diagnostics:
+
+1. Move Stage A to CelebDFv3 and keep DFD as a cross-dataset test set only.
+   This preserves the identity-disjoint protocol and every settled decision
+   except which dataset trains the extractor.
+2. Keep DFD in Stage A but change the extractor substantially -- a deeper or
+   pre-trained backbone. This departs from the Leyva reproduction, which is
+   the thesis's stated starting point.
+3. Report DFD's unlearnability as a result and build the thesis on CelebDFv3.
+
+Option 1 plus 3 is the cheapest path that keeps the agreed protocol intact,
+but the choice belongs to the supervisor: the meeting settled that DFD would
+be trained whole-frame, and that decision has no home if DFD leaves Stage A.
+
+One question that was never asked and still stands: does Leyva et al. put an
+activation after FC1? Nothing in this repo records where the current linear
+head came from, and if the paper has one, this is a reproduction bug affecting
+Stage B as well.
+
+---
+
 ## Hypotheses settled so far
 
 | hypothesis | status | evidence |
@@ -182,7 +240,7 @@ Interval note: 30 vs 30 gives a Hanley–McNeil standard error near 0.075, so
 | Face detection explains DFD | eliminated earlier | the Haar/MTCNN/RetinaFace comparison |
 | Clip-level label noise | **open** | a video-level "fake" label on an 8-frame window with no visible manipulation puts a floor on BCE |
 | File corruption | **eliminated** | all 2328 DFD videos decode end to end with zero ffmpeg errors, both classes at 0.0% |
-| Seek fidelity | **open, now the live one** | the same files produce NAL errors only through OpenCV's random seek |
+| Seek fidelity | **eliminated** | 100% exact hits under both single-process and 12-way concurrent conditions |
 | (superseded) decode corruption | — | run 2's log carried `moov atom not found`, `partial file`, `Invalid NAL unit size` and 30 s read timeouts while reporting `skipped=0`; the loader hides failures by repeating the previous frame (`data.py:358-365`). `scripts/scan_decode_health.py` measures the per-class rate and has not been run |
 
 ## 2026-09-05 — decode health scan
