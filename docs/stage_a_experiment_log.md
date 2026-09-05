@@ -148,10 +148,16 @@ whole-frame run's -0.010. **The failure follows the dataset, not the input
 mode**, which matches the cross-dataset matrix: only CelebDFv3 self-test beats
 chance.
 
-Two caveats on that column. The checkpoint is epoch 4, so how long the run
-actually trained has to be confirmed before it counts as a fair test. And its
-validation split holds only 4 identities, which makes the fold structure thin
-and the interval wide -- "no detectable signal", not "zero".
+The epoch-4 checkpoint is not a short run: v9arch trained the full **60
+epochs**, its validation AUROC never beat epoch 4's 0.6083 again, and its
+training loss went 1.8854 -> **0.9198** -- still above ln 2 after sixty epochs.
+DFD with the face crop never fitted even its training set, where the
+whole-frame run at least reached 0.694. The comparison is fair and the
+conclusion is the stronger one: **DFD is not learnable by this architecture,
+with or without the crop.**
+
+One caveat stands: that validation split holds only 4 identities, so the fold
+structure is thin and the interval wide -- "no detectable signal", not "zero".
 
 The probe reads **0.7322 on v9 against its true 0.7773**, so it tracks real
 performance rather than merely reporting a positive. On DFD whole-frame it
