@@ -181,6 +181,19 @@ def main():
                 "embedding_variance_mean": validation.get("embedding_variance_mean"),
             })
 
+    # Diagnostics are results too, and they do not live under run_*: the decode
+    # health scan, the seek fidelity measurement and the feature probe each
+    # write a flat file at the top of artifacts/. Left uncollected they would
+    # stay on the workstation while the run curves travelled.
+    diagnostics = [path for pattern in ("*.csv", "*.json")
+                   for path in sorted(artifacts.glob(pattern))]
+    if diagnostics:
+        folder = output / "diagnostics"
+        folder.mkdir(parents=True, exist_ok=True)
+        for path in diagnostics:
+            shutil.copy2(path, folder / path.name)
+        print("\ndiagnostics: {}".format(", ".join(p.name for p in diagnostics)))
+
     if not summaries:
         print("No run with a history was found under {}.".format(artifacts))
         return 1

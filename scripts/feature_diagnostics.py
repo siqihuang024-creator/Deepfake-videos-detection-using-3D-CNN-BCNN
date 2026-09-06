@@ -32,6 +32,7 @@ Usage:
 """
 
 import argparse
+import json
 import math
 import sys
 from pathlib import Path
@@ -280,6 +281,10 @@ def main():
     parser.add_argument("--dataset-root", action="append", default=None,
                         metavar="NAME=PATH")
     parser.add_argument("--device", default=None)
+    parser.add_argument("--output", default=None,
+                        help="Where to write the JSON record. Defaults to "
+                             "artifacts/feature_probe_<run>.json, which is what "
+                             "collect_results.py harvests.")
     parser.add_argument("--save-features", default=None,
                         help="Write the extracted features to this .npz so the "
                              "probe can be re-analysed without decoding again.")
@@ -329,19 +334,46 @@ def main():
     extractor.load_state_dict(weights)
     print("\nextracting features with the trained extractor...")
     features, labels, identities = collect_features(extractor, dataset, device)
-    describe(features, labels, "trained extractor")
+    record = {
+        "checkpoint": str(args.checkpoint),
+        "checkpoint_epoch": payload.get("epoch"),
+        "recorded_validation_auroc": recorded,
+        "split": args.split, "videos": len(records),
+        "identities": len(covered),
+        "clips_per_video": args.clips_per_video,
+        "architecture": {key: config["model"].get(key) for key in
+                         ("activation", "norm", "conv_channels",
+                          "spatial_output_size", "feature_dim")},
+        "trained": describe(features, labels, "trained extractor"),
+    }
     trained = report_probe(features, labels, identities, "trained")
+    record["trained"]["held_out_probe"] = trained
 
     if args.random_init:
         fresh, _ = build_model(config, device)
         print("\nextracting features with an untrained extractor...")
         base_features, base_labels, base_identities = collect_features(
             fresh, dataset, device)
-        describe(base_features, base_labels, "random init (reference)")
+        record["random_init"] = describe(
+            base_features, base_labels, "random init (reference)")
         baseline = report_probe(base_features, base_labels, base_identities,
                                 "random init")
+        record["random_init"]["held_out_probe"] = baseline
+        record["probe_change"] = trained - baseline
         print("\ntraining moved the held-out probe by {:+.4f}  ({:.4f} -> {:.4f})"
               .format(trained - baseline, baseline, trained))
+        print("A single random draw is a weak reference: separate draws in this "
+              "project have spanned 0.4878 to 0.5833.")
+
+    # These numbers are the acceptance test for a Stage A run, so they belong in
+    # a file the harvest can pick up, not only in a terminal someone scrolled.
+    report_path = Path(args.output or (
+        ROOT / "artifacts" / "feature_probe_{}.json".format(
+            Path(args.checkpoint).parent.parent.name)))
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(report_path, "w", encoding="utf-8") as handle:
+        json.dump(record, handle, indent=2, default=str)
+    print("\nwrote {}".format(report_path))
 
     if args.save_features:
         path = Path(args.save_features)
