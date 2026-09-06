@@ -274,6 +274,14 @@ def main(argv=None):
                              "~213px at 1080p, so ~100px after the default "
                              "downscale; 40 leaves headroom without inviting noise.")
     parser.add_argument("--device", default=None)
+    parser.add_argument("--shard", type=int, default=0,
+                        help="Which slice of the manifest this process takes.")
+    parser.add_argument("--num-shards", type=int, default=1,
+                        help="Split the manifest across this many processes. "
+                             "dlib is single-threaded, so N shards on N cores "
+                             "give close to N times the throughput; each shard "
+                             "skips files that already exist, so any shard can "
+                             "be re-run or resumed independently.")
     parser.add_argument("--limit", type=int, default=None,
                         help="Stop after this many videos and project the full job.")
     parser.add_argument("--overwrite", action="store_true",
@@ -313,6 +321,17 @@ def main(argv=None):
         if key not in seen:
             seen.add(key)
             unique.append(row)
+    # dlib's HOG detector is single-threaded, so one process leaves thirteen
+    # cores idle and DFD alone projects at 12.7 hours. Sharding by position lets
+    # N processes cover disjoint slices of the same manifest; each still skips
+    # what already exists, so a shard can be re-run or resumed on its own.
+    if args.num_shards > 1:
+        if not 0 <= args.shard < args.num_shards:
+            raise SystemExit("--shard must be in [0, --num-shards).")
+        unique = [row for index, row in enumerate(unique)
+                  if index % args.num_shards == args.shard]
+        print("shard {}/{}: {} of the videos".format(
+            args.shard, args.num_shards, len(unique)))
     print("{} videos to consider from {}".format(len(unique), Path(args.manifest).name))
 
     output = Path(args.output_dir)
