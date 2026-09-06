@@ -49,3 +49,8 @@ remote_env.sh
 # Harvested run numbers: curves, summaries and evaluation reports.
 # Small and text-only; the checkpoints they came from stay out.
 !results/
+
+# Local-only mirror of run folders pulled off the workstation before it is
+# returned. The checkpoints inside are the point, and they are far too large
+# for git; the logs beside them are already in results/.
+checkpoints_backup/

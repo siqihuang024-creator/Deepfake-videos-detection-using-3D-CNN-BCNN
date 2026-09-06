@@ -1,6 +1,6 @@
 {
-  "collected_at": "2026-09-06T09:30:19",
-  "git_revision": "9a8c98d",
+  "collected_at": "2026-09-06T11:13:25",
+  "git_revision": "62a80fc",
   "runs": [
     "run_3d_bcnn_t8_k3_combined_pretrain_896_celeb",
     "run_3d_bcnn_t8_k3_combined_pretrain_896_dfd",
@@ -42,7 +42,8 @@
     "run_stage_a_dfd_decimate_overfit4_s44_constlr",
     "run_stage_a_dfd_decimate_pretrain",
     "run_stage_a_dfd_decimate_stageb_dfd",
+    "run_stage_a_dfd_decimate_stageb_full60",
     "run_stage_a_dfd_decimate_stageb_smoke"
   ],
-  "epoch_rows": 2083
+  "epoch_rows": 2102
 }
