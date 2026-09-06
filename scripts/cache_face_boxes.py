@@ -32,6 +32,7 @@ import argparse
 import collections
 import csv
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -279,7 +280,15 @@ def main(argv=None):
                         help="Redo videos already cached instead of skipping them.")
     args = parser.parse_args(argv)
 
+    # Same precedence as override_dataset_roots, which every other script here
+    # uses: --dataset-root beats DFD_ROOT / CELEBDFV3_ROOT, which beat the YAML.
+    # Reading the YAML alone made this the one script that ignored
+    # remote_env.sh and died on the Windows paths written in the config.
     roots = {}
+    for name, variable in (("DFD", "DFD_ROOT"), ("CelebDFv3", "CELEBDFV3_ROOT")):
+        value = os.environ.get(variable)
+        if value:
+            roots[name] = Path(value)
     for entry in (args.dataset_root or []):
         name, _, path = entry.partition("=")
         roots[name] = Path(path)
