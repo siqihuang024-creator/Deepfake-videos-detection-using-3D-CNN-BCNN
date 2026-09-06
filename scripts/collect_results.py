@@ -185,8 +185,13 @@ def main():
     # health scan, the seek fidelity measurement and the feature probe each
     # write a flat file at the top of artifacts/. Left uncollected they would
     # stay on the workstation while the run curves travelled.
+    # scores_*.csv at the repository root are per-video scores left by earlier
+    # evaluation runs. They are what an ROC curve and a clustered interval are
+    # computed from, they predate this harvest, and nothing has ever backed
+    # them up.
     diagnostics = [path for pattern in ("*.csv", "*.json")
                    for path in sorted(artifacts.glob(pattern))]
+    diagnostics += sorted(ROOT.glob("scores_*.csv"))
     if diagnostics:
         folder = output / "diagnostics"
         folder.mkdir(parents=True, exist_ok=True)
