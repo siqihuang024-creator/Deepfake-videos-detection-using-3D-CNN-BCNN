@@ -45,3 +45,7 @@ wandb/
 # Local machine paths (copy remote_env.example.sh and edit)
 remote_env.sh
 .env
+
+# Harvested run numbers: curves, summaries and evaluation reports.
+# Small and text-only; the checkpoints they came from stay out.
+!results/
