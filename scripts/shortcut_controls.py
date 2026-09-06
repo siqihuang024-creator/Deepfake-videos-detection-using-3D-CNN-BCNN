@@ -93,12 +93,28 @@ def read_video_sizes(path):
 
 
 def read_box_cache(directory):
-    """Median detected box width per video, from the offline detection cache."""
+    """Median detected box width per video, keyed the way the manifest names it.
+
+    cache_face_boxes.py files a video at <cache>/<dataset>/<manifest path>.npz,
+    so the key here is the (dataset, path) pair build_features looks up. Keying
+    on Path.stem instead matched nothing, ever: the cache name keeps the video's
+    own extension, so the stem read "id0_0000.mp4" against the manifest's
+    "id0_0000" -- and 37364 cached files carry only 6913 distinct stems, because
+    identity folders reuse filenames, so a stem was never an identifier at all.
+    The three crop-scale controls were silently absent from every run of this
+    script until this was fixed. `directory` is the cache root holding the
+    per-dataset folders, not one dataset's folder.
+    """
     widths = {}
     directory = Path(directory)
     if not directory.exists():
         return widths
     for item in directory.rglob("*.npz"):
+        parts = item.relative_to(directory).parts
+        if len(parts) < 2:
+            continue
+        dataset = DATASET_ALIASES.get(parts[0], parts[0])
+        video = Path(*parts[1:]).as_posix()[: -len(".npz")]
         try:
             with np.load(item) as handle:
                 boxes = handle["boxes"]
@@ -109,7 +125,7 @@ def read_box_cache(directory):
         # cache_face_boxes.py stores [x, y, w, h], the cascade's convention and
         # the one _crop_box reads, so column 2 is already the width. Subtracting
         # column 0 treated them as corners and returned w - x.
-        widths[item.stem] = float(np.median(boxes[:, 2]))
+        widths[(dataset, video)] = float(np.median(boxes[:, 2]))
     return widths
 
 
@@ -142,7 +158,7 @@ def build_features(rows, sizes, box_widths, target, margin):
             "bits_per_pixel": (megabytes * 8e6) / max(frames * width * height, 1.0),
             "frame_count": frames,
         }
-        box = box_widths.get(Path(row["path"]).stem)
+        box = box_widths.get((row["dataset"], row["path"]))
         if box:
             controls["face_box_width_px"] = box
             controls["face_box_share_of_frame"] = box / width
@@ -209,8 +225,9 @@ def main():
     parser.add_argument("--video-sizes", required=True)
     parser.add_argument(
         "--box-cache", default=None,
-        help="Directory of per-video .npz detections. Without it the crop "
-             "controls are skipped and only the frame-level ones run.")
+        help="Root of the detection cache, holding one folder per dataset -- "
+             "artifacts/face_cache, not artifacts/face_cache/CelebDFv3. Without "
+             "it the crop controls are skipped and only frame-level ones run.")
     parser.add_argument("--target", type=int, default=256,
                         help="Output canvas edge, for the resampling factor.")
     parser.add_argument("--margin", type=float, default=2.0,
@@ -241,7 +258,7 @@ def main():
     print("frame mode {!r}: blocking controls are {}".format(
         args.frame_mode, ", ".join(sorted(blocking))))
 
-    report, failures, noted = {}, [], []
+    report, failures, noted, provisional = {}, [], [], []
     for dataset in sorted({row["dataset"] for row in manifest}):
         for split in args.splits:
             rows = [row for row in manifest
@@ -254,7 +271,16 @@ def main():
             results = evaluate(records, args.draws, args.seed, blocking)
             key = "{}:{}".format(dataset, split)
             report[key] = results
-            print("\n=== {}  ({} of {} videos matched)".format(key, len(records), len(rows)))
+            # A blocking control with no column did not pass -- it was never
+            # computed, because no video on this split had a cached box. A bare
+            # PASS/FAIL list hid that.
+            with_box = sum(1 for item in records if "resampling_factor" in item["controls"])
+            absent = sorted(blocking - set(results))
+            if absent:
+                provisional.append("{}: {} (boxes cached for {} of {} videos)".format(
+                    key, ", ".join(absent), with_box, len(records)))
+            print("\n=== {}  ({} of {} videos matched, {} with cached boxes)".format(
+                key, len(records), len(rows), with_box))
             print("{:<28} {:>7}  {:<16} {:<16} {}".format(
                 "control", "auroc", "95% CI by clip", "by identity", "verdict"))
             for name in sorted(results, key=lambda n: -results[n]["distance_from_chance"]):
@@ -281,6 +307,16 @@ def main():
         for item in noted:
             print("  - {}".format(item))
         print()
+    if provisional:
+        print("INCOMPLETE. A blocking control could not be computed at all on "
+              "these splits, so any verdict below covers only what ran:")
+        for item in provisional:
+            print("  - {}".format(item))
+        print("  The crop-scale controls need cached boxes for the videos being "
+              "gated. Finish scripts/cache_face_boxes.py and re-run; "
+              "resampling_factor is the one that says whether source resolution "
+              "survives the resize onto a fixed canvas.")
+        print()
     if failures:
         print("GATE FAILED. {} blocking control(s) rank better than chance:"
               .format(len(failures)))
@@ -289,11 +325,11 @@ def main():
         print("Fix preprocessing before training; a network given these will "
               "learn them instead of the manipulation.")
         return 1
+    if provisional:
+        print("No control that ran beats chance, but the gate is INCOMPLETE -- "
+              "see above. This is not a pass.")
+        return 2
     print("GATE PASSED. Every blocking control's interval covers 0.5 on every split.")
-    if not boxes:
-        print("Provisional: the crop-scale controls could not run without a "
-              "detection cache, and those are the ones a face crop is most "
-              "likely to leave behind.")
     return 0
 
 

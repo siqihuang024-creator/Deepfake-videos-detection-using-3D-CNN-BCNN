@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
-from video_bcnn.data import load_manifest, seed_worker
+from video_bcnn.data import load_manifest, seed_worker, skip_unreadable_collate
 from video_bcnn.experiment import (
     active_records,
     capped_validation_records,
@@ -126,6 +126,10 @@ def main():
         num_workers=int(config["data"]["num_workers"]),
         pin_memory=device.type == "cuda",
         worker_init_fn=seed_worker,
+        # A video whose detections were never cached comes back as None, which
+        # default_collate raises on. Both trainers already drop those items;
+        # this script did not, so the first uncached test video ended the run.
+        collate_fn=skip_unreadable_collate,
     )
     mc_samples = config["train"].get("report_mc_uncertainty_samples", 0)
     if args.mc_uncertainty_samples is not None:
