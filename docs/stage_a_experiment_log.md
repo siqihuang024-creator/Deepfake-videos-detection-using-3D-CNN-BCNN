@@ -62,9 +62,59 @@ keys into the config (commit `6857889`).
 | 14 | 0.6963 | 0.6078 |
 | 15 | 0.6943 | 0.4275 |
 
-**Pinned at ln 2 = 0.6931 from epoch 11** — the constant-output solution.
 Validation AUROC oscillates around chance on 62 videos. ~10 min/epoch.
 `best.pt` is epoch 9 (val AUROC 0.6157, the noise peak).
+
+**Correction, 2026-09-06.** This run was read as "pinned at ln 2 = 0.6931 from
+epoch 11, the constant-output solution", and that reading was wrong. It was
+stopped at epoch 15, inside a flat stretch, and the full 60-epoch rerun below
+shows the loss keeps descending the whole way. Stopping a run inside a plateau
+and calling it converged is the mistake to avoid repeating.
+
+### Run 3 - the same configuration, run to the full 60 epochs
+`artifacts/run_stage_a_dfd_decimate_full60/`. Launched to turn "stopped at 15
+epochs and it had not moved" into a completed result, since this is the run the
+supervisor asked for and it has to be reportable.
+
+| epoch | 1 | 9 | 20 | 30 | 40 | 50 | 60 |
+|---|---|---|---|---|---|---|---|
+| train BCE | 1.5778 | 0.6934 | 0.6903 | 0.6743 | 0.6639 | 0.6635 | **0.6579** |
+| val AUROC | 0.4928 | 0.5647 | 0.5020 | 0.3791 | 0.4392 | 0.4366 | 0.4248 |
+
+Training loss falls the whole way and is **still falling at epoch 60**; 46 of
+the 60 epochs sit below ln 2, and the last-20 mean is 0.6665. So the earlier
+"constant-output solution" call is retracted: the model does fit its training
+data, slowly.
+
+Validation goes the other way. Best 0.6039 at epoch 14, mean over the run
+**0.4477**, and from epoch 24 onward only one epoch of thirty-seven rises above
+0.5. A metric that sits *below* chance for forty consecutive epochs is not
+scatter around 0.5; the direction learned on the training identities inverts on
+the held-out ones. (Those epochs share one validation set, so they are not forty
+independent observations -- one draw judged by forty correlated models.)
+
+The probe on the epoch-60 extractor closes it:
+
+| | epoch 9 | **epoch 60** | random init |
+|---|---|---|---|
+| held-out probe | 0.4778 | **0.5033** | 0.5644 |
+| separation_ratio | 0.240 | **0.220** | 0.227 |
+| centroid cosine distance | 0.264 | **0.339** | 0.009 |
+
+The class centroids do separate in direction -- 0.009 to 0.339, a 37-fold move
+-- so training is not inert. But `separation_ratio` does not improve, because
+within-class scatter grew by the same factor, and the held-out probe stays at
+chance.
+
+Do not read the -0.061 gap to the random reference as training making things
+worse. A fresh random extractor is drawn each time, and the four draws taken
+across these diagnostics read 0.4878, 0.5422, 0.5644 and 0.5833 -- the random
+baseline spans 0.49 to 0.58 on its own. The defensible statement is that the
+trained value sits **inside** the range random initialisations produce.
+
+**Experiment 1 is therefore complete and negative, with a sharper diagnosis
+than before: not "it cannot learn", but "what it learns does not transfer to
+unseen identities".**
 
 ### Diagnostic — 4-identity subset (71 videos: 55 real, 16 fake)
 `--train-identities 4 --samples-per-group 64 --max-epochs 40`. Plateau is the
