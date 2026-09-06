@@ -154,8 +154,13 @@ def main():
             source = run_dir / "logs" / name
             if source.exists():
                 shutil.copy2(source, destination / name)
+        # *_scores.csv holds one anomaly score per video, which is what an ROC
+        # curve, a score histogram and an identity-clustered interval are drawn
+        # from -- every one of those is a standard figure in this literature and
+        # none of them can be reconstructed from the aggregate JSON.
         report_dir = run_dir / "reports"
-        reports = sorted(report_dir.glob("*.json")) if report_dir.is_dir() else []
+        reports = sorted(report_dir.glob("*.json")) + sorted(report_dir.glob("*.csv")) \
+            if report_dir.is_dir() else []
         for report in reports:
             shutil.copy2(report, destination / ("report_" + report.name))
         if reports:
