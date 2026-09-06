@@ -277,6 +277,46 @@ Stage B as well.
 
 ---
 
+## 2026-09-06 - what the random baseline actually is
+
+The probe's untrained reference is redrawn every run, and repeating it turned
+out to matter more than any single comparison. Twelve draws:
+
+| split | draws | range | mean | sd |
+|---|---|---|---|---|
+| DFD train, 20 identities | 8 | 0.4133 - 0.6011 | 0.5290 | 0.064 |
+| CelebDFv3 val, 30 identities | 4 | 0.5422 - 0.6778 | 0.5978 | 0.058 |
+
+Against those distributions:
+
+| checkpoint | trained probe | z | verdict |
+|---|---|---|---|
+| whole frame, 60 epochs | 0.5033 | -0.40 | inside the random range |
+| whole frame, 33 epochs | 0.4700 | -0.92 | inside the random range |
+| **v9, CelebDFv3 face crop** | **0.7322** | **+2.34** | **above every draw** |
+
+Two things follow, and the first is a correction. Reporting "training moved the
+probe by +0.19" was wrong: the same v9 checkpoint produced +0.1900, +0.1389,
++0.0544 and +0.1544 on four occasions, and the same whole-frame checkpoint
+produced -0.0611, +0.0900, -0.0978 and +0.0133. The trained value is
+deterministic; every one of those differences is the random draw moving.
+**Compare a trained value against the distribution, never against one draw.**
+
+Second, and more interesting: **the random baseline is not 0.5.** It sits near
+0.53 on DFD and near 0.60 on CelebDFv3. An untrained convolution stack followed
+by pooling encodes low-level image statistics -- resolution, compression,
+colour -- and those already separate the classes here. That is the resolution
+shortcut this project measured before: CelebDF++ fakes are 61% square 256/512
+while every real is wide, and v9's honest number is 0.7226 rather than 0.7774.
+
+So v9's extractor is genuinely above what random features give, by about
++0.13 AUROC, on top of a floor near 0.60 that costs no training at all. That
+increment is the part attributable to learned forgery evidence, and it is
+smaller than the headline 0.7774 suggests. It is also the right number to
+quote for what Stage A contributes.
+
+---
+
 ## Hypotheses settled so far
 
 | hypothesis | status | evidence |

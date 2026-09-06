@@ -362,8 +362,10 @@ def main():
         record["probe_change"] = trained - baseline
         print("\ntraining moved the held-out probe by {:+.4f}  ({:.4f} -> {:.4f})"
               .format(trained - baseline, baseline, trained))
-        print("A single random draw is a weak reference: separate draws in this "
-              "project have spanned 0.4878 to 0.5833.")
+        print("A single random draw is a weak reference. Measured spread of the "
+              "random baseline: 0.413-0.601 over eight draws on DFD's train "
+              "split, 0.542-0.678 over four on CelebDFv3's val split. Compare a "
+              "trained value against that distribution, not against one draw.")
 
     # These numbers are the acceptance test for a Stage A run, so they belong in
     # a file the harvest can pick up, not only in a terminal someone scrolled.
