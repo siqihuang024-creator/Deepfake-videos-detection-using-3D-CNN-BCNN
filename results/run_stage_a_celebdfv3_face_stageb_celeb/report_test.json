@@ -1,0 +1,697 @@
+{
+  "threshold": -0.49954377114772797,
+  "accuracy": 0.10410714285714286,
+  "balanced_accuracy": 0.5094493696606921,
+  "confusion_matrix": [
+    [
+      159,
+      10
+    ],
+    [
+      5007,
+      424
+    ]
+  ],
+  "observed_false_positive_rate": 0.05917159763313609,
+  "observed_true_positive_rate": 0.07807033695452034,
+  "auroc": 0.5283769811481098,
+  "average_precision": 0.9733463400514848,
+  "target_false_positive_rate": 0.05,
+  "tpr_at_target_fpr": 0.07549254280979562,
+  "eer": 0.5018935782855163,
+  "mean_real_anomaly": -0.8564465255779627,
+  "mean_fake_anomaly": -0.8172960906817514,
+  "mean_real_posterior": 0.8564465255779627,
+  "mean_fake_posterior": 0.8172960906817514,
+  "embedding_variance_mean": 1.0412373754928463,
+  "embedding_norm_mean": 135.41572076661245,
+  "embedding_diagnostics": {
+    "groups": {
+      "all": {
+        "count": 5600,
+        "mean_norm": 135.41572082432975,
+        "within_group_variance_mean": 1.0412373754928463
+      },
+      "real": {
+        "count": 169,
+        "mean_norm": 134.9440911582983,
+        "within_group_variance_mean": 1.252685330413199
+      },
+      "CelebDFv3": {
+        "count": 5600,
+        "mean_norm": 135.41572082432975,
+        "within_group_variance_mean": 1.0412373754928463
+      },
+      "CelebDFv3/real": {
+        "count": 169,
+        "mean_norm": 134.9440911582983,
+        "within_group_variance_mean": 1.252685330413199
+      },
+      "fake": {
+        "count": 5431,
+        "mean_norm": 135.43039683492782,
+        "within_group_variance_mean": 1.0338450504952559
+      },
+      "CelebDFv3/fake": {
+        "count": 5431,
+        "mean_norm": 135.43039683492782,
+        "within_group_variance_mean": 1.0338450504952559
+      }
+    },
+    "real_fake_separation": {
+      "overall": {
+        "centroid_l2_distance": 20.42095354952622,
+        "centroid_cosine_distance": 0.04704084758848193
+      },
+      "CelebDFv3": {
+        "centroid_l2_distance": 20.42095354952622,
+        "centroid_cosine_distance": 0.04704084758848193
+      }
+    }
+  },
+  "preprocessing_diagnostics": {
+    "overall": {
+      "num_videos": 5600,
+      "fps_mean": 25.87896747146334,
+      "fps_std": 2.188806962439842,
+      "clip_any_face_detection_failure_rate": 0.021964285714285714,
+      "frame_face_detection_failure_fraction": 0.006651785714285714,
+      "box_center_x_jitter_mean": 0.008012430433838225,
+      "box_center_y_jitter_mean": 0.006954647061102151,
+      "box_width_jitter_mean": 0.009169880622065908,
+      "box_height_jitter_mean": 0.009366475469950371
+    },
+    "CelebDFv3": {
+      "num_videos": 5600,
+      "fps_mean": 25.87896747146334,
+      "fps_std": 2.188806962439842,
+      "clip_any_face_detection_failure_rate": 0.021964285714285714,
+      "frame_face_detection_failure_fraction": 0.006651785714285714,
+      "box_center_x_jitter_mean": 0.008012430433838225,
+      "box_center_y_jitter_mean": 0.006954647061102151,
+      "box_width_jitter_mean": 0.009169880622065908,
+      "box_height_jitter_mean": 0.009366475469950371
+    },
+    "CelebDFv3/real": {
+      "num_videos": 169,
+      "fps_mean": 29.97262726732965,
+      "fps_std": 0.12202516089243487,
+      "clip_any_face_detection_failure_rate": 0.04142011834319527,
+      "frame_face_detection_failure_fraction": 0.010447485207100591,
+      "box_center_x_jitter_mean": 0.00473048869632708,
+      "box_center_y_jitter_mean": 0.004988511455122701,
+      "box_width_jitter_mean": 0.0032932015903777657,
+      "box_height_jitter_mean": 0.0053287792223477345
+    },
+    "CelebDFv3/fake": {
+      "num_videos": 5431,
+      "fps_mean": 25.75158236641797,
+      "fps_std": 2.0980455577220276,
+      "clip_any_face_detection_failure_rate": 0.021358865770576323,
+      "frame_face_detection_failure_fraction": 0.006533672436015467,
+      "box_center_x_jitter_mean": 0.008114556774040653,
+      "box_center_y_jitter_mean": 0.007015828596254153,
+      "box_width_jitter_mean": 0.009352749109702678,
+      "box_height_jitter_mean": 0.009492119120446568
+    }
+  },
+  "per_dataset": {
+    "CelebDFv3": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.10410714285714286,
+      "balanced_accuracy": 0.5094493696606921,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          5007,
+          424
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.07807033695452034,
+      "auroc": 0.5283769811481098,
+      "average_precision": 0.9733463400514848,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.07549254280979562,
+      "eer": 0.5018935782855163,
+      "num_videos": 5600,
+      "num_real_videos": 169,
+      "num_fake_videos": 5431,
+      "mean_real_anomaly": -0.8564465255779627,
+      "mean_fake_anomaly": -0.8172960906817514,
+      "domain_calibrated_threshold": -0.4967916488647461,
+      "domain_calibrated_accuracy": 0.1025,
+      "domain_calibrated_balanced_accuracy": 0.5114873087763758
+    }
+  },
+  "macro_dataset_auroc": 0.5283769811481098,
+  "per_method": {
+    "CelebDFv3/FaceReenact/DaGAN": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.6864406779661016,
+      "balanced_accuracy": 0.4928022608849245,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          64,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.04477611940298507,
+      "auroc": 0.4996908946392299,
+      "average_precision": 0.2998514078388616,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.04477611940298507,
+      "eer": 0.5408460655303364,
+      "num_real_videos": 169,
+      "num_fake_videos": 67
+    },
+    "CelebDFv3/FaceReenact/FSRT": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.6864406779661016,
+      "balanced_accuracy": 0.4928022608849245,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          64,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.04477611940298507,
+      "auroc": 0.5245959551355648,
+      "average_precision": 0.30650016508265154,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.04477611940298507,
+      "eer": 0.5245076393182019,
+      "num_real_videos": 169,
+      "num_fake_videos": 67
+    },
+    "CelebDFv3/FaceReenact/HyperReenact": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.6822033898305084,
+      "balanced_accuracy": 0.4853395743177603,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          65,
+          2
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.029850746268656716,
+      "auroc": 0.4520003532632694,
+      "average_precision": 0.2677899528710451,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.029850746268656716,
+      "eer": 0.5497218051753069,
+      "num_real_videos": 169,
+      "num_fake_videos": 67
+    },
+    "CelebDFv3/FaceReenact/LIA": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.6864406779661016,
+      "balanced_accuracy": 0.4928022608849245,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          64,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.04477611940298507,
+      "auroc": 0.5114368983484943,
+      "average_precision": 0.2926674190094821,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.04477611940298507,
+      "eer": 0.5081692131060673,
+      "num_real_videos": 169,
+      "num_fake_videos": 67
+    },
+    "CelebDFv3/FaceReenact/LivePortrait": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.690677966101695,
+      "balanced_accuracy": 0.5002649474520887,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          63,
+          4
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.05970149253731343,
+      "auroc": 0.48467720568753864,
+      "average_precision": 0.2807038475877238,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.04477611940298507,
+      "eer": 0.5512673319791574,
+      "num_real_videos": 169,
+      "num_fake_videos": 67
+    },
+    "CelebDFv3/FaceReenact/MCNET": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.6864406779661016,
+      "balanced_accuracy": 0.4928022608849245,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          64,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.04477611940298507,
+      "auroc": 0.5090523712796962,
+      "average_precision": 0.29433246414809544,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.04477611940298507,
+      "eer": 0.5245076393182019,
+      "num_real_videos": 169,
+      "num_fake_videos": 67
+    },
+    "CelebDFv3/FaceReenact/TPSMM": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.6822033898305084,
+      "balanced_accuracy": 0.4853395743177603,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          65,
+          2
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.029850746268656716,
+      "auroc": 0.5080808972887043,
+      "average_precision": 0.28700078585624766,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.029850746268656716,
+      "eer": 0.5245076393182019,
+      "num_real_videos": 169,
+      "num_fake_videos": 67
+    },
+    "CelebDFv3/FaceSwap/BlendFace": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.680672268907563,
+      "balanced_accuracy": 0.49215333161821456,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          66,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.043478260869565216,
+      "auroc": 0.47105737072292253,
+      "average_precision": 0.27778898727693924,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.043478260869565216,
+      "eer": 0.5564274075979762,
+      "num_real_videos": 169,
+      "num_fake_videos": 69
+    },
+    "CelebDFv3/FaceSwap/Celeb-DF-v2": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.4594594594594595,
+      "balanced_accuracy": 0.49777738526303394,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          190,
+          11
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.05472636815920398,
+      "auroc": 0.49745356059936996,
+      "average_precision": 0.5407451699604451,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.05472636815920398,
+      "eer": 0.5161029173658336,
+      "num_real_videos": 169,
+      "num_fake_videos": 201
+    },
+    "CelebDFv3/FaceSwap/GHOST": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.6764705882352942,
+      "balanced_accuracy": 0.4849069548066204,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          67,
+          2
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.028985507246376812,
+      "auroc": 0.46248177686304776,
+      "average_precision": 0.2687620296976113,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.028985507246376812,
+      "eer": 0.5505102478346626,
+      "num_real_videos": 169,
+      "num_fake_videos": 69
+    },
+    "CelebDFv3/FaceSwap/HifiFace": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.680672268907563,
+      "balanced_accuracy": 0.49215333161821456,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          66,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.043478260869565216,
+      "auroc": 0.4545064745733642,
+      "average_precision": 0.2658680525167265,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.043478260869565216,
+      "eer": 0.5505102478346626,
+      "num_real_videos": 169,
+      "num_fake_videos": 69
+    },
+    "CelebDFv3/FaceSwap/InSwapper": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.680672268907563,
+      "balanced_accuracy": 0.49215333161821456,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          66,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.043478260869565216,
+      "auroc": 0.44567361289769314,
+      "average_precision": 0.2615040179113587,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.043478260869565216,
+      "eer": 0.569590944172884,
+      "num_real_videos": 169,
+      "num_fake_videos": 69
+    },
+    "CelebDFv3/FaceSwap/MobileFaceSwap": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.680672268907563,
+      "balanced_accuracy": 0.49215333161821456,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          66,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.043478260869565216,
+      "auroc": 0.49095274847783205,
+      "average_precision": 0.2858515426524448,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.043478260869565216,
+      "eer": 0.5343881313780979,
+      "num_real_videos": 169,
+      "num_fake_videos": 69
+    },
+    "CelebDFv3/FaceSwap/SimSwap": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.680672268907563,
+      "balanced_accuracy": 0.49215333161821456,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          66,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.043478260869565216,
+      "auroc": 0.47611697110024864,
+      "average_precision": 0.2765134207233132,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.043478260869565216,
+      "eer": 0.5343881313780979,
+      "num_real_videos": 169,
+      "num_fake_videos": 69
+    },
+    "CelebDFv3/FaceSwap/UniFace": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.680672268907563,
+      "balanced_accuracy": 0.49215333161821456,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          66,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.043478260869565216,
+      "auroc": 0.45287711173998796,
+      "average_precision": 0.2674145819794572,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.043478260869565216,
+      "eer": 0.5534688277163193,
+      "num_real_videos": 169,
+      "num_fake_videos": 69
+    },
+    "CelebDFv3/TalkingFace/AniTalker": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.25692695214105793,
+      "balanced_accuracy": 0.506414201183432,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          580,
+          45
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.072,
+      "auroc": 0.5176426035502959,
+      "average_precision": 0.8047297818032204,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0672,
+      "eer": 0.4836449704142012,
+      "num_real_videos": 169,
+      "num_fake_videos": 625
+    },
+    "CelebDFv3/TalkingFace/EDTalk": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.25097529258777634,
+      "balanced_accuracy": 0.4987475345167653,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          566,
+          34
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.056666666666666664,
+      "auroc": 0.5301775147928993,
+      "average_precision": 0.8029804789948836,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.056666666666666664,
+      "eer": 0.48297830374753453,
+      "num_real_videos": 169,
+      "num_fake_videos": 600
+    },
+    "CelebDFv3/TalkingFace/EchoMimic": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.23490813648293962,
+      "balanced_accuracy": 0.4872776075915264,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          573,
+          20
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.03372681281618887,
+      "auroc": 0.48550645100132717,
+      "average_precision": 0.7731902737028166,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.03204047217537943,
+      "eer": 0.5373589311194706,
+      "num_real_videos": 169,
+      "num_fake_videos": 593
+    },
+    "CelebDFv3/TalkingFace/FLOAT": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.29345088161209065,
+      "balanced_accuracy": 0.5296142011834319,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          551,
+          74
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.1184,
+      "auroc": 0.5918674556213017,
+      "average_precision": 0.8401689855664193,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.1136,
+      "eer": 0.457410650887574,
+      "num_real_videos": 169,
+      "num_fake_videos": 625
+    },
+    "CelebDFv3/TalkingFace/IP_LAP": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.2661596958174905,
+      "balanced_accuracy": 0.5115432334414964,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          569,
+          51
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.08225806451612903,
+      "auroc": 0.5420786409620155,
+      "average_precision": 0.8177126165250024,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.08064516129032258,
+      "eer": 0.499866386715022,
+      "num_real_videos": 169,
+      "num_fake_videos": 620
+    },
+    "CelebDFv3/TalkingFace/Real3DPortrait": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.308300395256917,
+      "balanced_accuracy": 0.5339735232173303,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          515,
+          75
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.1271186440677966,
+      "auroc": 0.5641159362150235,
+      "average_precision": 0.8199511369359478,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.12542372881355932,
+      "eer": 0.47482198375288337,
+      "num_real_videos": 169,
+      "num_fake_videos": 590
+    },
+    "CelebDFv3/TalkingFace/SadTalker": {
+      "threshold": -0.49954377114772797,
+      "accuracy": 0.29345088161209065,
+      "balanced_accuracy": 0.5296142011834319,
+      "confusion_matrix": [
+        [
+          159,
+          10
+        ],
+        [
+          551,
+          74
+        ]
+      ],
+      "observed_false_positive_rate": 0.05917159763313609,
+      "observed_true_positive_rate": 0.1184,
+      "auroc": 0.5487242603550296,
+      "average_precision": 0.8245225880044451,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.112,
+      "eer": 0.4919621301775148,
+      "num_real_videos": 169,
+      "num_fake_videos": 625
+    }
+  },
+  "split": "test",
+  "objective": "one_class_real",
+  "score_sign": -1.0,
+  "trained_datasets": [
+    "CelebDFv3"
+  ],
+  "evaluated_datasets": [
+    "CelebDFv3"
+  ],
+  "threshold_source": "checkpoint",
+  "checkpoint": "/root/Deepfake-videos-detection-using-3D-CNN-BCNN/artifacts/run_stage_a_celebdfv3_face_stageb_celeb/checkpoints/best.pt",
+  "num_videos": 5603,
+  "num_clips_per_video": 8,
+  "clip_length": 8,
+  "preprocessing_config_source": "checkpoint",
+  "mean_predictive_std": 0.20864411683753134
+}

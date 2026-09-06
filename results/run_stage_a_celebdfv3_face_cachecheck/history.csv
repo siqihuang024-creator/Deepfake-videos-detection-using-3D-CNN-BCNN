@@ -1,0 +1,2 @@
+epoch,train_loss,skipped_training_clips,learning_rate,selection_value,validation_accuracy,validation_balanced_accuracy,validation_auroc,validation_macro_dataset_auroc,validation_eer,validation_tpr_at_target_fpr,dfd_auroc,celebdfv3_auroc,embedding_variance_mean,stage1_saturated,stage2_saturated,stage3_saturated,stage3_output_std
+1,1.547999898592631,0,9.5e-05,,0.9166666666666666,0.9166666666666666,,,,,,,,,,,

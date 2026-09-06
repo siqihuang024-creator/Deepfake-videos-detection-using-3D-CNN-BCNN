@@ -1,6 +1,6 @@
 {
-  "collected_at": "2026-09-06T11:13:25",
-  "git_revision": "62a80fc",
+  "collected_at": "2026-09-06T20:43:17",
+  "git_revision": "2cb2b32",
   "runs": [
     "run_3d_bcnn_t8_k3_combined_pretrain_896_celeb",
     "run_3d_bcnn_t8_k3_combined_pretrain_896_dfd",
@@ -34,6 +34,9 @@
     "run_dfd_supervised_3d_t8_k3_L_gen_sigmoid_subset",
     "run_dfd_supervised_3d_t8_k3_M_gen_relu_subset",
     "run_dfd_supervised_3d_t8_k3_v9arch",
+    "run_stage_a_celebdfv3_face_cachecheck",
+    "run_stage_a_celebdfv3_face_pretrain",
+    "run_stage_a_celebdfv3_face_stageb_celeb",
     "run_stage_a_dfd_decimate_full60",
     "run_stage_a_dfd_decimate_overfit4",
     "run_stage_a_dfd_decimate_overfit4_constlr",
@@ -45,5 +48,5 @@
     "run_stage_a_dfd_decimate_stageb_full60",
     "run_stage_a_dfd_decimate_stageb_smoke"
   ],
-  "epoch_rows": 2102
+  "epoch_rows": 2180
 }

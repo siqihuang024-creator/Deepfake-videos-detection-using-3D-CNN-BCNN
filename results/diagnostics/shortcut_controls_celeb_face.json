@@ -1,0 +1,626 @@
+{
+  "CelebDFv3:val": {
+    "aspect_ratio": {
+      "source_clip": {
+        "auroc": 0.06598611193542647,
+        "low": 0.04919706634342179,
+        "high": 0.08542299483971287,
+        "standard_error": 0.009528898581308672,
+        "clusters": 166,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.06598611193542647,
+        "low": 0.03437473883697962,
+        "high": 0.10010659263965115,
+        "standard_error": 0.01651788812251584,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.4340138880645735,
+      "videos": 5241,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "bitrate_mb_per_second": {
+      "source_clip": {
+        "auroc": 0.19437533384770614,
+        "low": 0.1731457938374039,
+        "high": 0.21459811574997145,
+        "standard_error": 0.010564917422535668,
+        "clusters": 166,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.19437533384770614,
+        "low": 0.1650456723962454,
+        "high": 0.21772508370543853,
+        "standard_error": 0.013440497641676754,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.3056246661522939,
+      "videos": 5241,
+      "gating": true,
+      "verdict": "FAIL"
+    },
+    "bits_per_pixel": {
+      "source_clip": {
+        "auroc": 0.6224066710190516,
+        "low": 0.5972196615502852,
+        "high": 0.6475184582145092,
+        "standard_error": 0.01315027170204659,
+        "clusters": 166,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.6224066710190516,
+        "low": 0.585522166577824,
+        "high": 0.6566242093031419,
+        "standard_error": 0.018109235226849367,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.12240667101905156,
+      "videos": 5241,
+      "gating": true,
+      "verdict": "FAIL"
+    },
+    "frame_count": {
+      "source_clip": {
+        "auroc": 0.09078817733990147,
+        "low": 0.0722337460771006,
+        "high": 0.11011047242314671,
+        "standard_error": 0.00956758598067624,
+        "clusters": 166,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.09078817733990147,
+        "low": 0.05717756366545955,
+        "high": 0.12421707223507904,
+        "standard_error": 0.017120864819714154,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.40921182266009853,
+      "videos": 5241,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "frame_height": {
+      "source_clip": {
+        "auroc": 0.3951736008071695,
+        "low": 0.38300485403604456,
+        "high": 0.40643114009522824,
+        "standard_error": 0.00605532650092565,
+        "clusters": 166,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.3951736008071695,
+        "low": 0.3679150458499043,
+        "high": 0.41832884574344525,
+        "standard_error": 0.012892605006469254,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.10482639919283049,
+      "videos": 5241,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "frame_pixels": {
+      "source_clip": {
+        "auroc": 0.05606148732862484,
+        "low": 0.04280153987645261,
+        "high": 0.07039827401588855,
+        "standard_error": 0.0070849821117676005,
+        "clusters": 166,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.05606148732862484,
+        "low": 0.03501529557191104,
+        "high": 0.07598222318109563,
+        "standard_error": 0.010405008701111692,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.4439385126713752,
+      "videos": 5241,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "frame_width": {
+      "source_clip": {
+        "auroc": 0.05367677606979644,
+        "low": 0.04129896165817744,
+        "high": 0.06720419111240032,
+        "standard_error": 0.006714132601521952,
+        "clusters": 166,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.05367677606979644,
+        "low": 0.032248422767821125,
+        "high": 0.07303545795271287,
+        "standard_error": 0.010354869954685533,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.44632322393020357,
+      "videos": 5241,
+      "gating": false,
+      "verdict": "noted"
+    }
+  },
+  "CelebDFv3:test": {
+    "aspect_ratio": {
+      "source_clip": {
+        "auroc": 0.12400255519104383,
+        "low": 0.0937760643974937,
+        "high": 0.15853056568401624,
+        "standard_error": 0.016611995353500227,
+        "clusters": 170,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.12400255519104383,
+        "low": 0.08354775983863313,
+        "high": 0.16826947594960204,
+        "standard_error": 0.02124213292580743,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.37599744480895614,
+      "videos": 5603,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "bitrate_mb_per_second": {
+      "source_clip": {
+        "auroc": 0.2173861261787984,
+        "low": 0.1990823951089656,
+        "high": 0.236656474521622,
+        "standard_error": 0.009504014256576668,
+        "clusters": 170,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.2173861261787984,
+        "low": 0.18690984276659572,
+        "high": 0.24015707957467933,
+        "standard_error": 0.013599884198458437,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.2826138738212016,
+      "videos": 5603,
+      "gating": true,
+      "verdict": "FAIL"
+    },
+    "bits_per_pixel": {
+      "source_clip": {
+        "auroc": 0.6108438626693085,
+        "low": 0.5853456909079422,
+        "high": 0.6374471810580905,
+        "standard_error": 0.01339445838587827,
+        "clusters": 170,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.6108438626693085,
+        "low": 0.5682549001307478,
+        "high": 0.6451615375730912,
+        "standard_error": 0.01944754622518118,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.11084386266930846,
+      "videos": 5603,
+      "gating": true,
+      "verdict": "FAIL"
+    },
+    "frame_count": {
+      "source_clip": {
+        "auroc": 0.10505353991403296,
+        "low": 0.08556917890001943,
+        "high": 0.12561563326445824,
+        "standard_error": 0.010132343538133665,
+        "clusters": 170,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.10505353991403296,
+        "low": 0.06762349577134476,
+        "high": 0.1382272141364197,
+        "standard_error": 0.01791794535048441,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.394946460085967,
+      "videos": 5603,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "frame_height": {
+      "source_clip": {
+        "auroc": 0.3939655265750696,
+        "low": 0.3834787232314012,
+        "high": 0.4036371666270658,
+        "standard_error": 0.005194344576891147,
+        "clusters": 170,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.3939655265750696,
+        "low": 0.3771288317451796,
+        "high": 0.41000914040638786,
+        "standard_error": 0.008588375642773932,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.10603447342493039,
+      "videos": 5603,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "frame_pixels": {
+      "source_clip": {
+        "auroc": 0.07753597297560659,
+        "low": 0.06211589645709449,
+        "high": 0.09478414412416257,
+        "standard_error": 0.00839445524761991,
+        "clusters": 170,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.07753597297560659,
+        "low": 0.05017113896836584,
+        "high": 0.10216406203015865,
+        "standard_error": 0.013372605358386648,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.4224640270243934,
+      "videos": 5603,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "frame_width": {
+      "source_clip": {
+        "auroc": 0.07590758003919401,
+        "low": 0.06082890168633217,
+        "high": 0.0926931632074973,
+        "standard_error": 0.008268086720593345,
+        "clusters": 170,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.07590758003919401,
+        "low": 0.050141066075614374,
+        "high": 0.09793438613594717,
+        "standard_error": 0.012156639062903585,
+        "clusters": 57,
+        "draws": 2000
+      },
+      "distance_from_chance": 0.424092419960806,
+      "videos": 5603,
+      "gating": false,
+      "verdict": "noted"
+    }
+  },
+  "DFD:val": {
+    "aspect_ratio": {
+      "source_clip": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 45,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 4,
+        "draws": 1882
+      },
+      "distance_from_chance": 0.0,
+      "videos": 62,
+      "gating": false,
+      "verdict": "PASS"
+    },
+    "bitrate_mb_per_second": {
+      "source_clip": {
+        "auroc": 0.4627450980392157,
+        "low": 0.3124133986928105,
+        "high": 0.6196732026143787,
+        "standard_error": 0.07829152580528877,
+        "clusters": 45,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.4627450980392157,
+        "low": 0.41880341880341887,
+        "high": 0.5058479532163742,
+        "standard_error": 0.025307402246943327,
+        "clusters": 4,
+        "draws": 1882
+      },
+      "distance_from_chance": 0.03725490196078429,
+      "videos": 62,
+      "gating": true,
+      "verdict": "PASS (drifting)"
+    },
+    "bits_per_pixel": {
+      "source_clip": {
+        "auroc": 0.4627450980392157,
+        "low": 0.3124133986928105,
+        "high": 0.6196732026143787,
+        "standard_error": 0.07829152580528877,
+        "clusters": 45,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.4627450980392157,
+        "low": 0.41880341880341887,
+        "high": 0.5058479532163742,
+        "standard_error": 0.025307402246943327,
+        "clusters": 4,
+        "draws": 1882
+      },
+      "distance_from_chance": 0.03725490196078429,
+      "videos": 62,
+      "gating": true,
+      "verdict": "PASS (drifting)"
+    },
+    "frame_count": {
+      "source_clip": {
+        "auroc": 0.27254901960784317,
+        "low": 0.12217013888888896,
+        "high": 0.4426242690058477,
+        "standard_error": 0.08169480153332007,
+        "clusters": 45,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.27254901960784317,
+        "low": 0.19642857142857145,
+        "high": 0.3403361344537815,
+        "standard_error": 0.044659202418715134,
+        "clusters": 4,
+        "draws": 1882
+      },
+      "distance_from_chance": 0.22745098039215683,
+      "videos": 62,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "frame_height": {
+      "source_clip": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 45,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 4,
+        "draws": 1882
+      },
+      "distance_from_chance": 0.0,
+      "videos": 62,
+      "gating": false,
+      "verdict": "PASS"
+    },
+    "frame_pixels": {
+      "source_clip": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 45,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 4,
+        "draws": 1882
+      },
+      "distance_from_chance": 0.0,
+      "videos": 62,
+      "gating": false,
+      "verdict": "PASS"
+    },
+    "frame_width": {
+      "source_clip": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 45,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 4,
+        "draws": 1882
+      },
+      "distance_from_chance": 0.0,
+      "videos": 62,
+      "gating": false,
+      "verdict": "PASS"
+    }
+  },
+  "DFD:test": {
+    "aspect_ratio": {
+      "source_clip": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 54,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 4,
+        "draws": 1993
+      },
+      "distance_from_chance": 0.0,
+      "videos": 108,
+      "gating": false,
+      "verdict": "PASS"
+    },
+    "bitrate_mb_per_second": {
+      "source_clip": {
+        "auroc": 0.5243484224965708,
+        "low": 0.4475172476397967,
+        "high": 0.6056262860082305,
+        "standard_error": 0.04004003034076545,
+        "clusters": 54,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5243484224965708,
+        "low": 0.4540816326530613,
+        "high": 0.6163194444444444,
+        "standard_error": 0.047405990143325825,
+        "clusters": 4,
+        "draws": 1993
+      },
+      "distance_from_chance": 0.024348422496570765,
+      "videos": 108,
+      "gating": true,
+      "verdict": "PASS"
+    },
+    "bits_per_pixel": {
+      "source_clip": {
+        "auroc": 0.5243484224965708,
+        "low": 0.4475172476397967,
+        "high": 0.6056262860082305,
+        "standard_error": 0.04004003034076545,
+        "clusters": 54,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5243484224965708,
+        "low": 0.4540816326530613,
+        "high": 0.6163194444444444,
+        "standard_error": 0.047405990143325825,
+        "clusters": 4,
+        "draws": 1993
+      },
+      "distance_from_chance": 0.024348422496570765,
+      "videos": 108,
+      "gating": true,
+      "verdict": "PASS"
+    },
+    "frame_count": {
+      "source_clip": {
+        "auroc": 0.392318244170096,
+        "low": 0.2921702404158545,
+        "high": 0.47033976773383557,
+        "standard_error": 0.045139488238437046,
+        "clusters": 54,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.392318244170096,
+        "low": 0.3251028806584362,
+        "high": 0.47198097601323413,
+        "standard_error": 0.041488531686834834,
+        "clusters": 4,
+        "draws": 1993
+      },
+      "distance_from_chance": 0.10768175582990402,
+      "videos": 108,
+      "gating": false,
+      "verdict": "noted"
+    },
+    "frame_height": {
+      "source_clip": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 54,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 4,
+        "draws": 1993
+      },
+      "distance_from_chance": 0.0,
+      "videos": 108,
+      "gating": false,
+      "verdict": "PASS"
+    },
+    "frame_pixels": {
+      "source_clip": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 54,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 4,
+        "draws": 1993
+      },
+      "distance_from_chance": 0.0,
+      "videos": 108,
+      "gating": false,
+      "verdict": "PASS"
+    },
+    "frame_width": {
+      "source_clip": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 54,
+        "draws": 2000
+      },
+      "identity": {
+        "auroc": 0.5,
+        "low": 0.5,
+        "high": 0.5,
+        "standard_error": 0.0,
+        "clusters": 4,
+        "draws": 1993
+      },
+      "distance_from_chance": 0.0,
+      "videos": 108,
+      "gating": false,
+      "verdict": "PASS"
+    }
+  }
+}

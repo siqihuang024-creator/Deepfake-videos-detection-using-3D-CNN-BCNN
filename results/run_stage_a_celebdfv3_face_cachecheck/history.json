@@ -1,0 +1,35 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 1.547999898592631,
+    "skipped_training_clips": 0,
+    "learning_rate": 9.5e-05,
+    "selection_metric": "auroc",
+    "selection_value": null,
+    "validation": {
+      "threshold": 1.0009041160345078,
+      "accuracy": 0.9166666666666666,
+      "balanced_accuracy": 0.9166666666666666,
+      "confusion_matrix": [
+        [
+          11,
+          1
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.08333333333333333,
+      "observed_true_positive_rate": null,
+      "auroc": null,
+      "average_precision": null,
+      "eer": null,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": null,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": null
+    }
+  }
+]
