@@ -1,0 +1,49 @@
+frames_decoded,requested,returned,exact,offset_sum,offset_max,frozen_clips,clips,dataset,class_name,path
+1000,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/10__walking_down_street_outside_angry.mp4
+845,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/20__outside_talking_still_laughing.mp4
+892,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/12__exit_phone_room.mp4
+1486,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/27__talking_angry_couch.mp4
+1350,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/13__walking_down_indoor_hall_disgust.mp4
+1326,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/14__podium_speech_happy.mp4
+159,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/14__hugging_happy.mp4
+804,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/19__kitchen_pan.mp4
+990,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/02__talking_against_wall.mp4
+728,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/27__walking_down_street_outside_angry.mp4
+1065,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/18__secret_conversation.mp4
+911,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/22__podium_speech_happy.mp4
+1304,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/15_03__talking_angry_couch__DNUJD8M2.mp4
+426,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/27_07__walking_down_street_outside_angry__3RH5PR6S.mp4
+404,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/14_02__walking_and_outside_surprised__3IUBEKCT.mp4
+777,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/12_07__outside_talking_still_laughing__0VN0A2T3.mp4
+339,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/13_03__walking_outside_cafe_disgusted__GBYWJW06.mp4
+985,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/02_15__meeting_serious__TSRK8QS4.mp4
+858,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/15_06__outside_talking_still_laughing__QRCD27P8.mp4
+813,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/03_13__hugging_happy__GBYWJW06.mp4
+1433,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/26_12__talking_angry_couch__OVOQACG8.mp4
+233,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/06_25__exit_phone_room__MI9BDQ7M.mp4
+649,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/15_02__hugging_happy__HTG660F8.mp4
+781,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/12_26__outside_talking_still_laughing__OTKIGGFE.mp4
+317,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_YouTube/00264.mp4
+459,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id38_0005.mp4
+468,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_YouTube/00236.mp4
+468,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_YouTube/00087.mp4
+458,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id3_0000.mp4
+364,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id12_0002.mp4
+474,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id55_0003.mp4
+459,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id0_0005.mp4
+504,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_YouTube/00105.mp4
+452,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id33_0002.mp4
+428,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id32_0004.mp4
+497,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id30_0008.mp4
+180,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/TalkingFace/Real3DPortrait/id47_0005_test_id01333_SwmQTyhzge8.mp4
+199,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/TalkingFace/AniTalker/id56_0000_test_id01989_t3crub0ikyc.mp4
+187,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceReenact/FSRT/id30_id29_0001.mp4
+321,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceSwap/UniFace/id35_id4_0009.mp4
+132,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/TalkingFace/AniTalker/id46_0002_test_id04862_AyXnilND0XM.mp4
+337,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceReenact/LIA/id37_id20_0008.mp4
+311,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceSwap/Celeb-DF-v2/id28_id6_0004.mp4
+504,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceSwap/Celeb-DF-v2/id33_id32_0008.mp4
+243,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/TalkingFace/AniTalker/id39_0002_test_id04094_UF32ava_FRg.mp4
+101,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceReenact/HyperReenact/id33_id37_0007.mp4
+448,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceSwap/SimSwap/id30_id34_0005.mp4
+447,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceReenact/MCNET/id32_id30_0005.mp4

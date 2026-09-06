@@ -1,0 +1,41 @@
+frames_decoded,requested,returned,exact,offset_sum,offset_max,frozen_clips,clips,dataset,class_name,path
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/10__walking_down_street_outside_angry.mp4
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/20__outside_talking_still_laughing.mp4
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/12__exit_phone_room.mp4
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/27__talking_angry_couch.mp4
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/13__walking_down_indoor_hall_disgust.mp4
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/14__podium_speech_happy.mp4
+159,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/14__hugging_happy.mp4
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/19__kitchen_pan.mp4
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/02__talking_against_wall.mp4
+600,32,32,32,0,0,0,4,DFD,real,DFD_original sequences/27__walking_down_street_outside_angry.mp4
+600,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/15_03__talking_angry_couch__DNUJD8M2.mp4
+426,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/27_07__walking_down_street_outside_angry__3RH5PR6S.mp4
+404,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/14_02__walking_and_outside_surprised__3IUBEKCT.mp4
+600,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/12_07__outside_talking_still_laughing__0VN0A2T3.mp4
+339,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/13_03__walking_outside_cafe_disgusted__GBYWJW06.mp4
+600,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/02_15__meeting_serious__TSRK8QS4.mp4
+600,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/15_06__outside_talking_still_laughing__QRCD27P8.mp4
+600,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/03_13__hugging_happy__GBYWJW06.mp4
+600,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/26_12__talking_angry_couch__OVOQACG8.mp4
+233,32,32,32,0,0,0,4,DFD,fake,DFD_manipulated_sequences/DFD_manipulated_sequences/06_25__exit_phone_room__MI9BDQ7M.mp4
+351,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id56_0008.mp4
+316,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_YouTube/00260.mp4
+478,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_YouTube/00080.mp4
+405,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id5_0005.mp4
+353,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id37_0003.mp4
+477,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id4_0000.mp4
+314,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id9_0009.mp4
+477,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_WEB/id60_0000.mp4
+309,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_YouTube/00203.mp4
+327,32,32,32,0,0,0,4,CelebDFv3,real,REAL/Real_YouTube/00106.mp4
+172,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/TalkingFace/EDTalk/id35_0008_test_id02317_lB7NoST-Uws.mp4
+156,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/TalkingFace/AniTalker/id47_0005_test_id02181_bVgZuvmZPcg.mp4
+465,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceSwap/UniFace/id31_id38_0004.mp4
+245,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/TalkingFace/AniTalker/id39_0009_test_id01437_ZAolQwdjOI4.mp4
+456,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceSwap/BlendFace/id30_id3_0007.mp4
+332,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceReenact/TPSMM/id3_id28_0001.mp4
+466,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceReenact/MCNET/id20_id4_0005.mp4
+360,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceReenact/TPSMM/id6_id2_0002.mp4
+456,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceSwap/MobileFaceSwap/id38_id26_0007.mp4
+101,32,32,32,0,0,0,4,CelebDFv3,fake,FAKE/FaceReenact/HyperReenact/id28_id9_0000.mp4
