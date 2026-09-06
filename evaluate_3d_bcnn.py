@@ -162,7 +162,15 @@ def main():
         "preprocessing_config_source": "checkpoint",
         "mean_predictive_std": float(np.mean(values["stds"])),
     })
-    report_dir = ensure_dir(config["train"]["report_dir"])
+    # The config's report_dir carries no run suffix, so every evaluation used to
+    # write artifacts/<base>/reports/<split>.json and overwrite the previous
+    # one: two Stage B runs evaluated on the same split silently shared a file.
+    # The checkpoint's own directory is unambiguous, so the report lands beside
+    # the weights it describes.
+    checkpoint_dir = Path(args.checkpoint).resolve().parent
+    report_dir = ensure_dir(
+        checkpoint_dir.parent / "reports" if checkpoint_dir.name == "checkpoints"
+        else config["train"]["report_dir"])
     report = save_evaluation_report(values, metrics, report_dir, args.split)
     if args.export_embeddings:
         np.savez_compressed(

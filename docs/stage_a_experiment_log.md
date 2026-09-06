@@ -317,6 +317,43 @@ quote for what Stage A contributes.
 
 ---
 
+## Experiment 1 complete - DFD, whole frame, two stages
+
+The whole chain finally runs end to end on one extractor, which the earlier
+Stage B did not: that one was built on the superseded 33-epoch checkpoint.
+
+| step | run | result |
+|---|---|---|
+| Stage A, 60 epochs | `..._decimate_full60` | train BCE 1.5778 -> 0.6579, val AUROC mean 0.4477 |
+| probe on the extractor | | 0.5033, inside the random range 0.41-0.60 |
+| Stage B, one-class on real | `..._stageb_full60` | early stopped at 19; val best 0.6627 @18, mean 0.6259 |
+| **test, 54 real / 54 fake** | | **AUROC 0.4877**, EER 0.5093 |
+
+The 95% interval on 54 vs 54 is about [0.38, 0.60], so the test number covers
+chance. The confusion matrix at the calibrated threshold is [[52, 2], [54, 0]]:
+**not one fake is flagged**. And the direction is inverted -- mean posterior
+0.8330 for real against 0.8478 for fake, so fakes look marginally *more* real
+to the model.
+
+The gap between validation and test is the part worth remembering. Validation
+sat at 0.62-0.66 for all nineteen epochs, steady enough to look like signal,
+and the test split reads 0.4877. Forty-five real and seventeen fake videos over
+a handful of identities cannot rank anything; this is the third time that split
+has produced a number that did not survive a change of identities. The earlier
+Stage B on the 33-epoch extractor did the same thing: val 0.7020, test 0.5165.
+
+**Experiment 1 is a completed negative result**: the DFD whole-frame two-stage
+pipeline reaches chance on a balanced held-out test set, with a full curve at
+every step and a calibrated probe explaining why.
+
+Note for reproduction: `evaluate_3d_bcnn.py` wrote its report to the config's
+`report_dir`, which carries no run suffix, so this evaluation overwrote the
+0.5165 report from the earlier Stage B. Fixed -- the report now lands beside
+the checkpoint it describes -- but that first report file is gone and only its
+numbers survive, here.
+
+---
+
 ## Hypotheses settled so far
 
 | hypothesis | status | evidence |
