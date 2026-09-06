@@ -145,18 +145,20 @@ def main():
             continue
         print("{}  ({} epochs)".format(run_dir.name, len(history)))
 
+        # Flat, and deliberately not named logs/ or reports/: .gitignore carries
+        # global rules for both directory names, which would swallow these
+        # copies the moment they were written under them.
         destination = output / run_dir.name
-        (destination / "logs").mkdir(parents=True, exist_ok=True)
+        destination.mkdir(parents=True, exist_ok=True)
         for name in ("history.json", "history.csv"):
             source = run_dir / "logs" / name
             if source.exists():
-                shutil.copy2(source, destination / "logs" / name)
-        reports = sorted((run_dir / "reports").glob("*.json")) \
-            if (run_dir / "reports").is_dir() else []
+                shutil.copy2(source, destination / name)
+        report_dir = run_dir / "reports"
+        reports = sorted(report_dir.glob("*.json")) if report_dir.is_dir() else []
+        for report in reports:
+            shutil.copy2(report, destination / ("report_" + report.name))
         if reports:
-            (destination / "reports").mkdir(parents=True, exist_ok=True)
-            for report in reports:
-                shutil.copy2(report, destination / "reports" / report.name)
             print("  + {} report(s)".format(len(reports)))
 
         config = {} if args.skip_configs else read_config(run_dir)
