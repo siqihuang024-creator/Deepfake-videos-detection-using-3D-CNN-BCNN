@@ -1,0 +1,3419 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 2.25641849167645,
+    "learning_rate": 9.5e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.4272676991150443,
+    "validation": {
+      "threshold": 1.656013679504392,
+      "accuracy": 0.615819209039548,
+      "balanced_accuracy": 0.48907632743362833,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          62,
+          2
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.03125,
+      "auroc": 0.4272676991150443,
+      "average_precision": 0.3465333311625931,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.03125,
+      "eer": 0.5766731194690266,
+      "mean_real_anomaly": -2.7818449376958663,
+      "mean_fake_anomaly": -3.3143220513593405,
+      "mean_real_posterior": 2.7818449376958663,
+      "mean_fake_posterior": 3.3143220513593405,
+      "embedding_variance_mean": 0.11279542895612815,
+      "embedding_norm_mean": 297.0875702766375,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 297.08757004447267,
+            "within_group_variance_mean": 0.11279542895612815
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 297.99831882630286,
+            "within_group_variance_mean": 0.12906006165916029
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 297.08757004447267,
+            "within_group_variance_mean": 0.11279542895612815
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 297.99831882630286,
+            "within_group_variance_mean": 0.12906006165916029
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 295.479529226554,
+            "within_group_variance_mean": 0.07962016515180356
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 295.479529226554,
+            "within_group_variance_mean": 0.07962016515180356
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 10.399588854660657,
+            "centroid_cosine_distance": 0.0006141527750781473
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 10.399588854660657,
+            "centroid_cosine_distance": 0.0006141527750781473
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 1.656013679504392,
+          "accuracy": 0.615819209039548,
+          "balanced_accuracy": 0.48907632743362833,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              62,
+              2
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.03125,
+          "auroc": 0.4272676991150443,
+          "average_precision": 0.3465333311625931,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.03125,
+          "eer": 0.5766731194690266,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -2.7818449376958663,
+          "mean_fake_anomaly": -3.3143220513593405,
+          "domain_calibrated_threshold": 1.656013679504392,
+          "domain_calibrated_accuracy": 0.615819209039548,
+          "domain_calibrated_balanced_accuracy": 0.48907632743362833
+        }
+      },
+      "macro_dataset_auroc": 0.4272676991150443
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 200,
+      "batch_norm_running_mean_abs": 0.5125409364700317,
+      "batch_norm_running_var_mean": 3.3920161968126195e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.19567884504795074,
+          "saturated_fraction": 0.0,
+          "output_std": 0.05607450380921364
+        },
+        {
+          "preactivation_abs_mean": 0.4185529053211212,
+          "saturated_fraction": 0.0,
+          "output_std": 0.1226273626089096
+        },
+        {
+          "preactivation_abs_mean": 0.714883029460907,
+          "saturated_fraction": 0.0,
+          "output_std": 0.19005979597568512
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999987602233887,
+      "fc1_weight_sigma_mean": 0.006716435309499502,
+      "fc1_bias_rho_mean": -4.999995231628418,
+      "fc1_bias_sigma_mean": 0.006716388277709484,
+      "out_weight_rho_mean": -5.0000834465026855,
+      "out_weight_sigma_mean": 0.006715796422213316,
+      "out_bias_rho_mean": -5.002060413360596,
+      "out_bias_sigma_mean": 0.0067025721073150635
+    }
+  },
+  {
+    "epoch": 2,
+    "train_loss": 1.5893474267050625,
+    "learning_rate": 9.025e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.4799502212389381,
+    "validation": {
+      "threshold": 4.813047218322754,
+      "accuracy": 0.6101694915254238,
+      "balanced_accuracy": 0.48126382743362833,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          63,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.015625,
+      "auroc": 0.4799502212389381,
+      "average_precision": 0.35270081701362455,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.015625,
+      "eer": 0.5600110619469026,
+      "mean_real_anomaly": 0.6539450726117444,
+      "mean_fake_anomaly": 0.5314540232066065,
+      "mean_real_posterior": -0.6539450726117444,
+      "mean_fake_posterior": -0.5314540232066065,
+      "embedding_variance_mean": 0.08538008441723184,
+      "embedding_norm_mean": 338.5113887463586,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 338.5113892199168,
+            "within_group_variance_mean": 0.08538008441723184
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 339.14874218104006,
+            "within_group_variance_mean": 0.09986189004388153
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 338.5113892199168,
+            "within_group_variance_mean": 0.08538008441723184
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 339.14874218104006,
+            "within_group_variance_mean": 0.09986189004388153
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 337.3860628979334,
+            "within_group_variance_mean": 0.056325967158188835
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 337.3860628979334,
+            "within_group_variance_mean": 0.056325967158188835
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 9.19446540201103,
+            "centroid_cosine_distance": 0.000370350370844319
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 9.19446540201103,
+            "centroid_cosine_distance": 0.000370350370844319
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 4.813047218322754,
+          "accuracy": 0.6101694915254238,
+          "balanced_accuracy": 0.48126382743362833,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              63,
+              1
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.015625,
+          "auroc": 0.4799502212389381,
+          "average_precision": 0.35270081701362455,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.015625,
+          "eer": 0.5600110619469026,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": 0.6539450726117444,
+          "mean_fake_anomaly": 0.5314540232066065,
+          "domain_calibrated_threshold": 4.813047218322754,
+          "domain_calibrated_accuracy": 0.6101694915254238,
+          "domain_calibrated_balanced_accuracy": 0.48126382743362833
+        }
+      },
+      "macro_dataset_auroc": 0.4799502212389381
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 400,
+      "batch_norm_running_mean_abs": 0.48847663402557373,
+      "batch_norm_running_var_mean": 2.9006605473114178e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.1572391539812088,
+          "saturated_fraction": 0.0,
+          "output_std": 0.05022331699728966
+        },
+        {
+          "preactivation_abs_mean": 0.43692219257354736,
+          "saturated_fraction": 0.0,
+          "output_std": 0.12785208225250244
+        },
+        {
+          "preactivation_abs_mean": 0.9943847060203552,
+          "saturated_fraction": 0.0,
+          "output_std": 0.23872336745262146
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999984264373779,
+      "fc1_weight_sigma_mean": 0.006716460455209017,
+      "fc1_bias_rho_mean": -5.000021934509277,
+      "fc1_bias_sigma_mean": 0.006716215051710606,
+      "out_weight_rho_mean": -5.00029182434082,
+      "out_weight_sigma_mean": 0.006714405957609415,
+      "out_bias_rho_mean": -5.003382682800293,
+      "out_bias_sigma_mean": 0.00669374642893672
+    }
+  },
+  {
+    "epoch": 3,
+    "train_loss": 1.2778746910020709,
+    "learning_rate": 8.573749999999999e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.5485342920353982,
+    "validation": {
+      "threshold": -1.534828567504884,
+      "accuracy": 0.6497175141242938,
+      "balanced_accuracy": 0.5359513274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          56,
+          8
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.125,
+      "auroc": 0.5485342920353982,
+      "average_precision": 0.4368888398536295,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.125,
+      "eer": 0.5144496681415929,
+      "mean_real_anomaly": -4.452889139145876,
+      "mean_fake_anomaly": -3.875563352368772,
+      "mean_real_posterior": 4.452889139145876,
+      "mean_fake_posterior": 3.875563352368772,
+      "embedding_variance_mean": 0.09040061968869369,
+      "embedding_norm_mean": 161.31286552127472,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 161.31286511629463,
+            "within_group_variance_mean": 0.09040061968869369
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 161.7088535336156,
+            "within_group_variance_mean": 0.10150757735270456
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 161.31286511629463,
+            "within_group_variance_mean": 0.09040061968869369
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 161.7088535336156,
+            "within_group_variance_mean": 0.10150757735270456
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 160.61369806696214,
+            "within_group_variance_mean": 0.06710088821319891
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 160.61369806696214,
+            "within_group_variance_mean": 0.06710088821319891
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 9.460192188644733,
+            "centroid_cosine_distance": 0.001807150209492847
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 9.460192188644733,
+            "centroid_cosine_distance": 0.001807150209492847
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": -1.534828567504884,
+          "accuracy": 0.6497175141242938,
+          "balanced_accuracy": 0.5359513274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              56,
+              8
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.125,
+          "auroc": 0.5485342920353982,
+          "average_precision": 0.4368888398536295,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.125,
+          "eer": 0.5144496681415929,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -4.452889139145876,
+          "mean_fake_anomaly": -3.875563352368772,
+          "domain_calibrated_threshold": -1.534828567504884,
+          "domain_calibrated_accuracy": 0.6497175141242938,
+          "domain_calibrated_balanced_accuracy": 0.5359513274336283
+        }
+      },
+      "macro_dataset_auroc": 0.5485342920353982
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 600,
+      "batch_norm_running_mean_abs": 0.4813419282436371,
+      "batch_norm_running_var_mean": 2.542336460464867e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.18900656700134277,
+          "saturated_fraction": 0.0,
+          "output_std": 0.05712831765413284
+        },
+        {
+          "preactivation_abs_mean": 0.5051495432853699,
+          "saturated_fraction": 0.0,
+          "output_std": 0.14590996503829956
+        },
+        {
+          "preactivation_abs_mean": 1.0874320268630981,
+          "saturated_fraction": 0.0,
+          "output_std": 0.2560351490974426
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999980926513672,
+      "fc1_weight_sigma_mean": 0.006716483738273382,
+      "fc1_bias_rho_mean": -5.000011444091797,
+      "fc1_bias_sigma_mean": 0.006716287694871426,
+      "out_weight_rho_mean": -5.0002851486206055,
+      "out_weight_sigma_mean": 0.006714458577334881,
+      "out_bias_rho_mean": -5.003652572631836,
+      "out_bias_sigma_mean": 0.0066919466480612755
+    }
+  },
+  {
+    "epoch": 4,
+    "train_loss": 1.221039334088564,
+    "learning_rate": 8.145062499999998e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.5109236725663717,
+    "validation": {
+      "threshold": 3.694158315658561,
+      "accuracy": 0.632768361581921,
+      "balanced_accuracy": 0.5125138274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          59,
+          5
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.078125,
+      "auroc": 0.5109236725663717,
+      "average_precision": 0.39295411523978707,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0625,
+      "eer": 0.5144496681415929,
+      "mean_real_anomaly": -2.0364837917639353,
+      "mean_fake_anomaly": -1.7706259619444609,
+      "mean_real_posterior": 2.0364837917639353,
+      "mean_fake_posterior": 1.7706259619444609,
+      "embedding_variance_mean": 0.16967407770020473,
+      "embedding_norm_mean": 235.7152988412286,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 235.71529920204136,
+            "within_group_variance_mean": 0.16967407770020473
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 236.27071284632353,
+            "within_group_variance_mean": 0.1947644983419039
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 235.71529920204136,
+            "within_group_variance_mean": 0.16967407770020473
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 236.27071284632353,
+            "within_group_variance_mean": 0.1947644983419039
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 234.73464698635541,
+            "within_group_variance_mean": 0.11840298179816545
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 234.73464698635541,
+            "within_group_variance_mean": 0.11840298179816545
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 13.00430289985118,
+            "centroid_cosine_distance": 0.0015849839968160584
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 13.00430289985118,
+            "centroid_cosine_distance": 0.0015849839968160584
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 3.694158315658561,
+          "accuracy": 0.632768361581921,
+          "balanced_accuracy": 0.5125138274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              59,
+              5
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.078125,
+          "auroc": 0.5109236725663717,
+          "average_precision": 0.39295411523978707,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.0625,
+          "eer": 0.5144496681415929,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -2.0364837917639353,
+          "mean_fake_anomaly": -1.7706259619444609,
+          "domain_calibrated_threshold": 3.694158315658561,
+          "domain_calibrated_accuracy": 0.632768361581921,
+          "domain_calibrated_balanced_accuracy": 0.5125138274336283
+        }
+      },
+      "macro_dataset_auroc": 0.5109236725663717
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 800,
+      "batch_norm_running_mean_abs": 0.47624266147613525,
+      "batch_norm_running_var_mean": 3.5077246138826013e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.1994933933019638,
+          "saturated_fraction": 0.0,
+          "output_std": 0.06357007473707199
+        },
+        {
+          "preactivation_abs_mean": 0.5297724604606628,
+          "saturated_fraction": 0.0,
+          "output_std": 0.14772385358810425
+        },
+        {
+          "preactivation_abs_mean": 1.2737047672271729,
+          "saturated_fraction": 0.0,
+          "output_std": 0.28488966822624207
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.9999775886535645,
+      "fc1_weight_sigma_mean": 0.006716509349644184,
+      "fc1_bias_rho_mean": -4.999933242797852,
+      "fc1_bias_sigma_mean": 0.006716814823448658,
+      "out_weight_rho_mean": -5.0003557205200195,
+      "out_weight_sigma_mean": 0.006713989190757275,
+      "out_bias_rho_mean": -5.003255844116211,
+      "out_bias_sigma_mean": 0.006694592535495758
+    }
+  },
+  {
+    "epoch": 5,
+    "train_loss": 1.1122342885658145,
+    "learning_rate": 7.737809374999998e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6404867256637168,
+    "validation": {
+      "threshold": 5.665131950378416,
+      "accuracy": 0.6497175141242938,
+      "balanced_accuracy": 0.5359513274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          56,
+          8
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.125,
+      "auroc": 0.6404867256637168,
+      "average_precision": 0.51421830349369,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.09375,
+      "eer": 0.40666482300884954,
+      "mean_real_anomaly": -0.3740906281545099,
+      "mean_fake_anomaly": 1.510736269177869,
+      "mean_real_posterior": 0.3740906281545099,
+      "mean_fake_posterior": -1.510736269177869,
+      "embedding_variance_mean": 0.17542293245541132,
+      "embedding_norm_mean": 231.92194896633342,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 231.92194864382486,
+            "within_group_variance_mean": 0.17542293245541132
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 232.35996134633893,
+            "within_group_variance_mean": 0.20375670445262745
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 231.92194864382486,
+            "within_group_variance_mean": 0.17542293245541132
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 232.35996134633893,
+            "within_group_variance_mean": 0.20375670445262745
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 231.14858246594875,
+            "within_group_variance_mean": 0.11832616989520371
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 231.14858246594875,
+            "within_group_variance_mean": 0.11832616989520371
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 13.096436494625687,
+            "centroid_cosine_distance": 0.001645997837856461
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 13.096436494625687,
+            "centroid_cosine_distance": 0.001645997837856461
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 5.665131950378416,
+          "accuracy": 0.6497175141242938,
+          "balanced_accuracy": 0.5359513274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              56,
+              8
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.125,
+          "auroc": 0.6404867256637168,
+          "average_precision": 0.51421830349369,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.09375,
+          "eer": 0.40666482300884954,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -0.3740906281545099,
+          "mean_fake_anomaly": 1.510736269177869,
+          "domain_calibrated_threshold": 5.665131950378416,
+          "domain_calibrated_accuracy": 0.6497175141242938,
+          "domain_calibrated_balanced_accuracy": 0.5359513274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6404867256637168
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 1000,
+      "batch_norm_running_mean_abs": 0.4630028009414673,
+      "batch_norm_running_var_mean": 2.373157030888251e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.20374207198619843,
+          "saturated_fraction": 0.0,
+          "output_std": 0.06383837759494781
+        },
+        {
+          "preactivation_abs_mean": 0.5515366196632385,
+          "saturated_fraction": 0.0,
+          "output_std": 0.15472088754177094
+        },
+        {
+          "preactivation_abs_mean": 1.4117133617401123,
+          "saturated_fraction": 0.0468749962747097,
+          "output_std": 0.29457658529281616
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999974250793457,
+      "fc1_weight_sigma_mean": 0.006716536823660135,
+      "fc1_bias_rho_mean": -4.999910354614258,
+      "fc1_bias_sigma_mean": 0.006716969422996044,
+      "out_weight_rho_mean": -5.000349044799805,
+      "out_weight_sigma_mean": 0.006714038550853729,
+      "out_bias_rho_mean": -5.0031938552856445,
+      "out_bias_sigma_mean": 0.006695006042718887
+    }
+  },
+  {
+    "epoch": 6,
+    "train_loss": 0.9823366910591722,
+    "learning_rate": 7.350918906249998e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6084070796460177,
+    "validation": {
+      "threshold": 5.64683933258056,
+      "accuracy": 0.6610169491525424,
+      "balanced_accuracy": 0.5515763274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          54,
+          10
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.15625,
+      "auroc": 0.6084070796460177,
+      "average_precision": 0.5152728155089846,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.15625,
+      "eer": 0.45665099557522126,
+      "mean_real_anomaly": 0.09507876133496783,
+      "mean_fake_anomaly": 2.0516861607320607,
+      "mean_real_posterior": -0.09507876133496783,
+      "mean_fake_posterior": -2.0516861607320607,
+      "embedding_variance_mean": 0.16404370262181822,
+      "embedding_norm_mean": 219.03479857363942,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 219.03479935812962,
+            "within_group_variance_mean": 0.16404370262181822
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 219.98892917232266,
+            "within_group_variance_mean": 0.1888197602320351
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 219.03479935812962,
+            "within_group_variance_mean": 0.16404370262181822
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 219.98892917232266,
+            "within_group_variance_mean": 0.1888197602320351
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 217.35016390494502,
+            "within_group_variance_mean": 0.11352914885203051
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 217.35016390494502,
+            "within_group_variance_mean": 0.11352914885203051
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 12.814976966558234,
+            "centroid_cosine_distance": 0.0018026374423144587
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 12.814976966558234,
+            "centroid_cosine_distance": 0.0018026374423144587
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 5.64683933258056,
+          "accuracy": 0.6610169491525424,
+          "balanced_accuracy": 0.5515763274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              54,
+              10
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.15625,
+          "auroc": 0.6084070796460177,
+          "average_precision": 0.5152728155089846,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.15625,
+          "eer": 0.45665099557522126,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": 0.09507876133496783,
+          "mean_fake_anomaly": 2.0516861607320607,
+          "domain_calibrated_threshold": 5.64683933258056,
+          "domain_calibrated_accuracy": 0.6610169491525424,
+          "domain_calibrated_balanced_accuracy": 0.5515763274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6084070796460177
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 1200,
+      "batch_norm_running_mean_abs": 0.4794084429740906,
+      "batch_norm_running_var_mean": 4.69557835458545e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.21134541928768158,
+          "saturated_fraction": 0.0,
+          "output_std": 0.06906434148550034
+        },
+        {
+          "preactivation_abs_mean": 0.5683171153068542,
+          "saturated_fraction": 0.0,
+          "output_std": 0.15963958203792572
+        },
+        {
+          "preactivation_abs_mean": 1.3788443803787231,
+          "saturated_fraction": 0.02364935725927353,
+          "output_std": 0.29352009296417236
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999970436096191,
+      "fc1_weight_sigma_mean": 0.006716562435030937,
+      "fc1_bias_rho_mean": -4.9998555183410645,
+      "fc1_bias_sigma_mean": 0.006717338226735592,
+      "out_weight_rho_mean": -5.000430583953857,
+      "out_weight_sigma_mean": 0.006713499780744314,
+      "out_bias_rho_mean": -5.003719329833984,
+      "out_bias_sigma_mean": 0.006691501475870609
+    }
+  },
+  {
+    "epoch": 7,
+    "train_loss": 0.8115769243240356,
+    "learning_rate": 6.983372960937497e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.5999723451327434,
+    "validation": {
+      "threshold": 3.617570877075191,
+      "accuracy": 0.6666666666666666,
+      "balanced_accuracy": 0.5593888274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          53,
+          11
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.171875,
+      "auroc": 0.5999723451327434,
+      "average_precision": 0.5003068194880033,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.171875,
+      "eer": 0.4355641592920354,
+      "mean_real_anomaly": -1.011135205494619,
+      "mean_fake_anomaly": 0.40598359960131347,
+      "mean_real_posterior": 1.011135205494619,
+      "mean_fake_posterior": -0.40598359960131347,
+      "embedding_variance_mean": 0.15034689025299477,
+      "embedding_norm_mean": 158.11041173557777,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 158.11041154243512,
+            "within_group_variance_mean": 0.15034689025299477
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 158.41078251703664,
+            "within_group_variance_mean": 0.17063443285354585
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 158.11041154243512,
+            "within_group_variance_mean": 0.15034689025299477
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 158.41078251703664,
+            "within_group_variance_mean": 0.17063443285354585
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 157.58006904040423,
+            "within_group_variance_mean": 0.10930444790474635
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 157.58006904040423,
+            "within_group_variance_mean": 0.10930444790474635
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 11.255736261425719,
+            "centroid_cosine_distance": 0.0026649332673338577
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 11.255736261425719,
+            "centroid_cosine_distance": 0.0026649332673338577
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 3.617570877075191,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.5593888274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              53,
+              11
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.171875,
+          "auroc": 0.5999723451327434,
+          "average_precision": 0.5003068194880033,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.171875,
+          "eer": 0.4355641592920354,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -1.011135205494619,
+          "mean_fake_anomaly": 0.40598359960131347,
+          "domain_calibrated_threshold": 3.617570877075191,
+          "domain_calibrated_accuracy": 0.6666666666666666,
+          "domain_calibrated_balanced_accuracy": 0.5593888274336283
+        }
+      },
+      "macro_dataset_auroc": 0.5999723451327434
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 1400,
+      "batch_norm_running_mean_abs": 0.4837084412574768,
+      "batch_norm_running_var_mean": 1.9599794995883713e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.1932188868522644,
+          "saturated_fraction": 0.0,
+          "output_std": 0.06404712796211243
+        },
+        {
+          "preactivation_abs_mean": 0.5501869320869446,
+          "saturated_fraction": 0.0,
+          "output_std": 0.152853325009346
+        },
+        {
+          "preactivation_abs_mean": 1.5176113843917847,
+          "saturated_fraction": 0.0468749962747097,
+          "output_std": 0.3089677095413208
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999966621398926,
+      "fc1_weight_sigma_mean": 0.006716588977724314,
+      "fc1_bias_rho_mean": -4.999805450439453,
+      "fc1_bias_sigma_mean": 0.006717676296830177,
+      "out_weight_rho_mean": -5.0005035400390625,
+      "out_weight_sigma_mean": 0.006713019218295813,
+      "out_bias_rho_mean": -5.003778457641602,
+      "out_bias_sigma_mean": 0.00669110706076026
+    }
+  },
+  {
+    "epoch": 8,
+    "train_loss": 0.7185332409664988,
+    "learning_rate": 6.634204312890622e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6222345132743363,
+    "validation": {
+      "threshold": 1.9604744434356642,
+      "accuracy": 0.6666666666666666,
+      "balanced_accuracy": 0.5593888274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          53,
+          11
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.171875,
+      "auroc": 0.6222345132743363,
+      "average_precision": 0.492382228363222,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.15625,
+      "eer": 0.4022400442477876,
+      "mean_real_anomaly": -4.056132192500924,
+      "mean_fake_anomaly": -2.443752101622522,
+      "mean_real_posterior": 4.056132192500924,
+      "mean_fake_posterior": 2.443752101622522,
+      "embedding_variance_mean": 0.20716538289411401,
+      "embedding_norm_mean": 216.04678146448512,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 216.04678230959246,
+            "within_group_variance_mean": 0.20716538289411401
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 218.14472351478452,
+            "within_group_variance_mean": 0.23563156648041617
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 216.04678230959246,
+            "within_group_variance_mean": 0.20716538289411401
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 218.14472351478452,
+            "within_group_variance_mean": 0.23563156648041617
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 212.342604869175,
+            "within_group_variance_mean": 0.14995057468766018
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 212.342604869175,
+            "within_group_variance_mean": 0.14995057468766018
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 12.988791862608542,
+            "centroid_cosine_distance": 0.0018084270224827392
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 12.988791862608542,
+            "centroid_cosine_distance": 0.0018084270224827392
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 1.9604744434356642,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.5593888274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              53,
+              11
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.171875,
+          "auroc": 0.6222345132743363,
+          "average_precision": 0.492382228363222,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.15625,
+          "eer": 0.4022400442477876,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -4.056132192500924,
+          "mean_fake_anomaly": -2.443752101622522,
+          "domain_calibrated_threshold": 1.9604744434356642,
+          "domain_calibrated_accuracy": 0.6666666666666666,
+          "domain_calibrated_balanced_accuracy": 0.5593888274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6222345132743363
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 1600,
+      "batch_norm_running_mean_abs": 0.4808688163757324,
+      "batch_norm_running_var_mean": 4.9656637202133425e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.21631492674350739,
+          "saturated_fraction": 0.0,
+          "output_std": 0.0710226520895958
+        },
+        {
+          "preactivation_abs_mean": 0.5238466858863831,
+          "saturated_fraction": 0.0,
+          "output_std": 0.1468081772327423
+        },
+        {
+          "preactivation_abs_mean": 1.48600172996521,
+          "saturated_fraction": 0.0468749962747097,
+          "output_std": 0.30633413791656494
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999963283538818,
+      "fc1_weight_sigma_mean": 0.00671661552041769,
+      "fc1_bias_rho_mean": -4.999791145324707,
+      "fc1_bias_sigma_mean": 0.006717774085700512,
+      "out_weight_rho_mean": -5.000547409057617,
+      "out_weight_sigma_mean": 0.006712727248668671,
+      "out_bias_rho_mean": -5.003076076507568,
+      "out_bias_sigma_mean": 0.0066957916133105755
+    }
+  },
+  {
+    "epoch": 9,
+    "train_loss": 0.6880001295357943,
+    "learning_rate": 6.30249409724609e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6612278761061948,
+    "validation": {
+      "threshold": 6.741193294525141,
+      "accuracy": 0.6779661016949152,
+      "balanced_accuracy": 0.5750138274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          51,
+          13
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.203125,
+      "auroc": 0.6612278761061948,
+      "average_precision": 0.5479639960319407,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.1875,
+      "eer": 0.40666482300884954,
+      "mean_real_anomaly": 1.0027340431656457,
+      "mean_fake_anomaly": 3.4268617797642946,
+      "mean_real_posterior": -1.0027340431656457,
+      "mean_fake_posterior": -3.4268617797642946,
+      "embedding_variance_mean": 0.15061837472894152,
+      "embedding_norm_mean": 118.42110697428386,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 118.42110659587871,
+            "within_group_variance_mean": 0.15061837472894152
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 119.60586596722129,
+            "within_group_variance_mean": 0.16846432372229533
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 118.42110659587871,
+            "within_group_variance_mean": 0.15061837472894152
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 119.60586596722129,
+            "within_group_variance_mean": 0.16846432372229533
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 116.32926583085195,
+            "within_group_variance_mean": 0.11471059583806077
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 116.32926583085195,
+            "within_group_variance_mean": 0.11471059583806077
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 10.329959614619765,
+            "centroid_cosine_distance": 0.004510554584004289
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 10.329959614619765,
+            "centroid_cosine_distance": 0.004510554584004289
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 6.741193294525141,
+          "accuracy": 0.6779661016949152,
+          "balanced_accuracy": 0.5750138274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              51,
+              13
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.203125,
+          "auroc": 0.6612278761061948,
+          "average_precision": 0.5479639960319407,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.1875,
+          "eer": 0.40666482300884954,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": 1.0027340431656457,
+          "mean_fake_anomaly": 3.4268617797642946,
+          "domain_calibrated_threshold": 6.741193294525141,
+          "domain_calibrated_accuracy": 0.6779661016949152,
+          "domain_calibrated_balanced_accuracy": 0.5750138274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6612278761061948
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 1800,
+      "batch_norm_running_mean_abs": 0.48425984382629395,
+      "batch_norm_running_var_mean": 8.675839126226492e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.22687162458896637,
+          "saturated_fraction": 0.0,
+          "output_std": 0.07743728160858154
+        },
+        {
+          "preactivation_abs_mean": 0.5271074771881104,
+          "saturated_fraction": 0.0,
+          "output_std": 0.14812111854553223
+        },
+        {
+          "preactivation_abs_mean": 1.5752921104431152,
+          "saturated_fraction": 0.0703125,
+          "output_std": 0.31086885929107666
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999959468841553,
+      "fc1_weight_sigma_mean": 0.006716642063111067,
+      "fc1_bias_rho_mean": -4.999809741973877,
+      "fc1_bias_sigma_mean": 0.006717650685459375,
+      "out_weight_rho_mean": -5.000652313232422,
+      "out_weight_sigma_mean": 0.006712027825415134,
+      "out_bias_rho_mean": -5.002850532531738,
+      "out_bias_sigma_mean": 0.006697296630591154
+    }
+  },
+  {
+    "epoch": 10,
+    "train_loss": 0.5333029148727655,
+    "learning_rate": 5.987369392383786e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6453263274336284,
+    "validation": {
+      "threshold": 5.542153930664062,
+      "accuracy": 0.6666666666666666,
+      "balanced_accuracy": 0.5593888274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          53,
+          11
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.171875,
+      "auroc": 0.6453263274336284,
+      "average_precision": 0.5615803924078517,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.171875,
+      "eer": 0.4022400442477876,
+      "mean_real_anomaly": -0.8618842662699455,
+      "mean_fake_anomaly": 1.9184308485127985,
+      "mean_real_posterior": 0.8618842662699455,
+      "mean_fake_posterior": -1.9184308485127985,
+      "embedding_variance_mean": 0.2173425208022237,
+      "embedding_norm_mean": 171.4617178534384,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 171.4617181758415,
+            "within_group_variance_mean": 0.2173425208022237
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 172.70043820767756,
+            "within_group_variance_mean": 0.2431493066974472
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 171.4617181758415,
+            "within_group_variance_mean": 0.2173425208022237
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 172.70043820767756,
+            "within_group_variance_mean": 0.2431493066974472
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 169.27460311963083,
+            "within_group_variance_mean": 0.16525456058061982
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 169.27460311963083,
+            "within_group_variance_mean": 0.16525456058061982
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 12.579515257695784,
+            "centroid_cosine_distance": 0.00302327281708914
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 12.579515257695784,
+            "centroid_cosine_distance": 0.00302327281708914
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 5.542153930664062,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.5593888274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              53,
+              11
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.171875,
+          "auroc": 0.6453263274336284,
+          "average_precision": 0.5615803924078517,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.171875,
+          "eer": 0.4022400442477876,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -0.8618842662699455,
+          "mean_fake_anomaly": 1.9184308485127985,
+          "domain_calibrated_threshold": 5.542153930664062,
+          "domain_calibrated_accuracy": 0.6666666666666666,
+          "domain_calibrated_balanced_accuracy": 0.5593888274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6453263274336284
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 2000,
+      "batch_norm_running_mean_abs": 0.4795570969581604,
+      "batch_norm_running_var_mean": 8.531871571904048e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.24680399894714355,
+          "saturated_fraction": 0.0,
+          "output_std": 0.08162287622690201
+        },
+        {
+          "preactivation_abs_mean": 0.510201632976532,
+          "saturated_fraction": 0.0,
+          "output_std": 0.14373545348644257
+        },
+        {
+          "preactivation_abs_mean": 1.6065617799758911,
+          "saturated_fraction": 0.0703125,
+          "output_std": 0.31271976232528687
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999955177307129,
+      "fc1_weight_sigma_mean": 0.006716672796756029,
+      "fc1_bias_rho_mean": -4.999796390533447,
+      "fc1_bias_sigma_mean": 0.006717740558087826,
+      "out_weight_rho_mean": -5.00070333480835,
+      "out_weight_sigma_mean": 0.006711684167385101,
+      "out_bias_rho_mean": -5.003288745880127,
+      "out_bias_sigma_mean": 0.006694373209029436
+    }
+  },
+  {
+    "epoch": 11,
+    "train_loss": 0.45739500008523465,
+    "learning_rate": 5.688000922764596e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6478152654867256,
+    "validation": {
+      "threshold": 3.187249279022216,
+      "accuracy": 0.672316384180791,
+      "balanced_accuracy": 0.5672013274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          52,
+          12
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.1875,
+      "auroc": 0.6478152654867256,
+      "average_precision": 0.5340169696197805,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.1875,
+      "eer": 0.3655282079646018,
+      "mean_real_anomaly": -3.1860851939536827,
+      "mean_fake_anomaly": -0.681233695242554,
+      "mean_real_posterior": 3.1860851939536827,
+      "mean_fake_posterior": 0.681233695242554,
+      "embedding_variance_mean": 0.24488548000785285,
+      "embedding_norm_mean": 144.80126392773988,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 144.80126356312795,
+            "within_group_variance_mean": 0.24488548000785285
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 146.65600126197418,
+            "within_group_variance_mean": 0.27682453873819446
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 144.80126356312795,
+            "within_group_variance_mean": 0.24488548000785285
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 146.65600126197418,
+            "within_group_variance_mean": 0.27682453873819446
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 141.52649231360266,
+            "within_group_variance_mean": 0.18146238309610555
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 141.52649231360266,
+            "within_group_variance_mean": 0.18146238309610555
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 13.060032326078478,
+            "centroid_cosine_distance": 0.004907235169778534
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 13.060032326078478,
+            "centroid_cosine_distance": 0.004907235169778534
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 3.187249279022216,
+          "accuracy": 0.672316384180791,
+          "balanced_accuracy": 0.5672013274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              52,
+              12
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.1875,
+          "auroc": 0.6478152654867256,
+          "average_precision": 0.5340169696197805,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.1875,
+          "eer": 0.3655282079646018,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -3.1860851939536827,
+          "mean_fake_anomaly": -0.681233695242554,
+          "domain_calibrated_threshold": 3.187249279022216,
+          "domain_calibrated_accuracy": 0.672316384180791,
+          "domain_calibrated_balanced_accuracy": 0.5672013274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6478152654867256
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 2200,
+      "batch_norm_running_mean_abs": 0.4888562560081482,
+      "batch_norm_running_var_mean": 1.742101085255854e-05,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.2535317540168762,
+          "saturated_fraction": 0.0,
+          "output_std": 0.08330295979976654
+        },
+        {
+          "preactivation_abs_mean": 0.4773789346218109,
+          "saturated_fraction": 0.0,
+          "output_std": 0.1389564573764801
+        },
+        {
+          "preactivation_abs_mean": 1.4631357192993164,
+          "saturated_fraction": 0.04806341975927353,
+          "output_std": 0.3007389008998871
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999951362609863,
+      "fc1_weight_sigma_mean": 0.006716699339449406,
+      "fc1_bias_rho_mean": -4.999776840209961,
+      "fc1_bias_sigma_mean": 0.006717875599861145,
+      "out_weight_rho_mean": -5.000761985778809,
+      "out_weight_sigma_mean": 0.006711297668516636,
+      "out_bias_rho_mean": -5.0022501945495605,
+      "out_bias_sigma_mean": 0.006701304577291012
+    }
+  },
+  {
+    "epoch": 12,
+    "train_loss": 0.41673162996768953,
+    "learning_rate": 5.4036008766263664e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6139380530973451,
+    "validation": {
+      "threshold": 8.474298095703118,
+      "accuracy": 0.6440677966101694,
+      "balanced_accuracy": 0.5281388274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          57,
+          7
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.109375,
+      "auroc": 0.6139380530973451,
+      "average_precision": 0.47837401028455473,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.109375,
+      "eer": 0.43217643805309736,
+      "mean_real_anomaly": -0.32387354653493494,
+      "mean_fake_anomaly": 1.9901844528503716,
+      "mean_real_posterior": 0.32387354653493494,
+      "mean_fake_posterior": -1.9901844528503716,
+      "embedding_variance_mean": 0.25955078176889396,
+      "embedding_norm_mean": 116.32049620892369,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 116.3204965006482,
+            "within_group_variance_mean": 0.25955078176889396
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 118.44352336486095,
+            "within_group_variance_mean": 0.2900922970384023
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 116.3204965006482,
+            "within_group_variance_mean": 0.25955078176889396
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 118.44352336486095,
+            "within_group_variance_mean": 0.2900922970384023
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 112.57202719352256,
+            "within_group_variance_mean": 0.19986011892081182
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 112.57202719352256,
+            "within_group_variance_mean": 0.19986011892081182
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 11.827007343219687,
+            "centroid_cosine_distance": 0.007138603290490653
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 11.827007343219687,
+            "centroid_cosine_distance": 0.007138603290490653
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 8.474298095703118,
+          "accuracy": 0.6440677966101694,
+          "balanced_accuracy": 0.5281388274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              57,
+              7
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.109375,
+          "auroc": 0.6139380530973451,
+          "average_precision": 0.47837401028455473,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.109375,
+          "eer": 0.43217643805309736,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -0.32387354653493494,
+          "mean_fake_anomaly": 1.9901844528503716,
+          "domain_calibrated_threshold": 8.474298095703118,
+          "domain_calibrated_accuracy": 0.6440677966101694,
+          "domain_calibrated_balanced_accuracy": 0.5281388274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6139380530973451
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 2400,
+      "batch_norm_running_mean_abs": 0.48437225818634033,
+      "batch_norm_running_var_mean": 8.692198207427282e-06,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.23922035098075867,
+          "saturated_fraction": 0.0,
+          "output_std": 0.08175580948591232
+        },
+        {
+          "preactivation_abs_mean": 0.48269081115722656,
+          "saturated_fraction": 0.0,
+          "output_std": 0.14146295189857483
+        },
+        {
+          "preactivation_abs_mean": 1.514480471611023,
+          "saturated_fraction": 0.06682794541120529,
+          "output_std": 0.3037808835506439
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999947547912598,
+      "fc1_weight_sigma_mean": 0.006716729141771793,
+      "fc1_bias_rho_mean": -4.999741554260254,
+      "fc1_bias_sigma_mean": 0.006718111224472523,
+      "out_weight_rho_mean": -5.000785827636719,
+      "out_weight_sigma_mean": 0.006711138878017664,
+      "out_bias_rho_mean": -5.002375602722168,
+      "out_bias_sigma_mean": 0.00670046778395772
+    }
+  },
+  {
+    "epoch": 13,
+    "train_loss": 0.3649560790881515,
+    "learning_rate": 5.133420832795048e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6277654867256638,
+    "validation": {
+      "threshold": 6.698042583465574,
+      "accuracy": 0.6666666666666666,
+      "balanced_accuracy": 0.5593888274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          53,
+          11
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.171875,
+      "auroc": 0.6277654867256638,
+      "average_precision": 0.5299773205767396,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.171875,
+      "eer": 0.43998893805309736,
+      "mean_real_anomaly": -1.2641727661928244,
+      "mean_fake_anomaly": 1.6335786329582334,
+      "mean_real_posterior": 1.2641727661928244,
+      "mean_fake_posterior": -1.6335786329582334,
+      "embedding_variance_mean": 0.2709181591384454,
+      "embedding_norm_mean": 111.29251456395382,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 111.29251444515691,
+            "within_group_variance_mean": 0.2709181591384454
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 113.37086251273914,
+            "within_group_variance_mean": 0.30606513841054966
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 111.29251444515691,
+            "within_group_variance_mean": 0.2709181591384454
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 113.37086251273914,
+            "within_group_variance_mean": 0.30606513841054966
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 107.62293113833213,
+            "within_group_variance_mean": 0.2004178427146326
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 107.62293113833213,
+            "within_group_variance_mean": 0.2004178427146326
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 14.31256338724821,
+            "centroid_cosine_distance": 0.012019260257569608
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 14.31256338724821,
+            "centroid_cosine_distance": 0.012019260257569608
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 6.698042583465574,
+          "accuracy": 0.6666666666666666,
+          "balanced_accuracy": 0.5593888274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              53,
+              11
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.171875,
+          "auroc": 0.6277654867256638,
+          "average_precision": 0.5299773205767396,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.171875,
+          "eer": 0.43998893805309736,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -1.2641727661928244,
+          "mean_fake_anomaly": 1.6335786329582334,
+          "domain_calibrated_threshold": 6.698042583465574,
+          "domain_calibrated_accuracy": 0.6666666666666666,
+          "domain_calibrated_balanced_accuracy": 0.5593888274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6277654867256638
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 2600,
+      "batch_norm_running_mean_abs": 0.48920339345932007,
+      "batch_norm_running_var_mean": 2.042881169472821e-05,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.24161285161972046,
+          "saturated_fraction": 0.0,
+          "output_std": 0.08376306295394897
+        },
+        {
+          "preactivation_abs_mean": 0.46015578508377075,
+          "saturated_fraction": 0.0,
+          "output_std": 0.1365635246038437
+        },
+        {
+          "preactivation_abs_mean": 1.4493896961212158,
+          "saturated_fraction": 0.0468749962747097,
+          "output_std": 0.2982325553894043
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999943256378174,
+      "fc1_weight_sigma_mean": 0.006716758478432894,
+      "fc1_bias_rho_mean": -4.9997029304504395,
+      "fc1_bias_sigma_mean": 0.0067183710634708405,
+      "out_weight_rho_mean": -5.00078821182251,
+      "out_weight_sigma_mean": 0.006711125373840332,
+      "out_bias_rho_mean": -5.001903533935547,
+      "out_bias_sigma_mean": 0.006703620310872793
+    }
+  },
+  {
+    "epoch": 14,
+    "train_loss": 0.37039663922041655,
+    "learning_rate": 4.876749791155295e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6223727876106195,
+    "validation": {
+      "threshold": 8.13851499557494,
+      "accuracy": 0.6497175141242938,
+      "balanced_accuracy": 0.5359513274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          56,
+          8
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.125,
+      "auroc": 0.6223727876106195,
+      "average_precision": 0.511549747880806,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.125,
+      "eer": 0.4355641592920354,
+      "mean_real_anomaly": -0.4741027241787024,
+      "mean_fake_anomaly": 1.98493297630921,
+      "mean_real_posterior": 0.4741027241787024,
+      "mean_fake_posterior": -1.98493297630921,
+      "embedding_variance_mean": 0.2790826793520218,
+      "embedding_norm_mean": 82.76962778123759,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 82.76962822045641,
+            "within_group_variance_mean": 0.2790826793520218
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 85.59172587890399,
+            "within_group_variance_mean": 0.3168234054397767
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 82.76962822045641,
+            "within_group_variance_mean": 0.2790826793520218
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 85.59172587890399,
+            "within_group_variance_mean": 0.3168234054397767
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 77.78686204226004,
+            "within_group_variance_mean": 0.2047008179684818
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 77.78686204226004,
+            "within_group_variance_mean": 0.2047008179684818
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 13.70821151483893,
+            "centroid_cosine_distance": 0.03129247801843105
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 13.70821151483893,
+            "centroid_cosine_distance": 0.03129247801843105
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 8.13851499557494,
+          "accuracy": 0.6497175141242938,
+          "balanced_accuracy": 0.5359513274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              56,
+              8
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.125,
+          "auroc": 0.6223727876106195,
+          "average_precision": 0.511549747880806,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.125,
+          "eer": 0.4355641592920354,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -0.4741027241787024,
+          "mean_fake_anomaly": 1.98493297630921,
+          "domain_calibrated_threshold": 8.13851499557494,
+          "domain_calibrated_accuracy": 0.6497175141242938,
+          "domain_calibrated_balanced_accuracy": 0.5359513274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6223727876106195
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 2800,
+      "batch_norm_running_mean_abs": 0.48454272747039795,
+      "batch_norm_running_var_mean": 1.3538508937926963e-05,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.2487882822751999,
+          "saturated_fraction": 0.0,
+          "output_std": 0.08494433760643005
+        },
+        {
+          "preactivation_abs_mean": 0.46125495433807373,
+          "saturated_fraction": 0.0,
+          "output_std": 0.13625910878181458
+        },
+        {
+          "preactivation_abs_mean": 1.5298359394073486,
+          "saturated_fraction": 0.06446926295757294,
+          "output_std": 0.30464959144592285
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999938488006592,
+      "fc1_weight_sigma_mean": 0.006716787815093994,
+      "fc1_bias_rho_mean": -4.999709606170654,
+      "fc1_bias_sigma_mean": 0.006718326359987259,
+      "out_weight_rho_mean": -5.000782489776611,
+      "out_weight_sigma_mean": 0.006711164023727179,
+      "out_bias_rho_mean": -5.001381874084473,
+      "out_bias_sigma_mean": 0.006707105785608292
+    }
+  },
+  {
+    "epoch": 15,
+    "train_loss": 0.29791633676737544,
+    "learning_rate": 4.6329123015975305e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6215431415929205,
+    "validation": {
+      "threshold": 6.176356697082495,
+      "accuracy": 0.672316384180791,
+      "balanced_accuracy": 0.5672013274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          52,
+          12
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.1875,
+      "auroc": 0.6215431415929205,
+      "average_precision": 0.5061848484029091,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.078125,
+      "eer": 0.39781526548672563,
+      "mean_real_anomaly": -1.887189184142425,
+      "mean_fake_anomaly": 0.5748138157650828,
+      "mean_real_posterior": 1.887189184142425,
+      "mean_fake_posterior": -0.5748138157650828,
+      "embedding_variance_mean": 0.2961679822334448,
+      "embedding_norm_mean": 107.79264387572553,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 107.79264430676841,
+            "within_group_variance_mean": 0.2961679822334448
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 110.05171518410167,
+            "within_group_variance_mean": 0.33682769410630475
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 107.79264430676841,
+            "within_group_variance_mean": 0.2961679822334448
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 110.05171518410167,
+            "within_group_variance_mean": 0.33682769410630475
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 103.80397228897692,
+            "within_group_variance_mean": 0.21715726161604001
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 103.80397228897692,
+            "within_group_variance_mean": 0.21715726161604001
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 13.235527453657285,
+            "centroid_cosine_distance": 0.011698932333145673
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 13.235527453657285,
+            "centroid_cosine_distance": 0.011698932333145673
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 6.176356697082495,
+          "accuracy": 0.672316384180791,
+          "balanced_accuracy": 0.5672013274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              52,
+              12
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.1875,
+          "auroc": 0.6215431415929205,
+          "average_precision": 0.5061848484029091,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.078125,
+          "eer": 0.39781526548672563,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -1.887189184142425,
+          "mean_fake_anomaly": 0.5748138157650828,
+          "domain_calibrated_threshold": 6.176356697082495,
+          "domain_calibrated_accuracy": 0.672316384180791,
+          "domain_calibrated_balanced_accuracy": 0.5672013274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6215431415929205
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 3000,
+      "batch_norm_running_mean_abs": 0.48586177825927734,
+      "batch_norm_running_var_mean": 1.3523002962756436e-05,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.25587010383605957,
+          "saturated_fraction": 0.0,
+          "output_std": 0.08713940531015396
+        },
+        {
+          "preactivation_abs_mean": 0.45343348383903503,
+          "saturated_fraction": 0.0,
+          "output_std": 0.13460609316825867
+        },
+        {
+          "preactivation_abs_mean": 1.4577305316925049,
+          "saturated_fraction": 0.04752065986394882,
+          "output_std": 0.2985799014568329
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999934196472168,
+      "fc1_weight_sigma_mean": 0.006716815289109945,
+      "fc1_bias_rho_mean": -4.9996795654296875,
+      "fc1_bias_sigma_mean": 0.006718527525663376,
+      "out_weight_rho_mean": -5.000858306884766,
+      "out_weight_sigma_mean": 0.006710656452924013,
+      "out_bias_rho_mean": -5.001215934753418,
+      "out_bias_sigma_mean": 0.006708214990794659
+    }
+  },
+  {
+    "epoch": 16,
+    "train_loss": 0.24760096956044436,
+    "learning_rate": 4.4012666865176535e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6364767699115044,
+    "validation": {
+      "threshold": 10.066559600830056,
+      "accuracy": 0.6610169491525424,
+      "balanced_accuracy": 0.5515763274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          54,
+          10
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.15625,
+      "auroc": 0.6364767699115044,
+      "average_precision": 0.5108606398359641,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.09375,
+      "eer": 0.4355641592920354,
+      "mean_real_anomaly": -0.39585987682891105,
+      "mean_fake_anomaly": 2.768905166303739,
+      "mean_real_posterior": 0.39585987682891105,
+      "mean_fake_posterior": -2.768905166303739,
+      "embedding_variance_mean": 0.3075621064183802,
+      "embedding_norm_mean": 98.5011594093452,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 98.50115912119404,
+            "within_group_variance_mean": 0.3075621064183802
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 101.98282168536089,
+            "within_group_variance_mean": 0.3514476165711069
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 98.50115912119404,
+            "within_group_variance_mean": 0.3075621064183802
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 101.98282168536089,
+            "within_group_variance_mean": 0.3514476165711069
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 92.35384865633696,
+            "within_group_variance_mean": 0.22189596634375314
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 92.35384865633696,
+            "within_group_variance_mean": 0.22189596634375314
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 14.087781368932328,
+            "centroid_cosine_distance": 0.01745588142407395
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 14.087781368932328,
+            "centroid_cosine_distance": 0.01745588142407395
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 10.066559600830056,
+          "accuracy": 0.6610169491525424,
+          "balanced_accuracy": 0.5515763274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              54,
+              10
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.15625,
+          "auroc": 0.6364767699115044,
+          "average_precision": 0.5108606398359641,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.09375,
+          "eer": 0.4355641592920354,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -0.39585987682891105,
+          "mean_fake_anomaly": 2.768905166303739,
+          "domain_calibrated_threshold": 10.066559600830056,
+          "domain_calibrated_accuracy": 0.6610169491525424,
+          "domain_calibrated_balanced_accuracy": 0.5515763274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6364767699115044
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 3200,
+      "batch_norm_running_mean_abs": 0.49031034111976624,
+      "batch_norm_running_var_mean": 1.7612353985896334e-05,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.258046954870224,
+          "saturated_fraction": 0.0,
+          "output_std": 0.08782679587602615
+        },
+        {
+          "preactivation_abs_mean": 0.44726574420928955,
+          "saturated_fraction": 0.0,
+          "output_std": 0.13339681923389435
+        },
+        {
+          "preactivation_abs_mean": 1.4568824768066406,
+          "saturated_fraction": 0.06322434544563293,
+          "output_std": 0.2988956868648529
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.9999308586120605,
+      "fc1_weight_sigma_mean": 0.0067168413661420345,
+      "fc1_bias_rho_mean": -4.999676704406738,
+      "fc1_bias_sigma_mean": 0.006718550808727741,
+      "out_weight_rho_mean": -5.000855445861816,
+      "out_weight_sigma_mean": 0.006710676476359367,
+      "out_bias_rho_mean": -5.002093315124512,
+      "out_bias_sigma_mean": 0.006702352315187454
+    }
+  },
+  {
+    "epoch": 17,
+    "train_loss": 0.2755848248302937,
+    "learning_rate": 4.181203352191771e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.6620575221238938,
+    "validation": {
+      "threshold": 5.769055652618403,
+      "accuracy": 0.6779661016949152,
+      "balanced_accuracy": 0.5750138274336283,
+      "confusion_matrix": [
+        [
+          107,
+          6
+        ],
+        [
+          51,
+          13
+        ]
+      ],
+      "observed_false_positive_rate": 0.05309734513274336,
+      "observed_true_positive_rate": 0.203125,
+      "auroc": 0.6620575221238938,
+      "average_precision": 0.5621976320319764,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.203125,
+      "eer": 0.4110896017699115,
+      "mean_real_anomaly": -2.715774858419874,
+      "mean_fake_anomaly": 1.1550820441916585,
+      "mean_real_posterior": 2.715774858419874,
+      "mean_fake_posterior": -1.1550820441916585,
+      "embedding_variance_mean": 0.2679738798024173,
+      "embedding_norm_mean": 89.31986404677569,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 177,
+            "mean_norm": 89.31986395912307,
+            "within_group_variance_mean": 0.2679738798024173
+          },
+          "real": {
+            "count": 113,
+            "mean_norm": 92.47549049126796,
+            "within_group_variance_mean": 0.3044100844757864
+          },
+          "CelebDFv3": {
+            "count": 177,
+            "mean_norm": 89.31986395912307,
+            "within_group_variance_mean": 0.2679738798024173
+          },
+          "CelebDFv3/real": {
+            "count": 113,
+            "mean_norm": 92.47549049126796,
+            "within_group_variance_mean": 0.3044100844757864
+          },
+          "fake": {
+            "count": 64,
+            "mean_norm": 83.7482108633047,
+            "within_group_variance_mean": 0.19704634160423087
+          },
+          "CelebDFv3/fake": {
+            "count": 64,
+            "mean_norm": 83.7482108633047,
+            "within_group_variance_mean": 0.19704634160423087
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 12.648761797093668,
+            "centroid_cosine_distance": 0.018215839247428756
+          },
+          "CelebDFv3": {
+            "centroid_l2_distance": 12.648761797093668,
+            "centroid_cosine_distance": 0.018215839247428756
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3": {
+          "num_videos": 177,
+          "fps_mean": 29.181921113008833,
+          "fps_std": 2.079985585328035,
+          "clip_any_face_detection_failure_rate": 0.12994350282485875,
+          "frame_face_detection_failure_fraction": 0.020833333333333332,
+          "box_center_x_jitter_mean": 0.009152660187462735,
+          "box_center_y_jitter_mean": 0.010572262180674464,
+          "box_width_jitter_mean": 0.00481022349335148,
+          "box_height_jitter_mean": 0.0072445237817042795
+        },
+        "CelebDFv3/real": {
+          "num_videos": 113,
+          "fps_mean": 29.995575406910042,
+          "fps_std": 0.03362681713855383,
+          "clip_any_face_detection_failure_rate": 0.13274336283185842,
+          "frame_face_detection_failure_fraction": 0.01991150442477876,
+          "box_center_x_jitter_mean": 0.008649296934440304,
+          "box_center_y_jitter_mean": 0.010978210559815366,
+          "box_width_jitter_mean": 0.004409466063463648,
+          "box_height_jitter_mean": 0.007721680352480802
+        },
+        "CelebDFv3/fake": {
+          "num_videos": 64,
+          "fps_mean": 27.745312750339508,
+          "fps_std": 2.954706670046743,
+          "clip_any_face_detection_failure_rate": 0.125,
+          "frame_face_detection_failure_fraction": 0.0224609375,
+          "box_center_x_jitter_mean": 0.010041410931080463,
+          "box_center_y_jitter_mean": 0.009855509573753807,
+          "box_width_jitter_mean": 0.005517810830497183,
+          "box_height_jitter_mean": 0.006402044211426983
+        }
+      },
+      "per_dataset": {
+        "CelebDFv3": {
+          "threshold": 5.769055652618403,
+          "accuracy": 0.6779661016949152,
+          "balanced_accuracy": 0.5750138274336283,
+          "confusion_matrix": [
+            [
+              107,
+              6
+            ],
+            [
+              51,
+              13
+            ]
+          ],
+          "observed_false_positive_rate": 0.05309734513274336,
+          "observed_true_positive_rate": 0.203125,
+          "auroc": 0.6620575221238938,
+          "average_precision": 0.5621976320319764,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.203125,
+          "eer": 0.4110896017699115,
+          "num_videos": 177,
+          "num_real_videos": 113,
+          "num_fake_videos": 64,
+          "mean_real_anomaly": -2.715774858419874,
+          "mean_fake_anomaly": 1.1550820441916585,
+          "domain_calibrated_threshold": 5.769055652618403,
+          "domain_calibrated_accuracy": 0.6779661016949152,
+          "domain_calibrated_balanced_accuracy": 0.5750138274336283
+        }
+      },
+      "macro_dataset_auroc": 0.6620575221238938
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 3400,
+      "batch_norm_running_mean_abs": 0.48778676986694336,
+      "batch_norm_running_var_mean": 1.739301296765916e-05,
+      "input_mode": "clip",
+      "likelihood": "bernoulli",
+      "activation": "sigmoid",
+      "spatial_output_size": 22,
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 0.25702062249183655,
+          "saturated_fraction": 0.0,
+          "output_std": 0.08888835459947586
+        },
+        {
+          "preactivation_abs_mean": 0.4229385256767273,
+          "saturated_fraction": 0.0,
+          "output_std": 0.12969158589839935
+        },
+        {
+          "preactivation_abs_mean": 1.456363320350647,
+          "saturated_fraction": 0.047730498015880585,
+          "output_std": 0.2964349389076233
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -4.999926567077637,
+      "fc1_weight_sigma_mean": 0.00671686977148056,
+      "fc1_bias_rho_mean": -4.999683380126953,
+      "fc1_bias_sigma_mean": 0.006718505173921585,
+      "out_weight_rho_mean": -5.000914096832275,
+      "out_weight_sigma_mean": 0.006710284389555454,
+      "out_bias_rho_mean": -5.00246524810791,
+      "out_bias_sigma_mean": 0.006699868943542242
+    }
+  }
+]

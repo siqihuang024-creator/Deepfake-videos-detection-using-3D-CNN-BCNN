@@ -1,0 +1,206 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 18.67238160133362,
+    "skipped_training_clips": 0,
+    "learning_rate": 9.5e-05,
+    "selection_metric": "macro_dataset_auroc",
+    "selection_value": 0.7019607843137254,
+    "validation": {
+      "threshold": -0.28993169069290164,
+      "accuracy": 0.7258064516129032,
+      "balanced_accuracy": 0.5549019607843138,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          14,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.17647058823529413,
+      "auroc": 0.7019607843137254,
+      "average_precision": 0.4549692335223661,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.17647058823529413,
+      "eer": 0.35424836601307186,
+      "mean_real_anomaly": -0.6133263006806373,
+      "mean_fake_anomaly": -0.4281943598214318,
+      "mean_real_posterior": 0.6133263006806373,
+      "mean_fake_posterior": 0.4281943598214318,
+      "embedding_variance_mean": 0.8322097904307362,
+      "embedding_norm_mean": 114.60565136324975,
+      "embedding_diagnostics": {
+        "groups": {
+          "all": {
+            "count": 62,
+            "mean_norm": 114.60565092589168,
+            "within_group_variance_mean": 0.8322097904307362
+          },
+          "real": {
+            "count": 45,
+            "mean_norm": 114.96782933224388,
+            "within_group_variance_mean": 0.8585756490316547
+          },
+          "DFD": {
+            "count": 62,
+            "mean_norm": 114.60565092589168,
+            "within_group_variance_mean": 0.8322097904307362
+          },
+          "DFD/real": {
+            "count": 45,
+            "mean_norm": 114.96782933224388,
+            "within_group_variance_mean": 0.8585756490316547
+          },
+          "fake": {
+            "count": 17,
+            "mean_norm": 113.64694337966536,
+            "within_group_variance_mean": 0.6930742848519531
+          },
+          "DFD/fake": {
+            "count": 17,
+            "mean_norm": 113.64694337966536,
+            "within_group_variance_mean": 0.6930742848519531
+          }
+        },
+        "real_fake_separation": {
+          "overall": {
+            "centroid_l2_distance": 38.46716862613424,
+            "centroid_cosine_distance": 0.3041530414538208
+          },
+          "DFD": {
+            "centroid_l2_distance": 38.46716862613424,
+            "centroid_cosine_distance": 0.3041530414538208
+          }
+        }
+      },
+      "preprocessing_diagnostics": {
+        "overall": {
+          "num_videos": 62,
+          "fps_mean": 24.0,
+          "fps_std": 0.0,
+          "clip_any_face_detection_failure_rate": 0.0,
+          "frame_face_detection_failure_fraction": 0.0,
+          "box_center_x_jitter_mean": 0.0,
+          "box_center_y_jitter_mean": 0.0,
+          "box_width_jitter_mean": 0.0,
+          "box_height_jitter_mean": 0.0
+        },
+        "DFD": {
+          "num_videos": 62,
+          "fps_mean": 24.0,
+          "fps_std": 0.0,
+          "clip_any_face_detection_failure_rate": 0.0,
+          "frame_face_detection_failure_fraction": 0.0,
+          "box_center_x_jitter_mean": 0.0,
+          "box_center_y_jitter_mean": 0.0,
+          "box_width_jitter_mean": 0.0,
+          "box_height_jitter_mean": 0.0
+        },
+        "DFD/real": {
+          "num_videos": 45,
+          "fps_mean": 24.0,
+          "fps_std": 0.0,
+          "clip_any_face_detection_failure_rate": 0.0,
+          "frame_face_detection_failure_fraction": 0.0,
+          "box_center_x_jitter_mean": 0.0,
+          "box_center_y_jitter_mean": 0.0,
+          "box_width_jitter_mean": 0.0,
+          "box_height_jitter_mean": 0.0
+        },
+        "DFD/fake": {
+          "num_videos": 17,
+          "fps_mean": 24.0,
+          "fps_std": 0.0,
+          "clip_any_face_detection_failure_rate": 0.0,
+          "frame_face_detection_failure_fraction": 0.0,
+          "box_center_x_jitter_mean": 0.0,
+          "box_center_y_jitter_mean": 0.0,
+          "box_width_jitter_mean": 0.0,
+          "box_height_jitter_mean": 0.0
+        }
+      },
+      "per_dataset": {
+        "DFD": {
+          "threshold": -0.28993169069290164,
+          "accuracy": 0.7258064516129032,
+          "balanced_accuracy": 0.5549019607843138,
+          "confusion_matrix": [
+            [
+              42,
+              3
+            ],
+            [
+              14,
+              3
+            ]
+          ],
+          "observed_false_positive_rate": 0.06666666666666667,
+          "observed_true_positive_rate": 0.17647058823529413,
+          "auroc": 0.7019607843137254,
+          "average_precision": 0.4549692335223661,
+          "target_false_positive_rate": 0.05,
+          "tpr_at_target_fpr": 0.17647058823529413,
+          "eer": 0.35424836601307186,
+          "num_videos": 62,
+          "num_real_videos": 45,
+          "num_fake_videos": 17,
+          "mean_real_anomaly": -0.6133263006806373,
+          "mean_fake_anomaly": -0.4281943598214318,
+          "domain_calibrated_threshold": -0.28993169069290164,
+          "domain_calibrated_accuracy": 0.7258064516129032,
+          "domain_calibrated_balanced_accuracy": 0.5549019607843138
+        }
+      },
+      "macro_dataset_auroc": 0.7019607843137254
+    },
+    "posterior_diagnostics": {
+      "batch_norm_num_batches_tracked": 5500,
+      "batch_norm_running_mean_abs": 0.38843533396720886,
+      "batch_norm_running_var_mean": 0.2732972502708435,
+      "input_mode": "clip",
+      "likelihood": "gaussian",
+      "activation": "relu",
+      "spatial_output_size": 22,
+      "pool_type": "avg",
+      "norm_type": "batch",
+      "feature_dim": 15488,
+      "hidden_dim": 512,
+      "activation_stages": [
+        {
+          "preactivation_abs_mean": 1.0891386270523071,
+          "saturated_fraction": 4.293964593671262e-06,
+          "output_std": 0.6735309362411499
+        },
+        {
+          "preactivation_abs_mean": 1.0344854593276978,
+          "saturated_fraction": 4.96965367347002e-05,
+          "output_std": 0.7810667753219604
+        },
+        {
+          "preactivation_abs_mean": 1.0245717763900757,
+          "saturated_fraction": 0.0008400537772104144,
+          "output_std": 0.881949782371521
+        }
+      ],
+      "temporal_kernel_size": 3,
+      "temporal_receptive_field": 7,
+      "conv_channels": [
+        16,
+        24,
+        32
+      ],
+      "fc1_weight_rho_mean": -5.0,
+      "fc1_weight_sigma_mean": 0.006716347765177488,
+      "fc1_bias_rho_mean": -5.0,
+      "fc1_bias_sigma_mean": 0.006716348230838776,
+      "out_weight_rho_mean": -5.00004243850708,
+      "out_weight_sigma_mean": 0.006716064643114805,
+      "out_bias_rho_mean": -5.000105857849121,
+      "out_bias_sigma_mean": 0.0067156399600207806
+    }
+  }
+]

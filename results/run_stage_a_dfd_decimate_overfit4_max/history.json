@@ -1,0 +1,1322 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 1.6823759933031397,
+    "skipped_training_clips": 0,
+    "learning_rate": 9.5e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.4535947712418301,
+    "validation": {
+      "threshold": 3.7421560287475586,
+      "accuracy": 0.6935483870967742,
+      "balanced_accuracy": 0.49607843137254903,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.058823529411764705,
+      "auroc": 0.4535947712418301,
+      "average_precision": 0.30164850736003396,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.058823529411764705,
+      "eer": 0.5830065359477123,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.4535947712418301
+    }
+  },
+  {
+    "epoch": 2,
+    "train_loss": 1.5599769271793775,
+    "skipped_training_clips": 0,
+    "learning_rate": 9.025e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5398692810457517,
+    "validation": {
+      "threshold": 4.0059525012969965,
+      "accuracy": 0.6935483870967742,
+      "balanced_accuracy": 0.49607843137254903,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.058823529411764705,
+      "auroc": 0.5398692810457517,
+      "average_precision": 0.2956558595978437,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.058823529411764705,
+      "eer": 0.47973856209150323,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5398692810457517
+    }
+  },
+  {
+    "epoch": 3,
+    "train_loss": 1.7018681031186134,
+    "skipped_training_clips": 0,
+    "learning_rate": 8.573749999999999e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.6104575163398693,
+    "validation": {
+      "threshold": 4.897147560119627,
+      "accuracy": 0.7258064516129032,
+      "balanced_accuracy": 0.5549019607843138,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          14,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.17647058823529413,
+      "auroc": 0.6104575163398693,
+      "average_precision": 0.42548986319790605,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.17647058823529413,
+      "eer": 0.45751633986928103,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.6104575163398693
+    }
+  },
+  {
+    "epoch": 4,
+    "train_loss": 1.6673684636079997,
+    "skipped_training_clips": 0,
+    "learning_rate": 8.145062499999998e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5372549019607843,
+    "validation": {
+      "threshold": 10.100952529907225,
+      "accuracy": 0.6935483870967742,
+      "balanced_accuracy": 0.49607843137254903,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.058823529411764705,
+      "auroc": 0.5372549019607843,
+      "average_precision": 0.30200404587972557,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.058823529411764705,
+      "eer": 0.41699346405228754,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5372549019607843
+    }
+  },
+  {
+    "epoch": 5,
+    "train_loss": 0.7063999842284829,
+    "skipped_training_clips": 0,
+    "learning_rate": 7.737809374999998e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.40261437908496733,
+    "validation": {
+      "threshold": 4.235804367065429,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.40261437908496733,
+      "average_precision": 0.23078603361779582,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5202614379084967,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.40261437908496733
+    }
+  },
+  {
+    "epoch": 6,
+    "train_loss": 1.0848681920324452,
+    "skipped_training_clips": 0,
+    "learning_rate": 7.350918906249998e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5934640522875817,
+    "validation": {
+      "threshold": 3.5428005218505842,
+      "accuracy": 0.6935483870967742,
+      "balanced_accuracy": 0.49607843137254903,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.058823529411764705,
+      "auroc": 0.5934640522875817,
+      "average_precision": 0.3659811979251852,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.058823529411764705,
+      "eer": 0.40588235294117647,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5934640522875817
+    }
+  },
+  {
+    "epoch": 7,
+    "train_loss": 1.1887269320432097,
+    "skipped_training_clips": 0,
+    "learning_rate": 6.983372960937497e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5111111111111111,
+    "validation": {
+      "threshold": 1.9407331466674793,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5111111111111111,
+      "average_precision": 0.31881000923941777,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.4464052287581699,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5111111111111111
+    }
+  },
+  {
+    "epoch": 8,
+    "train_loss": 0.7150629434659095,
+    "skipped_training_clips": 0,
+    "learning_rate": 6.634204312890622e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.4143790849673203,
+    "validation": {
+      "threshold": 2.91434850692749,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.4143790849673203,
+      "average_precision": 0.24366969939813465,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5313725490196078,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.4143790849673203
+    }
+  },
+  {
+    "epoch": 9,
+    "train_loss": 0.7431184930028394,
+    "skipped_training_clips": 0,
+    "learning_rate": 6.30249409724609e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.34901960784313724,
+    "validation": {
+      "threshold": 2.084435105323789,
+      "accuracy": 0.6935483870967742,
+      "balanced_accuracy": 0.49607843137254903,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.058823529411764705,
+      "auroc": 0.34901960784313724,
+      "average_precision": 0.23408283256090895,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.058823529411764705,
+      "eer": 0.5941176470588235,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.34901960784313724
+    }
+  },
+  {
+    "epoch": 10,
+    "train_loss": 1.1945185400472838,
+    "skipped_training_clips": 0,
+    "learning_rate": 5.987369392383786e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.4013071895424837,
+    "validation": {
+      "threshold": 2.8614933967590317,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.4013071895424837,
+      "average_precision": 0.24576123230690072,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.542483660130719,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.4013071895424837
+    }
+  },
+  {
+    "epoch": 11,
+    "train_loss": 0.7376803732913686,
+    "skipped_training_clips": 0,
+    "learning_rate": 5.688000922764596e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.4522875816993464,
+    "validation": {
+      "threshold": 2.226303243637085,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.4522875816993464,
+      "average_precision": 0.25555327589356974,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5313725490196078,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.4522875816993464
+    }
+  },
+  {
+    "epoch": 12,
+    "train_loss": 0.6995480827208667,
+    "skipped_training_clips": 0,
+    "learning_rate": 5.4036008766263664e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.534640522875817,
+    "validation": {
+      "threshold": 1.1517027139663696,
+      "accuracy": 0.6935483870967742,
+      "balanced_accuracy": 0.49607843137254903,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.058823529411764705,
+      "auroc": 0.534640522875817,
+      "average_precision": 0.30113410218576414,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.058823529411764705,
+      "eer": 0.365359477124183,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.534640522875817
+    }
+  },
+  {
+    "epoch": 13,
+    "train_loss": 0.9332313002760202,
+    "skipped_training_clips": 0,
+    "learning_rate": 5.133420832795048e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.6274509803921569,
+    "validation": {
+      "threshold": 1.4357023954391477,
+      "accuracy": 0.7258064516129032,
+      "balanced_accuracy": 0.5549019607843138,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          14,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.17647058823529413,
+      "auroc": 0.6274509803921569,
+      "average_precision": 0.44876503183348027,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.17647058823529413,
+      "eer": 0.48366013071895425,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.6274509803921569
+    }
+  },
+  {
+    "epoch": 14,
+    "train_loss": 0.5967849968583323,
+    "skipped_training_clips": 0,
+    "learning_rate": 4.876749791155295e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5947712418300654,
+    "validation": {
+      "threshold": 3.3247380733489975,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5947712418300654,
+      "average_precision": 0.3341540578937055,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.40588235294117647,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5947712418300654
+    }
+  },
+  {
+    "epoch": 15,
+    "train_loss": 0.8198040717979893,
+    "skipped_training_clips": 0,
+    "learning_rate": 4.6329123015975305e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.526797385620915,
+    "validation": {
+      "threshold": 2.4593512177467294,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.526797385620915,
+      "average_precision": 0.28832593159132647,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.46862745098039216,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.526797385620915
+    }
+  },
+  {
+    "epoch": 16,
+    "train_loss": 0.6110469631184969,
+    "skipped_training_clips": 0,
+    "learning_rate": 4.4012666865176535e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.41699346405228765,
+    "validation": {
+      "threshold": 1.5624499320983884,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.41699346405228765,
+      "average_precision": 0.24300941000153453,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.542483660130719,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.41699346405228765
+    }
+  },
+  {
+    "epoch": 17,
+    "train_loss": 0.7407786779513117,
+    "skipped_training_clips": 0,
+    "learning_rate": 4.181203352191771e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5111111111111111,
+    "validation": {
+      "threshold": 2.403297567367553,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5111111111111111,
+      "average_precision": 0.3082077614677057,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.4241830065359477,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5111111111111111
+    }
+  },
+  {
+    "epoch": 18,
+    "train_loss": 0.5798556734807789,
+    "skipped_training_clips": 0,
+    "learning_rate": 3.972143184582182e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.49411764705882355,
+    "validation": {
+      "threshold": 0.9057065129280087,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.49411764705882355,
+      "average_precision": 0.2863392910447133,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5313725490196078,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.49411764705882355
+    }
+  },
+  {
+    "epoch": 19,
+    "train_loss": 0.7230197023745859,
+    "skipped_training_clips": 0,
+    "learning_rate": 3.7735360253530726e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.49803921568627446,
+    "validation": {
+      "threshold": 1.5796394824981643,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.49803921568627446,
+      "average_precision": 0.28570780464939066,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5202614379084967,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.49803921568627446
+    }
+  },
+  {
+    "epoch": 20,
+    "train_loss": 0.5403659566654824,
+    "skipped_training_clips": 0,
+    "learning_rate": 3.584859224085419e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.4366013071895425,
+    "validation": {
+      "threshold": -0.2305248498916638,
+      "accuracy": 0.6935483870967742,
+      "balanced_accuracy": 0.49607843137254903,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.058823529411764705,
+      "auroc": 0.4366013071895425,
+      "average_precision": 0.2656881221359888,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5202614379084967,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.4366013071895425
+    }
+  },
+  {
+    "epoch": 21,
+    "train_loss": 0.591103219834622,
+    "skipped_training_clips": 0,
+    "learning_rate": 3.405616262881148e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.6065359477124183,
+    "validation": {
+      "threshold": 2.0242811441421487,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.6065359477124183,
+      "average_precision": 0.35097109106316,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.39477124183006534,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.6065359477124183
+    }
+  },
+  {
+    "epoch": 22,
+    "train_loss": 0.6385667803479009,
+    "skipped_training_clips": 0,
+    "learning_rate": 3.2353354497370904e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.465359477124183,
+    "validation": {
+      "threshold": 1.6896188735961888,
+      "accuracy": 0.6935483870967742,
+      "balanced_accuracy": 0.49607843137254903,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          16,
+          1
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.058823529411764705,
+      "auroc": 0.465359477124183,
+      "average_precision": 0.2712784745668308,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5313725490196078,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.465359477124183
+    }
+  },
+  {
+    "epoch": 23,
+    "train_loss": 0.4938461894344073,
+    "skipped_training_clips": 0,
+    "learning_rate": 3.0735686772502355e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.584313725490196,
+    "validation": {
+      "threshold": 1.1719238042831417,
+      "accuracy": 0.7258064516129032,
+      "balanced_accuracy": 0.5549019607843138,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          14,
+          3
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.17647058823529413,
+      "auroc": 0.584313725490196,
+      "average_precision": 0.3673177649729152,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.11764705882352941,
+      "eer": 0.40588235294117647,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.584313725490196
+    }
+  },
+  {
+    "epoch": 24,
+    "train_loss": 0.5297279700826039,
+    "skipped_training_clips": 0,
+    "learning_rate": 2.9198902433877236e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5607843137254902,
+    "validation": {
+      "threshold": 1.0481979370117185,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5607843137254902,
+      "average_precision": 0.33788186961713634,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5130718954248366,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5607843137254902
+    }
+  },
+  {
+    "epoch": 25,
+    "train_loss": 0.5555367993656546,
+    "skipped_training_clips": 0,
+    "learning_rate": 2.7738957312183373e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5764705882352941,
+    "validation": {
+      "threshold": 1.0484205722808837,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5764705882352941,
+      "average_precision": 0.333804617980521,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.49084967320261436,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5764705882352941
+    }
+  },
+  {
+    "epoch": 26,
+    "train_loss": 0.5089032068644883,
+    "skipped_training_clips": 0,
+    "learning_rate": 2.6352009446574204e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5437908496732026,
+    "validation": {
+      "threshold": 0.6150156497955318,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5437908496732026,
+      "average_precision": 0.31718620036197204,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.42810457516339867,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5437908496732026
+    }
+  },
+  {
+    "epoch": 27,
+    "train_loss": 0.5669449232591433,
+    "skipped_training_clips": 0,
+    "learning_rate": 2.5034408974245492e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5725490196078431,
+    "validation": {
+      "threshold": 1.4459648638963656,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5725490196078431,
+      "average_precision": 0.3314300229664133,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.47973856209150323,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5725490196078431
+    }
+  },
+  {
+    "epoch": 28,
+    "train_loss": 0.5298605581920128,
+    "skipped_training_clips": 0,
+    "learning_rate": 2.3782688525533216e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.526797385620915,
+    "validation": {
+      "threshold": 2.228547668457028,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.526797385620915,
+      "average_precision": 0.30047615159217117,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5202614379084967,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.526797385620915
+    }
+  },
+  {
+    "epoch": 29,
+    "train_loss": 0.38240791849966627,
+    "skipped_training_clips": 0,
+    "learning_rate": 2.2593554099256555e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.47058823529411764,
+    "validation": {
+      "threshold": 2.3322644710540765,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.47058823529411764,
+      "average_precision": 0.2673842020271063,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5202614379084967,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.47058823529411764
+    }
+  },
+  {
+    "epoch": 30,
+    "train_loss": 0.660030841070693,
+    "skipped_training_clips": 0,
+    "learning_rate": 2.1463876394293726e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.49673202614379086,
+    "validation": {
+      "threshold": 0.9071571588516235,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.49673202614379086,
+      "average_precision": 0.27508177143548357,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.49084967320261436,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.49673202614379086
+    }
+  },
+  {
+    "epoch": 31,
+    "train_loss": 0.5445587760477792,
+    "skipped_training_clips": 0,
+    "learning_rate": 2.039068257457904e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.4418300653594771,
+    "validation": {
+      "threshold": 1.244710052013395,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.4418300653594771,
+      "average_precision": 0.2610098340554864,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5019607843137255,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.4418300653594771
+    }
+  },
+  {
+    "epoch": 32,
+    "train_loss": 0.506979257275816,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.9371148445850086e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.46797385620915033,
+    "validation": {
+      "threshold": 1.4009059906005852,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.46797385620915033,
+      "average_precision": 0.25916285529843014,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5313725490196078,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.46797385620915033
+    }
+  },
+  {
+    "epoch": 33,
+    "train_loss": 0.5427144990826491,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.840259102355758e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5477124183006535,
+    "validation": {
+      "threshold": 1.5662532806396472,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5477124183006535,
+      "average_precision": 0.3242824702670322,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5019607843137255,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5477124183006535
+    }
+  },
+  {
+    "epoch": 34,
+    "train_loss": 0.4694251825567335,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.74824614723797e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.4784313725490196,
+    "validation": {
+      "threshold": 1.5954890251159661,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.4784313725490196,
+      "average_precision": 0.26896507195491887,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.45751633986928103,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.4784313725490196
+    }
+  },
+  {
+    "epoch": 35,
+    "train_loss": 0.5387428090757567,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.6608338398760715e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.4823529411764706,
+    "validation": {
+      "threshold": 1.2805266618728617,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.4823529411764706,
+      "average_precision": 0.26848826861292896,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.49084967320261436,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.4823529411764706
+    }
+  },
+  {
+    "epoch": 36,
+    "train_loss": 0.4383931933552958,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.5777921478822678e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5150326797385621,
+    "validation": {
+      "threshold": 1.071453940868377,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5150326797385621,
+      "average_precision": 0.2927827527078186,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.41699346405228754,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5150326797385621
+    }
+  },
+  {
+    "epoch": 37,
+    "train_loss": 0.3927126125781797,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.4989025404881544e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.515032679738562,
+    "validation": {
+      "threshold": 0.4037773847579954,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.515032679738562,
+      "average_precision": 0.29528903904187126,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.41699346405228754,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.515032679738562
+    }
+  },
+  {
+    "epoch": 38,
+    "train_loss": 0.4406622493697796,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.4239574134637466e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.46143790849673205,
+    "validation": {
+      "threshold": 1.3769367218017576,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.46143790849673205,
+      "average_precision": 0.26868015301069353,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5202614379084967,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.46143790849673205
+    }
+  },
+  {
+    "epoch": 39,
+    "train_loss": 0.48458968980412465,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.3527595427905592e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.45882352941176474,
+    "validation": {
+      "threshold": 1.1909758329391478,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.45882352941176474,
+      "average_precision": 0.26031037654415934,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.5647058823529412,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.45882352941176474
+    }
+  },
+  {
+    "epoch": 40,
+    "train_loss": 0.50632311879599,
+    "skipped_training_clips": 0,
+    "learning_rate": 1.2851215656510312e-05,
+    "selection_metric": "auroc",
+    "selection_value": 0.5202614379084967,
+    "validation": {
+      "threshold": 0.23016113340854558,
+      "accuracy": 0.6774193548387096,
+      "balanced_accuracy": 0.4666666666666667,
+      "confusion_matrix": [
+        [
+          42,
+          3
+        ],
+        [
+          17,
+          0
+        ]
+      ],
+      "observed_false_positive_rate": 0.06666666666666667,
+      "observed_true_positive_rate": 0.0,
+      "auroc": 0.5202614379084967,
+      "average_precision": 0.29295196350721764,
+      "target_false_positive_rate": 0.05,
+      "tpr_at_target_fpr": 0.0,
+      "eer": 0.41699346405228754,
+      "embedding_variance_mean": null,
+      "per_dataset": {},
+      "macro_dataset_auroc": 0.5202614379084967
+    }
+  }
+]
