@@ -229,8 +229,9 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
     <tr><td>Objective</td><td>binary cross-entropy</td><td>TraceGraph ELBO (Pyro SVI)</td></tr>
     <tr><td>Optimiser</td><td>Adam</td><td>SGD</td></tr>
     <tr><td>Learning rate</td><td>1×10⁻⁴, exponential decay γ = 0.95</td><td>1×10⁻⁴, exponential decay γ = 0.95</td></tr>
-    <tr><td>Training sample</td><td>both classes, 1000 clips per class per epoch</td><td>real videos only</td></tr>
-    <tr><td>Batch size</td><td>4</td><td>4</td></tr>
+    <tr><td>Training sample</td><td>both classes, 1000 clips per class per epoch</td><td>real videos only, 1000 clips per epoch</td></tr>
+    <tr><td>Optimiser steps per epoch</td><td>2000</td><td>1000</td></tr>
+    <tr><td>Batch size (clips per optimiser step)</td><td>1</td><td>1</td></tr>
     <tr><td>Epoch budget</td><td>60</td><td>50</td></tr>
     <tr><td>Extractor</td><td>trainable</td><td>frozen, BatchNorm statistics included</td></tr>
     <tr><td>Checkpoint selection</td><td>highest validation AUROC</td><td>highest validation macro AUROC</td></tr>

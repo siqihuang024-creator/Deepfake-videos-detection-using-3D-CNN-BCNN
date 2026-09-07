@@ -212,8 +212,9 @@ DOC = '''<title>3D-CNN 贝叶斯检测实验</title>
     <tr><td>目标函数</td><td>二元交叉熵</td><td>TraceGraph ELBO（Pyro SVI）</td></tr>
     <tr><td>优化器</td><td>Adam</td><td>SGD</td></tr>
     <tr><td>学习率</td><td>1×10⁻⁴，指数衰减 γ = 0.95</td><td>1×10⁻⁴，指数衰减 γ = 0.95</td></tr>
-    <tr><td>训练样本</td><td>真伪两类，每类每 epoch 采样 1000 个片段</td><td>仅真实视频</td></tr>
-    <tr><td>batch</td><td>4</td><td>4</td></tr>
+    <tr><td>训练样本</td><td>真伪两类，每类每 epoch 采样 1000 个片段</td><td>仅真实视频，每 epoch 采样 1000 个片段</td></tr>
+    <tr><td>每 epoch 优化步数</td><td>2000</td><td>1000</td></tr>
+    <tr><td>batch（每次优化步的片段数）</td><td>1</td><td>1</td></tr>
     <tr><td>epoch 上限</td><td>60</td><td>50</td></tr>
     <tr><td>提取器</td><td>可训练</td><td>冻结，含 BatchNorm 统计量</td></tr>
     <tr><td>checkpoint 选择</td><td>验证 AUROC 最高的一轮</td><td>验证 macro AUROC 最高的一轮</td></tr>
