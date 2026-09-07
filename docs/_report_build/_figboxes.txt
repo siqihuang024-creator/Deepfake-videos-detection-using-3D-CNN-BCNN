@@ -1,0 +1,354 @@
+<div class="figbox" id="box-loss">
+    <svg viewBox="0 0 720 260" role="img" aria-label="阶段 A 训练交叉熵随 epoch 变化：从 1.578 下降到 0.658，60 个 epoch 中有 46 个低于 ln 2。">
+      <g stroke="var(--rule-soft)" stroke-width="1">
+        <line x1="52" y1="16" x2="704" y2="16"/><line x1="52" y1="68.5" x2="704" y2="68.5"/>
+        <line x1="52" y1="121" x2="704" y2="121"/><line x1="52" y1="173.5" x2="704" y2="173.5"/>
+        <line x1="52" y1="226" x2="704" y2="226"/>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">
+        <text x="44" y="20">1.60</text><text x="44" y="72.5">1.35</text>
+        <text x="44" y="125">1.10</text><text x="44" y="177.5">0.85</text><text x="44" y="230">0.60</text>
+      </g>
+      <line x1="52" y1="206.4" x2="704" y2="206.4" stroke="var(--s2)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="700" y="201" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--s2)" text-anchor="end">ln 2 = 0.6931</text>
+      <polyline fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+        points="52.0,20.7 63.1,172.0 74.1,197.9 85.2,202.6 96.2,203.9 107.3,204.9 118.3,205.4 129.4,204.7 140.4,206.4 151.5,204.5 162.5,205.7 173.6,205.6 184.6,206.7 195.7,205.7 206.7,206.6 217.8,205.9 228.8,206.6 239.9,207.4 250.9,207.4 262.0,207.0 273.0,208.6 284.1,208.0 295.1,208.1 306.2,209.2 317.2,208.2 328.3,209.2 339.3,209.9 350.4,209.2 361.4,210.0 372.5,210.4 383.5,210.3 394.6,208.7 405.6,210.6 416.7,210.7 427.7,209.7 438.8,211.2 449.8,211.4 460.9,208.3 471.9,213.7 483.0,212.6 494.0,210.0 505.1,211.4 516.1,213.7 527.2,212.3 538.2,210.7 549.3,213.0 560.3,211.7 571.4,212.3 582.4,212.7 593.5,212.7 604.5,210.4 615.6,211.2 626.6,212.4 637.7,212.6 648.7,213.4 659.8,211.5 670.8,211.0 681.9,211.9 692.9,211.9 704.0,213.8"/>
+      <text x="70" y="34" font-family="Source Serif 4, serif" font-size="12.5" fill="var(--s1)" font-weight="600">训练交叉熵</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="middle">
+        <text x="52" y="245">1</text><text x="151.5" y="245">10</text><text x="262" y="245">20</text>
+        <text x="372.5" y="245">30</text><text x="483" y="245">40</text><text x="593.5" y="245">50</text><text x="704" y="245">60</text>
+      </g>
+      <text x="378" y="258" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">epoch</text>
+      <line id="cross-loss" x1="0" y1="16" x2="0" y2="226" stroke="var(--muted)" stroke-width="1" opacity="0"/>
+      <rect id="hit-loss" x="52" y="16" width="652" height="210" fill="transparent" style="cursor:crosshair"/>
+    </svg>
+    <div class="tip" id="tip-loss"></div>
+</div>
+<<<SPLIT>>>
+<div class="figbox" id="box-auc">
+    <svg viewBox="0 0 720 260" role="img" aria-label="阶段 A 验证 AUC 随 epoch 变化：均值 0.4477，自第 24 个 epoch 起 37 次中仅 1 次高于 0.5。">
+      <g stroke="var(--rule-soft)" stroke-width="1">
+        <line x1="52" y1="16" x2="704" y2="16"/><line x1="52" y1="68.5" x2="704" y2="68.5"/>
+        <line x1="52" y1="121" x2="704" y2="121"/><line x1="52" y1="173.5" x2="704" y2="173.5"/>
+        <line x1="52" y1="226" x2="704" y2="226"/>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">
+        <text x="44" y="20">0.65</text><text x="44" y="72.5">0.56</text>
+        <text x="44" y="125">0.48</text><text x="44" y="177.5">0.39</text><text x="44" y="230">0.30</text>
+      </g>
+      <line x1="52" y1="106" x2="704" y2="106" stroke="var(--s2)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="700" y="100" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--s2)" text-anchor="end">随机水平 0.50</text>
+      <polyline fill="none" stroke="var(--s3)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+        points="52.0,110.3 63.1,100.1 74.1,140.1 85.2,82.9 96.2,75.0 107.3,169.9 118.3,124.4 129.4,151.1 140.4,67.2 151.5,72.7 162.5,166.8 173.6,93.1 184.6,158.2 195.7,43.6 206.7,180.9 217.8,173.1 228.8,169.9 239.9,122.1 250.9,132.3 262.0,104.8 273.0,126.8 284.1,132.3 295.1,104.8 306.2,207.6 317.2,152.7 328.3,173.8 339.3,113.5 350.4,126.8 361.4,171.5 372.5,178.5 383.5,155.8 394.6,155.8 405.6,124.4 416.7,84.4 427.7,117.4 438.8,133.1 449.8,140.9 460.9,131.5 471.9,123.6 483.0,142.5 494.0,149.5 505.1,126.0 516.1,162.1 527.2,146.4 538.2,154.2 549.3,148.0 560.3,156.6 571.4,172.3 582.4,157.4 593.5,144.0 604.5,155.0 615.6,163.6 626.6,166.0 637.7,155.0 648.7,148.0 659.8,133.1 670.8,129.9 681.9,138.5 692.9,150.3 704.0,151.1"/>
+      <text x="203" y="36" font-family="Source Serif 4, serif" font-size="12.5" fill="var(--s3)" font-weight="600">验证 AUC（62 条视频）</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="middle">
+        <text x="52" y="245">1</text><text x="151.5" y="245">10</text><text x="262" y="245">20</text>
+        <text x="372.5" y="245">30</text><text x="483" y="245">40</text><text x="593.5" y="245">50</text><text x="704" y="245">60</text>
+      </g>
+      <text x="378" y="258" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">epoch</text>
+      <line id="cross-auc" x1="0" y1="16" x2="0" y2="226" stroke="var(--muted)" stroke-width="1" opacity="0"/>
+      <rect id="hit-auc" x="52" y="16" width="652" height="210" fill="transparent" style="cursor:crosshair"/>
+    </svg>
+    <div class="tip" id="tip-auc"></div>
+</div>
+<<<SPLIT>>>
+<div class="figbox">
+    <svg viewBox="0 0 720 300" role="img" aria-label="左：真实与伪造视频的异常分数直方图，两个分布几乎完全重叠；右：ROC 曲线贴着对角线，AUC 0.4877。">
+      <text x="52" y="16" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(a) 视频级异常分数分布</text>
+      <g stroke="var(--rule-soft)" stroke-width="1">
+        <line x1="52" y1="250" x2="340" y2="250"/><line x1="52" y1="206" x2="340" y2="206"/>
+        <line x1="52" y1="162" x2="340" y2="162"/><line x1="52" y1="118" x2="340" y2="118"/>
+        <line x1="52" y1="74" x2="340" y2="74"/><line x1="52" y1="30" x2="340" y2="30"/>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end">
+        <text x="46" y="253">0</text><text x="46" y="209">2</text><text x="46" y="165">4</text>
+        <text x="46" y="121">6</text><text x="46" y="77">8</text><text x="46" y="33">10</text>
+      </g>
+      <g fill="var(--s3)"><rect x="52.6" y="228.0" width="6.0" height="22.0"/> <rect x="67.0" y="228.0" width="6.0" height="22.0"/> <rect x="81.4" y="184.0" width="6.0" height="66.0"/> <rect x="110.2" y="206.0" width="6.0" height="44.0"/> <rect x="124.6" y="206.0" width="6.0" height="44.0"/> <rect x="139.0" y="228.0" width="6.0" height="22.0"/> <rect x="153.4" y="228.0" width="6.0" height="22.0"/> <rect x="167.8" y="228.0" width="6.0" height="22.0"/> <rect x="182.2" y="206.0" width="6.0" height="44.0"/> <rect x="196.6" y="118.0" width="6.0" height="132.0"/> <rect x="211.0" y="206.0" width="6.0" height="44.0"/> <rect x="225.4" y="184.0" width="6.0" height="66.0"/> <rect x="239.8" y="52.0" width="6.0" height="198.0"/> <rect x="254.2" y="184.0" width="6.0" height="66.0"/> <rect x="268.6" y="74.0" width="6.0" height="176.0"/> <rect x="283.0" y="228.0" width="6.0" height="22.0"/> <rect x="297.4" y="140.0" width="6.0" height="110.0"/> <rect x="311.8" y="228.0" width="6.0" height="22.0"/> <rect x="326.2" y="206.0" width="6.0" height="44.0"/></g>
+      <g fill="var(--s2)"><rect x="59.8" y="206.0" width="6.0" height="44.0"/> <rect x="74.2" y="206.0" width="6.0" height="44.0"/> <rect x="88.6" y="184.0" width="6.0" height="66.0"/> <rect x="131.8" y="184.0" width="6.0" height="66.0"/> <rect x="160.6" y="206.0" width="6.0" height="44.0"/> <rect x="175.0" y="206.0" width="6.0" height="44.0"/> <rect x="189.4" y="184.0" width="6.0" height="66.0"/> <rect x="203.8" y="228.0" width="6.0" height="22.0"/> <rect x="218.2" y="206.0" width="6.0" height="44.0"/> <rect x="232.6" y="140.0" width="6.0" height="110.0"/> <rect x="247.0" y="52.0" width="6.0" height="198.0"/> <rect x="261.4" y="206.0" width="6.0" height="44.0"/> <rect x="275.8" y="118.0" width="6.0" height="132.0"/> <rect x="290.2" y="140.0" width="6.0" height="110.0"/> <rect x="304.6" y="96.0" width="6.0" height="154.0"/></g>
+      <line x1="321.4" y1="26" x2="321.4" y2="250" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="318" y="24" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--ink)" text-anchor="end">阈值</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
+        <text x="74.5" y="265">-1.3</text><text x="138.9" y="265">-1.1</text><text x="203.3" y="265">-0.9</text>
+        <text x="267.6" y="265">-0.7</text><text x="332.0" y="265">-0.5</text>
+      </g>
+      <text x="196" y="281" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">异常分数（越大越可疑）</text>
+      <g font-family="Source Serif 4, serif" font-size="11.5">
+        <rect x="120" y="288" width="9" height="9" fill="var(--s3)"/><text x="134" y="296" fill="var(--muted)">真实 (54)</text>
+        <rect x="205" y="288" width="9" height="9" fill="var(--s2)"/><text x="219" y="296" fill="var(--muted)">伪造 (54)</text>
+      </g>
+
+      <text x="430" y="16" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(b) ROC 曲线</text>
+      <g stroke="var(--rule-soft)" stroke-width="1">
+        <line x1="430" y1="250" x2="650" y2="250"/><line x1="430" y1="195" x2="650" y2="195"/>
+        <line x1="430" y1="140" x2="650" y2="140"/><line x1="430" y1="85" x2="650" y2="85"/><line x1="430" y1="30" x2="650" y2="30"/>
+        <line x1="430" y1="30" x2="430" y2="250"/><line x1="485" y1="30" x2="485" y2="250"/>
+        <line x1="540" y1="30" x2="540" y2="250"/><line x1="595" y1="30" x2="595" y2="250"/><line x1="650" y1="30" x2="650" y2="250"/>
+      </g>
+      <path d="M 430 250 L 650 30" stroke="var(--faint)" stroke-width="1.3" stroke-dasharray="5 4" fill="none"/>
+      <text x="646" y="46" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end">随机</text>
+      <polyline fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round"
+        points="430.0,250.0 434.1,250.0 438.1,250.0 442.2,250.0 446.3,250.0 446.3,245.9 450.4,245.9 454.4,245.9 454.4,241.9 454.4,237.8 454.4,233.7 458.5,233.7 458.5,229.6 458.5,225.6 458.5,221.5 462.6,221.5 462.6,217.4 462.6,213.3 462.6,209.3 462.6,205.2 466.7,205.2 466.7,201.1 470.7,201.1 474.8,201.1 474.8,197.0 478.9,197.0 478.9,193.0 483.0,193.0 487.0,193.0 487.0,188.9 487.0,184.8 491.1,184.8 491.1,180.7 495.2,180.7 495.2,176.7 499.3,176.7 503.3,176.7 507.4,176.7 511.5,176.7 511.5,172.6 511.5,168.5 515.6,168.5 515.6,164.4 519.6,164.4 523.7,164.4 523.7,160.4 527.8,160.4 531.9,160.4 535.9,160.4 540.0,160.4 540.0,156.3 544.1,156.3 544.1,152.2 544.1,148.1 544.1,144.1 544.1,140.0 548.1,140.0 548.1,135.9 548.1,131.9 552.2,131.9 552.2,127.8 552.2,123.7 552.2,119.6 556.3,119.6 556.3,115.6 556.3,111.5 560.4,111.5 564.4,111.5 564.4,107.4 564.4,103.3 568.5,103.3 572.6,103.3 576.7,103.3 576.7,99.3 580.7,99.3 584.8,99.3 588.9,99.3 593.0,99.3 593.0,95.2 593.0,91.1 593.0,87.0 597.0,87.0 601.1,87.0 601.1,83.0 605.2,83.0 605.2,78.9 605.2,74.8 605.2,70.7 609.3,70.7 613.3,70.7 613.3,66.7 617.4,66.7 621.5,66.7 621.5,62.6 621.5,58.5 625.6,58.5 629.6,58.5 633.7,58.5 633.7,54.4 637.8,54.4 637.8,50.4 637.8,46.3 641.9,46.3 641.9,42.2 645.9,42.2 645.9,38.1 645.9,34.1 645.9,30.0 650.0,30.0"/>
+      <text x="444" y="66" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="var(--s1)" font-weight="500">AUC = 0.4877</text>
+      <text x="444" y="82" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--muted)">95% CI [0.458, 0.531]</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
+        <text x="430" y="265">0</text><text x="540" y="265">0.5</text><text x="650" y="265">1.0</text>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end">
+        <text x="424" y="253">0</text><text x="424" y="143">0.5</text><text x="424" y="33">1.0</text>
+      </g>
+      <text x="540" y="281" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">假阳率</text>
+      <text x="404" y="140" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 404 140)">真阳率</text>
+    </svg>
+  </div>
+  
+<<<SPLIT>>>
+<div class="figbox">
+    <svg viewBox="0 0 720 300" role="img" aria-label="左：60 条训练视频特征的 t-SNE 投影，真实与伪造完全混杂；右：冻结线性探针结果，只有 CelebDFv3 加人脸裁剪的配置越出随机区间。">
+      <text x="40" y="14" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(a) 提取器特征的 t-SNE 投影</text>
+      <rect x="40" y="18" width="320" height="252" fill="none" stroke="var(--rule-soft)" stroke-width="1"/>
+      <g fill="var(--s3)" fill-opacity="0.85">
+        <circle cx="75.6" cy="66.7" r="4"/><circle cx="211.3" cy="153.3" r="4"/><circle cx="307.9" cy="100.5" r="4"/><circle cx="154.5" cy="112.4" r="4"/><circle cx="131.8" cy="20.4" r="4"/><circle cx="98.6" cy="77.6" r="4"/><circle cx="206.0" cy="265.9" r="4"/><circle cx="263.3" cy="93.0" r="4"/><circle cx="226.9" cy="143.7" r="4"/><circle cx="173.8" cy="244.7" r="4"/><circle cx="113.8" cy="18.0" r="4"/><circle cx="186.8" cy="54.0" r="4"/><circle cx="82.1" cy="81.7" r="4"/><circle cx="360.0" cy="146.7" r="4"/><circle cx="313.8" cy="243.3" r="4"/><circle cx="345.5" cy="153.0" r="4"/><circle cx="131.3" cy="33.7" r="4"/><circle cx="202.6" cy="239.3" r="4"/><circle cx="47.9" cy="149.1" r="4"/><circle cx="188.4" cy="270.0" r="4"/><circle cx="291.9" cy="85.7" r="4"/><circle cx="179.2" cy="131.4" r="4"/><circle cx="178.8" cy="72.6" r="4"/><circle cx="331.8" cy="241.4" r="4"/><circle cx="67.1" cy="142.8" r="4"/><circle cx="301.3" cy="226.9" r="4"/><circle cx="112.8" cy="31.5" r="4"/><circle cx="239.4" cy="174.3" r="4"/><circle cx="134.5" cy="153.7" r="4"/><circle cx="210.0" cy="119.4" r="4"/>
+      </g>
+      <g fill="none" stroke="var(--s2)" stroke-width="1.8">
+        <path d="M126.8 72.6 l8 8 M134.8 72.6 l-8 8"/><path d="M313.0 218.2 l8 8 M321.0 218.2 l-8 8"/><path d="M316.8 146.9 l8 8 M324.8 146.9 l-8 8"/><path d="M71.2 93.0 l8 8 M79.2 93.0 l-8 8"/><path d="M148.3 120.6 l8 8 M156.3 120.6 l-8 8"/><path d="M203.1 97.0 l8 8 M211.1 97.0 l-8 8"/><path d="M236.6 157.7 l8 8 M244.6 157.7 l-8 8"/><path d="M292.9 238.6 l8 8 M300.9 238.6 l-8 8"/><path d="M271.6 96.7 l8 8 M279.6 96.7 l-8 8"/><path d="M194.4 25.2 l8 8 M202.4 25.2 l-8 8"/><path d="M268.6 70.6 l8 8 M276.6 70.6 l-8 8"/><path d="M55.7 168.8 l8 8 M63.7 168.8 l-8 8"/><path d="M146.9 158.8 l8 8 M154.9 158.8 l-8 8"/><path d="M93.6 85.6 l8 8 M101.6 85.6 l-8 8"/><path d="M241.2 145.0 l8 8 M249.2 145.0 l-8 8"/><path d="M36.0 159.8 l8 8 M44.0 159.8 l-8 8"/><path d="M186.7 249.4 l8 8 M194.7 249.4 l-8 8"/><path d="M183.7 229.5 l8 8 M191.7 229.5 l-8 8"/><path d="M169.8 113.7 l8 8 M177.8 113.7 l-8 8"/><path d="M58.5 154.5 l8 8 M66.5 154.5 l-8 8"/><path d="M46.0 131.9 l8 8 M54.0 131.9 l-8 8"/><path d="M206.1 129.3 l8 8 M214.1 129.3 l-8 8"/><path d="M162.8 63.3 l8 8 M170.8 63.3 l-8 8"/><path d="M288.5 70.2 l8 8 M296.5 70.2 l-8 8"/><path d="M338.6 136.7 l8 8 M346.6 136.7 l-8 8"/><path d="M209.6 160.9 l8 8 M217.6 160.9 l-8 8"/><path d="M172.6 160.9 l8 8 M180.6 160.9 l-8 8"/><path d="M164.4 255.5 l8 8 M172.4 255.5 l-8 8"/><path d="M180.9 28.7 l8 8 M188.9 28.7 l-8 8"/><path d="M128.6 161.0 l8 8 M136.6 161.0 l-8 8"/>
+      </g>
+      <g font-family="Source Serif 4, serif" font-size="11.5">
+        <circle cx="66" cy="286" r="4" fill="var(--s3)"/><text x="76" y="290" fill="var(--muted)">真实 (30)</text>
+        <path d="M150 282 l8 8 M158 282 l-8 8" stroke="var(--s2)" stroke-width="1.8" fill="none"/>
+        <text x="166" y="290" fill="var(--muted)">伪造 (30)</text>
+        <text x="248" y="290" fill="var(--faint)">5-NN 按身份留一 0.375</text>
+      </g>
+
+      <text x="410" y="14" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(b) 冻结线性探针 vs 随机基线</text>
+      <g stroke="var(--rule-soft)" stroke-width="1">
+        <line x1="455" y1="30" x2="455" y2="200"/><line x1="510" y1="30" x2="510" y2="200"/>
+        <line x1="565" y1="30" x2="565" y2="200"/><line x1="620" y1="30" x2="620" y2="200"/><line x1="675" y1="30" x2="675" y2="200"/>
+      </g>
+      <line x1="510" y1="30" x2="510" y2="200" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="510" y="26" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--s2)" text-anchor="middle">0.50</text>
+      <g font-family="Source Serif 4, serif" font-size="11" fill="var(--ink)" text-anchor="start">
+        <text x="410" y="60">v9 · Celeb+脸</text>
+        <text x="410" y="112">v9arch · DFD+脸</text>
+        <text x="410" y="164">本文 · DFD+整帧</text>
+      </g>
+      <g stroke="var(--faint)" stroke-width="1.5">
+        <line x1="533" y1="72" x2="608" y2="72"/><line x1="463" y1="176" x2="567" y2="176"/>
+      </g>
+      <g fill="var(--faint)">
+        <circle cx="533" cy="72" r="3"/><circle cx="553" cy="72" r="3"/><circle cx="561" cy="72" r="3"/><circle cx="608" cy="72" r="3"/>
+        <circle cx="566" cy="124" r="3"/>
+        <circle cx="463" cy="176" r="3"/><circle cx="504" cy="176" r="3"/><circle cx="506" cy="176" r="3"/><circle cx="519" cy="176" r="3"/><circle cx="547" cy="176" r="3"/><circle cx="549" cy="176" r="3"/><circle cx="561" cy="176" r="3"/><circle cx="566" cy="176" r="3"/>
+      </g>
+      <g fill="var(--s1)" stroke="var(--surface)" stroke-width="1.8">
+        <path d="M 638 65 l 7 7 l -7 7 l -7 -7 z"/>
+        <path d="M 573 117 l 7 7 l -7 7 l -7 -7 z"/>
+        <path d="M 522 169 l 7 7 l -7 7 l -7 -7 z"/>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--s1)" font-weight="500">
+        <text x="650" y="76">.7322</text><text x="585" y="128">.5956</text><text x="534" y="180">.5033</text>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
+        <text x="455" y="215">0.40</text><text x="510" y="215">0.50</text><text x="565" y="215">0.60</text>
+        <text x="620" y="215">0.70</text><text x="675" y="215">0.80</text>
+      </g>
+      <text x="565" y="233" font-family="Source Serif 4, serif" font-size="11" fill="var(--muted)" text-anchor="middle">留出身份线性探针 AUC</text>
+      <g font-family="Source Serif 4, serif" font-size="11">
+        <circle cx="440" cy="256" r="3" fill="var(--faint)"/><text x="449" y="260" fill="var(--muted)">随机初始化抽样</text>
+        <path d="M 560 250 l 6 6 l -6 6 l -6 -6 z" fill="var(--s1)"/><text x="573" y="260" fill="var(--muted)">训练后</text>
+      </g>
+    </svg>
+  </div>
+  
+<<<SPLIT>>>
+<div class="figbox" id="box-a3">
+    <svg viewBox="0 0 720 285" role="img" aria-label="实验三阶段 A：左为训练交叉熵自 1.542 降至 0.562，右为验证 AUROC 自 0.586 升至 0.692。">
+      <text x="52" y="16" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(a) 训练交叉熵</text>
+      <g stroke="var(--rule-soft)" stroke-width="1"><line x1="52" y1="240.0" x2="345" y2="240.0"/><line x1="52" y1="192.3" x2="345" y2="192.3"/><line x1="52" y1="144.5" x2="345" y2="144.5"/><line x1="52" y1="96.8" x2="345" y2="96.8"/><line x1="52" y1="49.1" x2="345" y2="49.1"/></g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end"><text x="46" y="243.5">0.50</text><text x="46" y="195.8">0.75</text><text x="46" y="148.0">1.00</text><text x="46" y="100.3">1.25</text><text x="46" y="52.6">1.50</text></g>
+      <polyline fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="52.0,41.1 57.0,164.9 61.9,194.5 66.9,200.6 71.9,208.5 76.8,207.4 81.8,212.2 86.8,210.0 91.7,211.5 96.7,212.1 101.7,214.6 106.6,215.4 111.6,214.2 116.6,215.8 121.5,215.5 126.5,216.8 131.5,217.8 136.4,221.0 141.4,216.7 146.4,221.6 151.3,220.5 156.3,220.5 161.3,220.9 166.2,219.5 171.2,224.0 176.2,220.6 181.1,222.2 186.1,223.6 191.1,223.9 196.0,225.6 201.0,224.7 205.9,225.9 210.9,227.2 215.9,222.2 220.8,230.2 225.8,224.6 230.8,225.0 235.7,226.2 240.7,229.9 245.7,227.1 250.6,228.6 255.6,228.2 260.6,227.1 265.5,229.1 270.5,232.0 275.5,227.2 280.4,229.8 285.4,232.7 290.4,230.9 295.3,230.8 300.3,234.1 305.3,234.3 310.2,228.0 315.2,234.7 320.2,231.0 325.1,229.2 330.1,231.0 335.1,230.1 340.0,233.8 345.0,228.2"/>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
+        <text x="52" y="256">1</text><text x="150.7" y="256">21</text><text x="249.3" y="256">41</text><text x="345" y="256">60</text>
+      </g>
+      <line id="cross-a3" x1="0" y1="30" x2="0" y2="240" stroke="var(--muted)" stroke-width="1" opacity="0"/>
+      <rect id="hit-a3" x="52" y="30" width="293" height="210" fill="transparent" style="cursor:crosshair"/>
+
+      <text x="415" y="16" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(b) 验证 AUROC（5241 条视频，57 身份）</text>
+      <g stroke="var(--rule-soft)" stroke-width="1"><line x1="415" y1="220.9" x2="708" y2="220.9"/><line x1="415" y1="173.2" x2="708" y2="173.2"/><line x1="415" y1="125.5" x2="708" y2="125.5"/><line x1="415" y1="77.7" x2="708" y2="77.7"/><line x1="415" y1="30.0" x2="708" y2="30.0"/></g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end"><text x="409" y="224.4">0.50</text><text x="409" y="176.7">0.55</text><text x="409" y="129.0">0.60</text><text x="409" y="81.2">0.65</text><text x="409" y="33.5">0.70</text></g>
+      <line x1="415" y1="{ych:.1f}" x2="708" y2="{ych:.1f}" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="704" y="{ychl:.1f}" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--s2)" text-anchor="end">随机水平</text>
+      <polyline fill="none" stroke="var(--s3)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="415.0,138.4 420.0,169.0 424.9,157.9 429.9,119.0 434.9,140.9 439.8,82.1 444.8,113.4 449.8,122.4 454.7,157.9 459.7,98.5 464.7,116.8 469.6,139.9 474.6,105.1 479.6,83.0 484.5,97.6 489.5,61.2 494.5,116.3 499.4,59.8 504.4,82.4 509.4,56.6 514.3,49.4 519.3,64.9 524.3,59.9 529.2,57.6 534.2,58.5 539.2,99.4 544.1,55.4 549.1,76.6 554.1,56.7 559.0,57.0 564.0,39.4 568.9,56.7 573.9,39.7 578.9,61.6 583.8,70.5 588.8,59.9 593.8,56.5 598.7,55.2 603.7,36.5 608.7,42.7 613.6,45.7 618.6,44.4 623.6,52.5 628.5,37.9 633.5,42.3 638.5,53.4 643.4,40.8 648.4,38.5 653.4,43.6 658.3,50.9 663.3,46.1 668.3,38.7 673.2,39.4 678.2,54.4 683.2,49.3 688.1,47.4 693.1,36.0 698.1,38.6 703.0,38.9 708.0,37.8"/>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
+        <text x="415" y="256">1</text><text x="513.7" y="256">21</text><text x="612.3" y="256">41</text><text x="708" y="256">60</text>
+      </g>
+      <line id="cross-b3" x1="0" y1="30" x2="0" y2="240" stroke="var(--muted)" stroke-width="1" opacity="0"/>
+      <rect id="hit-b3" x="415" y="30" width="293" height="210" fill="transparent" style="cursor:crosshair"/>
+      <text x="380" y="275" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">epoch</text>
+    </svg>
+    <div class="tip" id="tip-a3"></div>
+    <div class="tip" id="tip-b3"></div>
+</div>
+<<<SPLIT>>>
+<div class="figbox" id="box-c3">
+    <svg viewBox="0 0 720 250" role="img" aria-label="实验三阶段 B 的 17 个验证 epoch，最高 0.6569，而测试集读数为 0.5284。">
+      <g stroke="var(--rule-soft)" stroke-width="1"><line x1="62" y1="197.6" x2="690" y2="197.6"/><line x1="62" y1="156.7" x2="690" y2="156.7"/><line x1="62" y1="115.8" x2="690" y2="115.8"/><line x1="62" y1="74.9" x2="690" y2="74.9"/><line x1="62" y1="34.0" x2="690" y2="34.0"/></g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end"><text x="56" y="201.1">0.50</text><text x="56" y="160.2">0.55</text><text x="56" y="119.3">0.60</text><text x="56" y="78.4">0.65</text><text x="56" y="37.5">0.70</text></g>
+      <line x1="62" y1="{ych2:.1f}" x2="690" y2="{ych2:.1f}" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="686" y="{ych2l:.1f}" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--s2)" text-anchor="end">随机水平 0.50</text>
+      <polyline fill="none" stroke="var(--s3)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="62.0,117.9 90.6,135.5 119.2,115.0 147.9,110.6 176.5,107.5 205.1,104.5 233.8,94.4 262.4,91.8 291.0,69.3 319.6,101.8 348.2,89.1 376.9,82.4 405.5,84.1 434.1,91.9 462.8,92.3 491.4,111.0 520.0,95.0"/>
+      <circle cx="291.0" cy="69.3" r="4.5" fill="var(--s3)" stroke="var(--surface)" stroke-width="2"/>
+      <text x="297.0" y="58.3" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--s3)" text-anchor="middle">验证最佳 0.6569</text>
+      <line x1="530" y1="69.3" x2="612" y2="174.4" stroke="var(--faint)" stroke-width="1.2" stroke-dasharray="3 3"/>
+      <circle cx="620" cy="174.4" r="5.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/>
+      <text x="632" y="177.4" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--s2)" font-weight="500">测试 0.5284</text>
+      <text x="632" y="190.4" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--faint)">[0.502, 0.572]</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
+        <text x="62" y="230">1</text><text x="176.5" y="230">5</text><text x="290.5" y="230">9</text><text x="405" y="230">13</text><text x="520" y="230">17</text>
+      </g>
+      <text x="291" y="245" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">阶段 B epoch</text>
+      <line id="cross-c3" x1="0" y1="34" x2="0" y2="214" stroke="var(--muted)" stroke-width="1" opacity="0"/>
+      <rect id="hit-c3" x="62" y="34" width="458" height="180" fill="transparent" style="cursor:crosshair"/>
+    </svg>
+    <div class="tip" id="tip-c3"></div>
+</div>
+<<<SPLIT>>>
+<div class="figbox">
+    <svg viewBox="0 0 720 300" role="img" aria-label="左：真实与伪造视频异常分数的密度直方图，两个分布几乎完全重叠；右：ROC 曲线贴着对角线，AUC 0.5284。">
+      <text x="52" y="16" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(a) 视频级异常分数分布（密度）</text>
+      <g stroke="var(--rule-soft)" stroke-width="1"><line x1="52" y1="250" x2="340" y2="250"/><line x1="52" y1="195" x2="340" y2="195"/><line x1="52" y1="140" x2="340" y2="140"/><line x1="52" y1="85" x2="340" y2="85"/><line x1="52" y1="30" x2="340" y2="30"/></g>
+      <g><rect x="60.7" y="236.2" width="3.7" height="13.8" fill="var(--s3)"/> <rect x="95.6" y="236.2" width="3.7" height="13.8" fill="var(--s3)"/> <rect x="113.1" y="208.8" width="3.7" height="41.2" fill="var(--s3)"/> <rect x="121.8" y="222.5" width="3.7" height="27.5" fill="var(--s3)"/> <rect x="130.5" y="222.5" width="3.7" height="27.5" fill="var(--s3)"/> <rect x="139.3" y="208.8" width="3.7" height="41.2" fill="var(--s3)"/> <rect x="148.0" y="222.5" width="3.7" height="27.5" fill="var(--s3)"/> <rect x="156.7" y="195.0" width="3.7" height="55.0" fill="var(--s3)"/> <rect x="165.5" y="140.0" width="3.7" height="110.0" fill="var(--s3)"/> <rect x="174.2" y="181.2" width="3.7" height="68.8" fill="var(--s3)"/> <rect x="182.9" y="140.0" width="3.7" height="110.0" fill="var(--s3)"/> <rect x="191.6" y="112.5" width="3.7" height="137.5" fill="var(--s3)"/> <rect x="200.4" y="71.2" width="3.7" height="178.8" fill="var(--s3)"/> <rect x="209.1" y="85.0" width="3.7" height="165.0" fill="var(--s3)"/> <rect x="217.8" y="30.0" width="3.7" height="220.0" fill="var(--s3)"/> <rect x="226.5" y="30.0" width="3.7" height="220.0" fill="var(--s3)"/> <rect x="235.3" y="43.8" width="3.7" height="206.2" fill="var(--s3)"/> <rect x="244.0" y="85.0" width="3.7" height="165.0" fill="var(--s3)"/> <rect x="252.7" y="71.2" width="3.7" height="178.8" fill="var(--s3)"/> <rect x="261.5" y="181.2" width="3.7" height="68.8" fill="var(--s3)"/> <rect x="270.2" y="195.0" width="3.7" height="55.0" fill="var(--s3)"/> <rect x="278.9" y="140.0" width="3.7" height="110.0" fill="var(--s3)"/> <rect x="287.6" y="222.5" width="3.7" height="27.5" fill="var(--s3)"/> <rect x="305.1" y="236.2" width="3.7" height="13.8" fill="var(--s3)"/></g>
+      <g><rect x="56.4" y="248.7" width="3.7" height="1.3" fill="var(--s2)"/> <rect x="65.1" y="247.5" width="3.7" height="2.5" fill="var(--s2)"/> <rect x="73.8" y="247.9" width="3.7" height="2.1" fill="var(--s2)"/> <rect x="82.5" y="247.5" width="3.7" height="2.5" fill="var(--s2)"/> <rect x="91.3" y="245.4" width="3.7" height="4.6" fill="var(--s2)"/> <rect x="100.0" y="244.9" width="3.7" height="5.1" fill="var(--s2)"/> <rect x="108.7" y="238.2" width="3.7" height="11.8" fill="var(--s2)"/> <rect x="117.5" y="237.3" width="3.7" height="12.7" fill="var(--s2)"/> <rect x="126.2" y="230.2" width="3.7" height="19.8" fill="var(--s2)"/> <rect x="134.9" y="233.1" width="3.7" height="16.9" fill="var(--s2)"/> <rect x="143.6" y="222.6" width="3.7" height="27.4" fill="var(--s2)"/> <rect x="152.4" y="215.4" width="3.7" height="34.6" fill="var(--s2)"/> <rect x="161.1" y="197.7" width="3.7" height="52.3" fill="var(--s2)"/> <rect x="169.8" y="177.9" width="3.7" height="72.1" fill="var(--s2)"/> <rect x="178.5" y="164.8" width="3.7" height="85.2" fill="var(--s2)"/> <rect x="187.3" y="120.9" width="3.7" height="129.1" fill="var(--s2)"/> <rect x="196.0" y="77.0" width="3.7" height="173.0" fill="var(--s2)"/> <rect x="204.7" y="88.0" width="3.7" height="162.0" fill="var(--s2)"/> <rect x="213.5" y="45.0" width="3.7" height="205.0" fill="var(--s2)"/> <rect x="222.2" y="51.7" width="3.7" height="198.3" fill="var(--s2)"/> <rect x="230.9" y="63.1" width="3.7" height="186.9" fill="var(--s2)"/> <rect x="239.6" y="73.6" width="3.7" height="176.4" fill="var(--s2)"/> <rect x="248.4" y="110.3" width="3.7" height="139.7" fill="var(--s2)"/> <rect x="257.1" y="133.6" width="3.7" height="116.4" fill="var(--s2)"/> <rect x="265.8" y="125.5" width="3.7" height="124.5" fill="var(--s2)"/> <rect x="274.5" y="139.9" width="3.7" height="110.1" fill="var(--s2)"/> <rect x="283.3" y="172.4" width="3.7" height="77.6" fill="var(--s2)"/> <rect x="292.0" y="171.5" width="3.7" height="78.5" fill="var(--s2)"/> <rect x="300.7" y="224.3" width="3.7" height="25.7" fill="var(--s2)"/> <rect x="309.5" y="233.5" width="3.7" height="16.5" fill="var(--s2)"/> <rect x="318.2" y="242.4" width="3.7" height="7.6" fill="var(--s2)"/> <rect x="326.9" y="246.2" width="3.7" height="3.8" fill="var(--s2)"/> <rect x="335.6" y="249.6" width="3.7" height="0.4" fill="var(--s2)"/></g>
+      <line x1="283.5" y1="26" x2="283.5" y2="250" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="280.5" y="24" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--ink)" text-anchor="end">阈值</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle"><text x="52.0" y="265">-1.7</text><text x="124.0" y="265">-1.3</text><text x="196.0" y="265">-1.0</text><text x="268.0" y="265">-0.6</text><text x="340.0" y="265">-0.2</text></g>
+      <text x="196" y="281" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">异常分数（越大越可疑）</text>
+      <g font-family="Source Serif 4, serif" font-size="11.5">
+        <rect x="112" y="288" width="9" height="9" fill="var(--s3)"/><text x="126" y="296" fill="var(--muted)">真实 (169)</text>
+        <rect x="205" y="288" width="9" height="9" fill="var(--s2)"/><text x="219" y="296" fill="var(--muted)">伪造 (5431)</text>
+      </g>
+
+      <text x="430" y="16" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(b) ROC 曲线</text>
+      <g stroke="var(--rule-soft)" stroke-width="1">
+        <line x1="430" y1="250" x2="650" y2="250"/><line x1="430" y1="195" x2="650" y2="195"/><line x1="430" y1="140" x2="650" y2="140"/><line x1="430" y1="85" x2="650" y2="85"/><line x1="430" y1="30" x2="650" y2="30"/>
+        <line x1="430" y1="30" x2="430" y2="250"/><line x1="485" y1="30" x2="485" y2="250"/><line x1="540" y1="30" x2="540" y2="250"/><line x1="595" y1="30" x2="595" y2="250"/><line x1="650" y1="30" x2="650" y2="250"/>
+      </g>
+      <path d="M 430 250 L 650 30" stroke="var(--faint)" stroke-width="1.3" stroke-dasharray="5 4" fill="none"/>
+      <text x="646" y="46" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end">随机</text>
+      <polyline fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" points="430.0,250.0 431.3,249.2 431.3,248.3 432.6,247.5 432.6,246.6 432.6,245.7 432.6,244.9 432.6,244.0 433.9,243.2 433.9,242.3 433.9,241.4 435.2,240.6 435.2,239.7 435.2,238.8 435.2,237.9 435.2,237.0 435.2,236.2 436.5,235.3 437.8,234.5 440.4,233.7 443.0,232.9 443.0,232.0 443.0,231.2 444.3,230.3 445.6,229.5 445.6,228.6 445.6,227.7 445.6,226.9 445.6,226.0 445.6,225.1 446.9,224.3 446.9,223.4 448.2,222.6 448.2,221.7 449.5,220.8 450.8,220.0 450.8,219.1 450.8,218.2 452.1,217.4 452.1,216.5 452.1,215.7 453.4,214.8 453.4,213.9 453.4,213.1 453.4,212.2 453.4,211.4 454.7,210.5 457.3,209.7 457.3,208.8 457.3,208.0 457.3,207.1 457.3,206.2 458.6,205.4 459.9,204.5 459.9,203.7 459.9,202.8 462.5,202.0 463.8,201.1 466.4,200.3 469.1,199.6 469.1,198.7 473.0,197.9 473.0,197.1 474.3,196.2 475.6,195.4 475.6,194.5 476.9,193.7 476.9,192.8 476.9,191.9 479.5,191.1 480.8,190.3 483.4,189.5 484.7,188.7 487.3,187.9 489.9,187.1 489.9,186.2 489.9,185.3 489.9,184.5 489.9,183.6 489.9,182.7 489.9,181.8 491.2,181.0 493.8,180.2 495.1,179.4 497.7,178.5 497.7,177.7 497.7,176.8 499.0,176.0 500.3,175.1 500.3,174.2 500.3,173.4 501.6,172.5 502.9,171.7 502.9,170.8 502.9,170.0 504.2,169.1 504.2,168.3 505.5,167.4 508.1,166.6 509.4,165.8 509.4,164.9 512.0,164.1 512.0,163.2 512.0,162.3 512.0,161.5 514.6,160.7 514.6,159.8 514.6,158.9 515.9,158.1 517.2,157.3 518.5,156.4 519.8,155.6 522.4,154.8 522.4,153.9 522.4,153.1 526.3,152.3 527.6,151.4 527.6,150.6 530.2,149.8 530.2,148.9 530.2,148.0 531.5,147.2 532.8,146.4 534.1,145.5 534.1,144.6 534.1,143.8 535.4,142.9 535.4,142.1 535.4,141.2 539.3,140.4 540.7,139.6 542.0,138.8 542.0,137.9 542.0,137.0 542.0,136.1 542.0,135.3 543.3,134.4 545.9,133.6 547.2,132.8 547.2,131.9 548.5,131.1 549.8,130.3 549.8,129.3 551.1,128.5 551.1,127.6 551.1,126.7 552.4,125.9 553.7,125.1 553.7,124.2 553.7,123.3 553.7,122.4 555.0,121.6 556.3,120.8 557.6,119.9 558.9,119.1 560.2,118.3 562.8,117.5 562.8,116.6 562.8,115.7 562.8,114.9 564.1,114.0 565.4,113.2 566.7,112.4 566.7,111.5 566.7,110.6 566.7,109.7 566.7,108.8 566.7,108.0 566.7,107.1 566.7,106.2 566.7,105.3 566.7,104.5 568.0,103.6 568.0,102.8 568.0,101.9 570.6,101.1 570.6,100.2 570.6,99.3 574.5,98.6 574.5,97.7 574.5,96.8 574.5,95.9 575.8,95.1 579.7,94.4 582.3,93.6 583.6,92.7 583.6,91.9 584.9,91.0 584.9,90.2 584.9,89.3 586.2,88.4 586.2,87.6 586.2,86.7 587.5,85.9 587.5,85.0 590.1,84.2 590.1,83.3 590.1,82.4 591.4,81.6 591.4,80.7 591.4,79.8 594.0,79.1 594.0,78.2 595.3,77.3 596.6,76.5 596.6,75.6 599.2,74.8 600.5,74.0 601.8,73.1 603.1,72.3 603.1,71.4 604.4,70.6 604.4,69.7 604.4,68.8 604.4,68.0 605.7,67.1 607.0,66.3 607.0,65.4 607.0,64.6 608.3,63.7 608.3,62.9 609.6,62.0 609.6,61.1 609.6,60.3 612.2,59.4 613.6,58.6 613.6,57.7 613.6,56.9 613.6,56.0 614.9,55.2 616.2,54.3 616.2,53.5 617.5,52.6 618.8,51.8 620.1,50.9 621.4,50.1 622.7,49.3 624.0,48.4 625.3,47.6 625.3,46.7 627.9,45.9 629.2,45.1 629.2,44.2 629.2,43.3 631.8,42.6 631.8,41.7 631.8,40.8 633.1,40.0 633.1,39.1 634.4,38.3 635.7,37.4 638.3,36.6 639.6,35.8 640.9,34.9 642.2,34.1 644.8,33.3 644.8,32.4 646.1,31.6 646.1,30.7 650.0,30.0"/>
+      <text x="444" y="66" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="var(--s1)" font-weight="500">AUC = 0.5284</text>
+      <text x="444" y="82" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--muted)">95% CI [0.502, 0.572]</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle"><text x="430" y="265">0</text><text x="540" y="265">0.5</text><text x="650" y="265">1.0</text></g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end"><text x="424" y="253">0</text><text x="424" y="143">0.5</text><text x="424" y="33">1.0</text></g>
+      <text x="540" y="281" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">假阳率</text>
+      <text x="404" y="140" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 404 140)">真阳率</text>
+    </svg>
+  </div>
+  
+<<<SPLIT>>>
+<div class="figbox">
+    <svg viewBox="0 0 720 483" role="img" aria-label="按伪造方法拆分的测试集 AUROC，TalkingFace 家族整体高于随机，FaceSwap 家族整体低于随机。">
+      <line x1="430.0" y1="30" x2="430.0" y2="453" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="430.0" y="26" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--s2)" text-anchor="middle">0.50</text>
+      <text x="14" y="46" font-family="Source Serif 4, serif" font-size="12.5" font-weight="600" fill="var(--ink)">TalkingFace</text>
+      <text x="130.0" y="46" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)">7 种方法 · 4278 条伪造视频</text>
+      <rect x="430.0" y="58" width="206.7" height="9" fill="var(--s1)" opacity="0.9"/>
+      <text x="120.0" y="65" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">FLOAT</text>
+      <text x="158.0" y="65" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=625</text>
+      <text x="642.7" y="65" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5919</text>
+      <rect x="430.0" y="73" width="144.3" height="9" fill="var(--s1)" opacity="0.9"/>
+      <text x="120.0" y="80" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">Real3DPortrait</text>
+      <text x="158.0" y="80" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=590</text>
+      <text x="580.3" y="80" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5641</text>
+      <rect x="430.0" y="88" width="109.6" height="9" fill="var(--s1)" opacity="0.9"/>
+      <text x="120.0" y="95" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">SadTalker</text>
+      <text x="158.0" y="95" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=625</text>
+      <text x="545.6" y="95" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5487</text>
+      <rect x="430.0" y="103" width="94.7" height="9" fill="var(--s1)" opacity="0.9"/>
+      <text x="120.0" y="110" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">IP_LAP</text>
+      <text x="158.0" y="110" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=620</text>
+      <text x="530.7" y="110" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5421</text>
+      <rect x="430.0" y="118" width="67.9" height="9" fill="var(--s1)" opacity="0.9"/>
+      <text x="120.0" y="125" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">EDTalk</text>
+      <text x="158.0" y="125" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=600</text>
+      <text x="503.9" y="125" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5302</text>
+      <rect x="430.0" y="133" width="39.7" height="9" fill="var(--s1)" opacity="0.9"/>
+      <text x="120.0" y="140" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">AniTalker</text>
+      <text x="158.0" y="140" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=625</text>
+      <text x="475.7" y="140" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5176</text>
+      <rect x="397.4" y="148" width="32.6" height="9" fill="var(--s1)" opacity="0.45"/>
+      <text x="120.0" y="155" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">EchoMimic</text>
+      <text x="158.0" y="155" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=593</text>
+      <text x="436.0" y="155" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4855</text>
+      <text x="14" y="178" font-family="Source Serif 4, serif" font-size="12.5" font-weight="600" fill="var(--ink)">FaceReenact</text>
+      <text x="130.0" y="178" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)">7 种方法 · 469 条伪造视频</text>
+      <rect x="430.0" y="190" width="55.3" height="9" fill="var(--s3)" opacity="0.9"/>
+      <text x="120.0" y="197" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">FSRT</text>
+      <text x="158.0" y="197" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=67</text>
+      <text x="491.3" y="197" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5246</text>
+      <rect x="430.0" y="205" width="25.7" height="9" fill="var(--s3)" opacity="0.9"/>
+      <text x="120.0" y="212" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">LIA</text>
+      <text x="158.0" y="212" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=67</text>
+      <text x="461.7" y="212" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5114</text>
+      <rect x="430.0" y="220" width="20.4" height="9" fill="var(--s3)" opacity="0.9"/>
+      <text x="120.0" y="227" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">MCNET</text>
+      <text x="158.0" y="227" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=67</text>
+      <text x="456.4" y="227" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5091</text>
+      <rect x="430.0" y="235" width="18.2" height="9" fill="var(--s3)" opacity="0.9"/>
+      <text x="120.0" y="242" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">TPSMM</text>
+      <text x="158.0" y="242" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=67</text>
+      <text x="454.2" y="242" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink)">0.5081</text>
+      <rect x="429.3" y="250" width="1.0" height="9" fill="var(--s3)" opacity="0.45"/>
+      <text x="120.0" y="257" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">DaGAN</text>
+      <text x="158.0" y="257" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=67</text>
+      <text x="436.0" y="257" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4997</text>
+      <rect x="395.5" y="265" width="34.5" height="9" fill="var(--s3)" opacity="0.45"/>
+      <text x="120.0" y="272" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">LivePortrait</text>
+      <text x="158.0" y="272" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=67</text>
+      <text x="436.0" y="272" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4847</text>
+      <rect x="322.0" y="280" width="108.0" height="9" fill="var(--s3)" opacity="0.45"/>
+      <text x="120.0" y="287" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">HyperReenact</text>
+      <text x="158.0" y="287" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=67</text>
+      <text x="436.0" y="287" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4520</text>
+      <text x="14" y="310" font-family="Source Serif 4, serif" font-size="12.5" font-weight="600" fill="var(--ink)">FaceSwap</text>
+      <text x="130.0" y="310" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)">8 种方法 · 684 条伪造视频</text>
+      <rect x="424.3" y="322" width="5.7" height="9" fill="var(--s2)" opacity="0.45"/>
+      <text x="120.0" y="329" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">Celeb-DF-v2</text>
+      <text x="158.0" y="329" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=201</text>
+      <text x="436.0" y="329" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4975</text>
+      <rect x="409.6" y="337" width="20.4" height="9" fill="var(--s2)" opacity="0.45"/>
+      <text x="120.0" y="344" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">MobileFaceSwap</text>
+      <text x="158.0" y="344" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=69</text>
+      <text x="436.0" y="344" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4910</text>
+      <rect x="376.3" y="352" width="53.7" height="9" fill="var(--s2)" opacity="0.45"/>
+      <text x="120.0" y="359" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">SimSwap</text>
+      <text x="158.0" y="359" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=69</text>
+      <text x="436.0" y="359" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4761</text>
+      <rect x="364.9" y="367" width="65.1" height="9" fill="var(--s2)" opacity="0.45"/>
+      <text x="120.0" y="374" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">BlendFace</text>
+      <text x="158.0" y="374" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=69</text>
+      <text x="436.0" y="374" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4711</text>
+      <rect x="345.6" y="382" width="84.4" height="9" fill="var(--s2)" opacity="0.45"/>
+      <text x="120.0" y="389" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">GHOST</text>
+      <text x="158.0" y="389" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=69</text>
+      <text x="436.0" y="389" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4625</text>
+      <rect x="327.6" y="397" width="102.4" height="9" fill="var(--s2)" opacity="0.45"/>
+      <text x="120.0" y="404" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">HifiFace</text>
+      <text x="158.0" y="404" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=69</text>
+      <text x="436.0" y="404" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4545</text>
+      <rect x="324.0" y="412" width="106.0" height="9" fill="var(--s2)" opacity="0.45"/>
+      <text x="120.0" y="419" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">UniFace</text>
+      <text x="158.0" y="419" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=69</text>
+      <text x="436.0" y="419" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4529</text>
+      <rect x="307.8" y="427" width="122.2" height="9" fill="var(--s2)" opacity="0.45"/>
+      <text x="120.0" y="434" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="end">InSwapper</text>
+      <text x="158.0" y="434" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)" text-anchor="end">n=69</text>
+      <text x="436.0" y="434" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--faint)">0.4457</text>
+      <text x="317.5" y="467" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">0.45</text>
+      <text x="430.0" y="467" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">0.50</text>
+      <text x="542.5" y="467" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">0.55</text>
+      <text x="655.0" y="467" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">0.60</text>
+      <text x="475.0" y="481" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">测试集 video-level AUROC</text>
+    </svg>
+  </div>
+  
