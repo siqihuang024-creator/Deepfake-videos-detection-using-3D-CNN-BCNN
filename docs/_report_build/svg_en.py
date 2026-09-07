@@ -23,21 +23,13 @@ SVG_TEXT = {
     "左：真实与伪造视频的异常分数直方图，两个分布几乎完全重叠；右：ROC 曲线贴着对角线，AUC 0.4877。":
         "Left: anomaly score histograms for real and fake videos, almost entirely overlapping. "
         "Right: the ROC curve follows the diagonal, AUC 0.4877.",
-    # figure 9 -- t-SNE and probe
-    "(a) 提取器特征的 t-SNE 投影": "(a) t-SNE projection of extractor features",
+    # figure 9 -- t-SNE and probe,
     "真实 (30)": "Real (30)",
     "伪造 (30)": "Fake (30)",
     "5-NN 按身份留一 0.375": "5-NN, leave-one-identity-out 0.375",
-    "(b) 冻结线性探针 vs 随机基线": "(b) Frozen linear probe vs random baseline",
-    "v9 · Celeb+脸": "v9 · Celeb/face",
-    "v9arch · DFD+脸": "v9arch · DFD/face",
-    "本文 · DFD+整帧": "Ours · DFD/frame",
-    "留出身份线性探针 AUC": "Held-out-identity probe AUC",
-    "随机初始化抽样": "Random-init draws",
-    "训练后": "Trained",
-    "左：60 条训练视频特征的 t-SNE 投影，真实与伪造完全混杂；右：冻结线性探针结果，只有 CelebDFv3 加人脸裁剪的配置越出随机区间。":
-        "Left: t-SNE projection of features from 60 training videos, real and fake fully intermixed. "
-        "Right: frozen linear probe results; only the CelebDF++ face-crop configuration leaves its random range.",
+    "60 条训练视频的提取器特征经 t-SNE 投影到平面，真实与伪造完全混杂，未形成可分结构。":
+        "Extractor features from 60 training videos projected to a plane by t-SNE; real and fake are fully "
+        "intermixed and form no separable structure.",
     # figure 5 -- experiment 3 stage A
     "(a) 训练交叉熵": "(a) Training cross-entropy",
     "(b) 验证 AUROC（5241 条视频，57 身份）": "(b) Validation AUROC (5241 videos, 57 identities)",

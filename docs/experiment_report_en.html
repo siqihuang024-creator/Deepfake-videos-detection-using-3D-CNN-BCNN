@@ -137,7 +137,7 @@
       </g>
       <g font-family="IBM Plex Mono, monospace" font-size="8.5" fill="var(--faint)" text-anchor="middle">
         <text x="64" y="89">face crop</text><text x="164" y="89">3→16</text><text x="264" y="89">16→24</text>
-        <text x="364" y="89">24→32</text><text x="464" y="89">over 8 frames</text><text x="564" y="89">+BatchNorm2d</text>
+        <text x="364" y="89">24→32</text><text x="464" y="89">over 8 steps</text><text x="564" y="89">+BatchNorm2d</text>
         <text x="664" y="89">flatten</text>
       </g>
       <g stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)" opacity="0.7">
@@ -192,7 +192,7 @@
       <text x="366" y="500" font-family="Source Serif 4, serif" font-size="11.5" fill="currentColor" text-anchor="middle">video-level anomaly score → AUROC · EER · TPR@5%FPR</text>
     </svg>
   </div>
-  <figcaption><b>Figure 1.</b> Network structure and the two-stage procedure, executed top to bottom. The feature extractor is three stages of 3D convolution; within each stage the order is convolution, average pooling, batch normalisation, activation. After the third stage the tensor is averaged along the temporal axis, adaptively average-pooled to 22×22, passed through one further BatchNorm2d and flattened to 15488 dimensions. Tensor sizes are given for a 256×256 face-crop input; a 540×960 whole-frame input follows the same path to the same 15488 dimensions, the size difference being absorbed by the adaptive pooling. <b>Stage A</b> trains the extractor together with a deterministic head under real/fake labels; that head is then <b>discarded and the extractor weights are frozen and handed to Stage B</b>, which trains only a mean-field Bayesian head of identical shape, on real videos alone, and emits a video-level anomaly score.</figcaption>
+  <figcaption><b>Figure 1.</b> Network structure and the two-stage procedure, executed top to bottom. The feature extractor is three stages of 3D convolution; within each stage the order is convolution, average pooling, batch normalisation, activation. After the third stage the tensor is <b>averaged along the temporal axis</b> &mdash; that stage emits one feature map per time step, eight in all, and the mean collapses them into one, so an 8-frame clip yields exactly one feature vector. The result is adaptively average-pooled to 22×22, passed through one further BatchNorm2d and flattened to 15488 dimensions. Tensor sizes are given for a 256×256 face-crop input; a 540×960 whole-frame input follows the same path to the same 15488 dimensions, the size difference being absorbed by the adaptive pooling. <b>Stage A</b> trains the extractor together with a deterministic head under real/fake labels; that head is then <b>discarded and the extractor weights are frozen and handed to Stage B</b>, which trains only a mean-field Bayesian head of identical shape, on real videos alone, and emits a video-level anomaly score.</figcaption>
 </figure>
 
 <div class="tw">
@@ -208,7 +208,7 @@
     <tr><td></td><td>AvgPool3d → BatchNorm3d → ReLU</td><td class="n">24×8×59×59</td><td class="n">48</td></tr>
     <tr><td>Conv stage 3</td><td>Conv3d 24→32, k=3×5×5</td><td class="n">32×8×55×55</td><td class="n">57,632</td></tr>
     <tr><td></td><td>AvgPool3d → BatchNorm3d → ReLU</td><td class="n">32×8×26×26</td><td class="n">64</td></tr>
-    <tr><td>Temporal pooling</td><td>mean along the temporal axis</td><td class="n">32×26×26</td><td class="n">—</td></tr>
+    <tr><td>Temporal pooling</td><td>mean along the temporal axis (8 steps into 1)</td><td class="n">32×26×26</td><td class="n">—</td></tr>
     <tr><td>Spatial pooling</td><td>AdaptiveAvgPool2d(22)</td><td class="n">32×22×22</td><td class="n">—</td></tr>
     <tr><td>Output norm</td><td>BatchNorm2d(32) → flatten</td><td class="n">15488</td><td class="n">64</td></tr>
     <tr class="head"><td>Extractor total</td><td></td><td class="n">15488</td><td class="n">90,280</td></tr>
@@ -674,8 +674,7 @@
 
 <figure>
   <div class="figbox">
-    <svg viewBox="0 0 720 300" role="img" aria-label="Left: t-SNE projection of features from 60 training videos, real and fake fully intermixed. Right: frozen linear probe results; only the CelebDF++ face-crop configuration leaves its random range.">
-      <text x="40" y="14" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(a) t-SNE projection of extractor features</text>
+    <svg viewBox="0 0 380 305" style="min-width:380px" role="img" aria-label="Extractor features from 60 training videos projected to a plane by t-SNE; real and fake are fully intermixed and form no separable structure.">
       <rect x="40" y="18" width="320" height="252" fill="none" stroke="var(--rule-soft)" stroke-width="1"/>
       <g fill="var(--s3)" fill-opacity="0.85">
         <circle cx="75.6" cy="66.7" r="4"/><circle cx="211.3" cy="153.3" r="4"/><circle cx="307.9" cy="100.5" r="4"/><circle cx="154.5" cy="112.4" r="4"/><circle cx="131.8" cy="20.4" r="4"/><circle cx="98.6" cy="77.6" r="4"/><circle cx="206.0" cy="265.9" r="4"/><circle cx="263.3" cy="93.0" r="4"/><circle cx="226.9" cy="143.7" r="4"/><circle cx="173.8" cy="244.7" r="4"/><circle cx="113.8" cy="18.0" r="4"/><circle cx="186.8" cy="54.0" r="4"/><circle cx="82.1" cy="81.7" r="4"/><circle cx="360.0" cy="146.7" r="4"/><circle cx="313.8" cy="243.3" r="4"/><circle cx="345.5" cy="153.0" r="4"/><circle cx="131.3" cy="33.7" r="4"/><circle cx="202.6" cy="239.3" r="4"/><circle cx="47.9" cy="149.1" r="4"/><circle cx="188.4" cy="270.0" r="4"/><circle cx="291.9" cy="85.7" r="4"/><circle cx="179.2" cy="131.4" r="4"/><circle cx="178.8" cy="72.6" r="4"/><circle cx="331.8" cy="241.4" r="4"/><circle cx="67.1" cy="142.8" r="4"/><circle cx="301.3" cy="226.9" r="4"/><circle cx="112.8" cy="31.5" r="4"/><circle cx="239.4" cy="174.3" r="4"/><circle cx="134.5" cy="153.7" r="4"/><circle cx="210.0" cy="119.4" r="4"/>
@@ -689,58 +688,20 @@
         <text x="166" y="290" fill="var(--muted)">Fake (30)</text>
         <text x="248" y="290" fill="var(--faint)">5-NN, leave-one-identity-out 0.375</text>
       </g>
-
-      <text x="410" y="14" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(b) Frozen linear probe vs random baseline</text>
-      <g stroke="var(--rule-soft)" stroke-width="1">
-        <line x1="455" y1="30" x2="455" y2="200"/><line x1="510" y1="30" x2="510" y2="200"/>
-        <line x1="565" y1="30" x2="565" y2="200"/><line x1="620" y1="30" x2="620" y2="200"/><line x1="675" y1="30" x2="675" y2="200"/>
-      </g>
-      <line x1="510" y1="30" x2="510" y2="200" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
-      <text x="510" y="26" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--s2)" text-anchor="middle">0.50</text>
-      <g font-family="Source Serif 4, serif" font-size="9.5" fill="var(--ink)" text-anchor="start">
-        <text x="410" y="60">v9 · Celeb/face</text>
-        <text x="410" y="112">v9arch · DFD/face</text>
-        <text x="410" y="164">Ours · DFD/frame</text>
-      </g>
-      <g stroke="var(--faint)" stroke-width="1.5">
-        <line x1="533" y1="72" x2="608" y2="72"/><line x1="463" y1="176" x2="567" y2="176"/>
-      </g>
-      <g fill="var(--faint)">
-        <circle cx="533" cy="72" r="3"/><circle cx="553" cy="72" r="3"/><circle cx="561" cy="72" r="3"/><circle cx="608" cy="72" r="3"/>
-        <circle cx="566" cy="124" r="3"/>
-        <circle cx="463" cy="176" r="3"/><circle cx="504" cy="176" r="3"/><circle cx="506" cy="176" r="3"/><circle cx="519" cy="176" r="3"/><circle cx="547" cy="176" r="3"/><circle cx="549" cy="176" r="3"/><circle cx="561" cy="176" r="3"/><circle cx="566" cy="176" r="3"/>
-      </g>
-      <g fill="var(--s1)" stroke="var(--surface)" stroke-width="1.8">
-        <path d="M 638 65 l 7 7 l -7 7 l -7 -7 z"/>
-        <path d="M 573 117 l 7 7 l -7 7 l -7 -7 z"/>
-        <path d="M 522 169 l 7 7 l -7 7 l -7 -7 z"/>
-      </g>
-      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--s1)" font-weight="500">
-        <text x="650" y="76">.7322</text><text x="585" y="128">.5956</text><text x="534" y="180">.5033</text>
-      </g>
-      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
-        <text x="455" y="215">0.40</text><text x="510" y="215">0.50</text><text x="565" y="215">0.60</text>
-        <text x="620" y="215">0.70</text><text x="675" y="215">0.80</text>
-      </g>
-      <text x="565" y="233" font-family="Source Serif 4, serif" font-size="11" fill="var(--muted)" text-anchor="middle">Held-out-identity probe AUC</text>
-      <g font-family="Source Serif 4, serif" font-size="11">
-        <circle cx="440" cy="256" r="3" fill="var(--faint)"/><text x="449" y="260" fill="var(--muted)">Random-init draws</text>
-        <path d="M 560 250 l 6 6 l -6 6 l -6 -6 z" fill="var(--s1)"/><text x="573" y="260" fill="var(--muted)">Trained</text>
-      </g>
     </svg>
   </div>
-  <figcaption><b>Figure 9.</b> <b>(a)</b> t-SNE projection of extractor features for 60 DFD training videos (30 real / 30 fake, 20 identities); the leave-one-identity-out 5-NN accuracy on this plane is 0.375. <b>(b)</b> Frozen linear probe results. Grey points are independent draws from randomly initialised extractors (n = 4 / 1 / 8 top to bottom); blue diamonds are the trained values. The probe reads 0.7322 on the v9 checkpoint, whose end-to-end test score is 0.7773.</figcaption>
+  <figcaption><b>Figure 9.</b> t-SNE projection of extractor features for 60 DFD training videos (30 real / 30 fake, 20 identities). t-SNE maps the 15488-dimensional feature of each video to a point on a plane, placing vectors that were close in the original space close on the plane; it is used for inspection only and enters no calculation. Green dots are real videos, orange crosses are forgeries. The leave-one-identity-out 5-NN accuracy on this plane is 0.375.</figcaption>
 </figure>
 
 <div class="tw">
 <table>
-  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor; <span class="m">trained</span> is the checkpoint named in the first column.</caption>
-  <thead><tr><th>Extractor</th><th class="n">Checkpoint epoch</th><th class="n">Random init</th><th class="n">Trained</th><th class="n">Difference</th></tr></thead>
+  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor, one draw per row. The extractor in the first row has an end-to-end test AUROC of 0.7773; it is listed to show what this probe reads when an extractor has in fact learned something.</caption>
+  <thead><tr><th>Configuration</th><th class="n">Checkpoint epoch</th><th class="n">Random init</th><th class="n">Trained</th><th class="n">Difference</th></tr></thead>
   <tbody>
-    <tr><td>v9 · CelebDF++, face crop</td><td class="n">38</td><td class="n">0.5778</td><td class="n">0.7322</td><td class="n">+0.1544</td></tr>
-    <tr><td>Experiment 3 · CelebDF++, face crop</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
-    <tr><td>Experiment 1 · DFD, whole frame</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
-    <tr><td>DFD, whole frame, earlier checkpoint</td><td class="n">33</td><td class="n">0.5678</td><td class="n">0.4700</td><td class="n">−0.0978</td></tr>
+    <tr><td>CelebDF++, face crop · earlier split, before the donor constraint</td><td class="n">38</td><td class="n">0.5778</td><td class="n">0.7322</td><td class="n">+0.1544</td></tr>
+    <tr class="head"><td>CelebDF++, face crop · Experiment 3</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
+    <tr class="head"><td>DFD, whole frame · Experiment 1</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
+    <tr><td>DFD, whole frame · an earlier run</td><td class="n">33</td><td class="n">0.5678</td><td class="n">0.4700</td><td class="n">−0.0978</td></tr>
   </tbody>
 </table>
 </div>

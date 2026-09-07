@@ -35,7 +35,7 @@ ARCH = '''<figure>
       </g>
       <g font-family="IBM Plex Mono, monospace" font-size="8.5" fill="var(--faint)" text-anchor="middle">
         <text x="64" y="89">人脸裁剪</text><text x="164" y="89">3→16</text><text x="264" y="89">16→24</text>
-        <text x="364" y="89">24→32</text><text x="464" y="89">8 帧取平均</text><text x="564" y="89">+BatchNorm2d</text>
+        <text x="364" y="89">24→32</text><text x="464" y="89">8 个时间位置</text><text x="564" y="89">+BatchNorm2d</text>
         <text x="664" y="89">展平</text>
       </g>
       <g stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)" opacity="0.7">
@@ -90,5 +90,5 @@ ARCH = '''<figure>
       <text x="366" y="500" font-family="Source Serif 4, serif" font-size="11.5" fill="currentColor" text-anchor="middle">视频级异常分数 → AUROC · EER · TPR@5%FPR</text>
     </svg>
   </div>
-  <figcaption><b>图 1.</b> 网络结构与两阶段流程，自上而下依次执行。特征提取器为三段 3D 卷积，每段的顺序是卷积、平均池化、批归一化、激活；三段之后沿时间轴取均值，自适应平均池化到 22×22，再经一次 BatchNorm2d 展平为 15488 维。张量尺寸以人脸裁剪输入 256×256 为例，整帧输入 540×960 经同一路径同样得到 15488 维，尺寸差异由自适应池化吸收。<b>阶段 A</b> 用真伪标签训练提取器与一个确定性头；训练结束后<b>丢弃该头，把提取器权重冻结交给阶段 B</b>；阶段 B 只在真实视频上训练形状相同的均值场贝叶斯头，输出视频级异常分数。</figcaption>
+  <figcaption><b>图 1.</b> 网络结构与两阶段流程，自上而下依次执行。特征提取器为三段 3D 卷积，每段的顺序是卷积、平均池化、批归一化、激活；三段之后<b>沿时间轴取均值</b>——第三段输出的是 8 个时间位置上各一张特征图，取均值把它们合成一张，因此一个 8 帧片段最终只产生一个特征向量；随后自适应平均池化到 22×22，再经一次 BatchNorm2d 展平为 15488 维。张量尺寸以人脸裁剪输入 256×256 为例，整帧输入 540×960 经同一路径同样得到 15488 维，尺寸差异由自适应池化吸收。<b>阶段 A</b> 用真伪标签训练提取器与一个确定性头；训练结束后<b>丢弃该头，把提取器权重冻结交给阶段 B</b>；阶段 B 只在真实视频上训练形状相同的均值场贝叶斯头，输出视频级异常分数。</figcaption>
 </figure>'''

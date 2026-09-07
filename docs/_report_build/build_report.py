@@ -60,7 +60,7 @@ ARCH = '''<figure>
       </g>
       <g font-family="IBM Plex Mono, monospace" font-size="8.5" fill="var(--faint)" text-anchor="middle">
         <text x="64" y="89">人脸裁剪</text><text x="164" y="89">3→16</text><text x="264" y="89">16→24</text>
-        <text x="364" y="89">24→32</text><text x="464" y="89">8 帧取平均</text><text x="564" y="89">+BatchNorm2d</text>
+        <text x="364" y="89">24→32</text><text x="464" y="89">8 个时间位置</text><text x="564" y="89">+BatchNorm2d</text>
         <text x="664" y="89">展平</text>
       </g>
       <g stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)" opacity="0.7">
@@ -115,7 +115,7 @@ ARCH = '''<figure>
       <text x="366" y="500" font-family="Source Serif 4, serif" font-size="11.5" fill="currentColor" text-anchor="middle">视频级异常分数 → AUROC · EER · TPR@5%FPR</text>
     </svg>
   </div>
-  <figcaption><b>图 1.</b> 网络结构与两阶段流程，自上而下依次执行。特征提取器为三段 3D 卷积，每段的顺序是卷积、平均池化、批归一化、激活；三段之后沿时间轴取均值，自适应平均池化到 22×22，再经一次 BatchNorm2d 展平为 15488 维。张量尺寸以人脸裁剪输入 256×256 为例，整帧输入 540×960 经同一路径同样得到 15488 维，尺寸差异由自适应池化吸收。<b>阶段 A</b> 用真伪标签训练提取器与一个确定性头；训练结束后<b>丢弃该头，把提取器权重冻结交给阶段 B</b>；阶段 B 只在真实视频上训练形状相同的均值场贝叶斯头，输出视频级异常分数。</figcaption>
+  <figcaption><b>图 1.</b> 网络结构与两阶段流程，自上而下依次执行。特征提取器为三段 3D 卷积，每段的顺序是卷积、平均池化、批归一化、激活；三段之后<b>沿时间轴取均值</b>——第三段输出的是 8 个时间位置上各一张特征图，取均值把它们合成一张，因此一个 8 帧片段最终只产生一个特征向量；随后自适应平均池化到 22×22，再经一次 BatchNorm2d 展平为 15488 维。张量尺寸以人脸裁剪输入 256×256 为例，整帧输入 540×960 经同一路径同样得到 15488 维，尺寸差异由自适应池化吸收。<b>阶段 A</b> 用真伪标签训练提取器与一个确定性头；训练结束后<b>丢弃该头，把提取器权重冻结交给阶段 B</b>；阶段 B 只在真实视频上训练形状相同的均值场贝叶斯头，输出视频级异常分数。</figcaption>
 </figure>'''
 
 
@@ -157,7 +157,7 @@ DOC = '''<title>3D-CNN 贝叶斯检测实验</title>
     <tr><td></td><td>AvgPool3d → BatchNorm3d → ReLU</td><td class="n">24×8×59×59</td><td class="n">48</td></tr>
     <tr><td>卷积段 3</td><td>Conv3d 24→32, k=3×5×5</td><td class="n">32×8×55×55</td><td class="n">57,632</td></tr>
     <tr><td></td><td>AvgPool3d → BatchNorm3d → ReLU</td><td class="n">32×8×26×26</td><td class="n">64</td></tr>
-    <tr><td>时间池化</td><td>沿时间轴取均值</td><td class="n">32×26×26</td><td class="n">—</td></tr>
+    <tr><td>时间池化</td><td>沿时间轴取均值（8 个时间位置合为 1）</td><td class="n">32×26×26</td><td class="n">—</td></tr>
     <tr><td>空间池化</td><td>AdaptiveAvgPool2d(22)</td><td class="n">32×22×22</td><td class="n">—</td></tr>
     <tr><td>输出归一化</td><td>BatchNorm2d(32) → 展平</td><td class="n">15488</td><td class="n">64</td></tr>
     <tr class="head"><td>提取器合计</td><td></td><td class="n">15488</td><td class="n">90,280</td></tr>
@@ -328,7 +328,20 @@ DOC = '''<title>3D-CNN 贝叶斯检测实验</title>
 <p><b>方法：</b>冻结提取器，取其输出特征，用岭回归（对偶闭式解）按身份分五折做交叉验证，报告留出折上的 AUROC。同一测量对随机初始化的提取器重复多次，给出随机参照的取值范围。t-SNE 投影先经 PCA 降至 30 维，其上按身份留一做 5-NN 分类。</p>
 
 ''' + fig(TSNE, 9,
-          '<b>(a)</b> 60 条 DFD 训练视频（30 真 / 30 假，覆盖 20 个身份）提取器特征的 t-SNE 投影；该平面上按身份留一的 5-NN 准确率为 0.375。<b>(b)</b> 冻结线性探针结果。灰点为随机初始化提取器的独立抽样（自上而下 n = 4 / 1 / 8），蓝色菱形为训练后的值。该探针在 v9 checkpoint 上读得 0.7322，其端到端测试成绩为 0.7773。') + '''
+          '60 条 DFD 训练视频（30 真 / 30 假，覆盖 20 个身份）提取器特征的 t-SNE 投影。t-SNE 把每条视频的 15488 维特征映射成平面上的一个点，规则是让原本相近的向量在平面上也相近；它只用于观察，不参与任何计算。绿点为真实视频，橙叉为伪造视频。该平面上按身份留一的 5-NN 分类准确率为 0.375。') + '''
+
+<div class="tw">
+<table>
+  <caption><b>表 8.</b> 留出身份线性探针读数，每次测量 60 条视频。「随机初始化」是同一架构但未经训练的提取器，每行一次抽样。第一行那个提取器的端到端测试 AUROC 为 0.7773，列在此处是为了说明当提取器确实学到东西时，该探针会给出什么样的读数。</caption>
+  <thead><tr><th>配置</th><th class="n">checkpoint 轮次</th><th class="n">随机初始化</th><th class="n">训练后</th><th class="n">差值</th></tr></thead>
+  <tbody>
+    <tr><td>CelebDF++，人脸裁剪 · 早期划分，未施加供体约束</td><td class="n">38</td><td class="n">0.5778</td><td class="n">0.7322</td><td class="n">+0.1544</td></tr>
+    <tr class="head"><td>CelebDF++，人脸裁剪 · 实验三</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
+    <tr class="head"><td>DFD，整帧 · 实验一</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
+    <tr><td>DFD，整帧 · 更早的一次运行</td><td class="n">33</td><td class="n">0.5678</td><td class="n">0.4700</td><td class="n">−0.0978</td></tr>
+  </tbody>
+</table>
+</div>
 
 <hr>
 <footer>

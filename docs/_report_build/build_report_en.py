@@ -78,7 +78,7 @@ ARCH = '''<figure>
       </g>
       <g font-family="IBM Plex Mono, monospace" font-size="8.5" fill="var(--faint)" text-anchor="middle">
         <text x="64" y="89">face crop</text><text x="164" y="89">3→16</text><text x="264" y="89">16→24</text>
-        <text x="364" y="89">24→32</text><text x="464" y="89">over 8 frames</text><text x="564" y="89">+BatchNorm2d</text>
+        <text x="364" y="89">24→32</text><text x="464" y="89">over 8 steps</text><text x="564" y="89">+BatchNorm2d</text>
         <text x="664" y="89">flatten</text>
       </g>
       <g stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)" opacity="0.7">
@@ -133,7 +133,7 @@ ARCH = '''<figure>
       <text x="366" y="500" font-family="Source Serif 4, serif" font-size="11.5" fill="currentColor" text-anchor="middle">video-level anomaly score → AUROC · EER · TPR@5%FPR</text>
     </svg>
   </div>
-  <figcaption><b>Figure 1.</b> Network structure and the two-stage procedure, executed top to bottom. The feature extractor is three stages of 3D convolution; within each stage the order is convolution, average pooling, batch normalisation, activation. After the third stage the tensor is averaged along the temporal axis, adaptively average-pooled to 22×22, passed through one further BatchNorm2d and flattened to 15488 dimensions. Tensor sizes are given for a 256×256 face-crop input; a 540×960 whole-frame input follows the same path to the same 15488 dimensions, the size difference being absorbed by the adaptive pooling. <b>Stage A</b> trains the extractor together with a deterministic head under real/fake labels; that head is then <b>discarded and the extractor weights are frozen and handed to Stage B</b>, which trains only a mean-field Bayesian head of identical shape, on real videos alone, and emits a video-level anomaly score.</figcaption>
+  <figcaption><b>Figure 1.</b> Network structure and the two-stage procedure, executed top to bottom. The feature extractor is three stages of 3D convolution; within each stage the order is convolution, average pooling, batch normalisation, activation. After the third stage the tensor is <b>averaged along the temporal axis</b> &mdash; that stage emits one feature map per time step, eight in all, and the mean collapses them into one, so an 8-frame clip yields exactly one feature vector. The result is adaptively average-pooled to 22×22, passed through one further BatchNorm2d and flattened to 15488 dimensions. Tensor sizes are given for a 256×256 face-crop input; a 540×960 whole-frame input follows the same path to the same 15488 dimensions, the size difference being absorbed by the adaptive pooling. <b>Stage A</b> trains the extractor together with a deterministic head under real/fake labels; that head is then <b>discarded and the extractor weights are frozen and handed to Stage B</b>, which trains only a mean-field Bayesian head of identical shape, on real videos alone, and emits a video-level anomaly score.</figcaption>
 </figure>'''
 
 DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
@@ -174,7 +174,7 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
     <tr><td></td><td>AvgPool3d → BatchNorm3d → ReLU</td><td class="n">24×8×59×59</td><td class="n">48</td></tr>
     <tr><td>Conv stage 3</td><td>Conv3d 24→32, k=3×5×5</td><td class="n">32×8×55×55</td><td class="n">57,632</td></tr>
     <tr><td></td><td>AvgPool3d → BatchNorm3d → ReLU</td><td class="n">32×8×26×26</td><td class="n">64</td></tr>
-    <tr><td>Temporal pooling</td><td>mean along the temporal axis</td><td class="n">32×26×26</td><td class="n">—</td></tr>
+    <tr><td>Temporal pooling</td><td>mean along the temporal axis (8 steps into 1)</td><td class="n">32×26×26</td><td class="n">—</td></tr>
     <tr><td>Spatial pooling</td><td>AdaptiveAvgPool2d(22)</td><td class="n">32×22×22</td><td class="n">—</td></tr>
     <tr><td>Output norm</td><td>BatchNorm2d(32) → flatten</td><td class="n">15488</td><td class="n">64</td></tr>
     <tr class="head"><td>Extractor total</td><td></td><td class="n">15488</td><td class="n">90,280</td></tr>
@@ -345,17 +345,17 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
 <p><b>Method:</b> the extractor is frozen and its features are fitted with ridge regression (closed-form dual solution) under five-fold cross-validation <em>split by identity</em>, and the held-out-fold AUROC is reported. The same measurement is repeated on randomly initialised extractors to establish the range a matched but untrained network produces — this reference is not 0.5, because random convolutions and pooling already encode low-level image statistics. The t-SNE projection reduces the features to 30 dimensions by PCA first; on that plane a 5-NN classifier is run leave-one-identity-out.</p>
 
 ''' + fig(TSNE, 9,
-          '<b>(a)</b> t-SNE projection of extractor features for 60 DFD training videos (30 real / 30 fake, 20 identities); the leave-one-identity-out 5-NN accuracy on this plane is 0.375. <b>(b)</b> Frozen linear probe results. Grey points are independent draws from randomly initialised extractors (n = 4 / 1 / 8 top to bottom); blue diamonds are the trained values. The probe reads 0.7322 on the v9 checkpoint, whose end-to-end test score is 0.7773.') + '''
+          't-SNE projection of extractor features for 60 DFD training videos (30 real / 30 fake, 20 identities). t-SNE maps the 15488-dimensional feature of each video to a point on a plane, placing vectors that were close in the original space close on the plane; it is used for inspection only and enters no calculation. Green dots are real videos, orange crosses are forgeries. The leave-one-identity-out 5-NN accuracy on this plane is 0.375.') + '''
 
 <div class="tw">
 <table>
-  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor; <span class="m">trained</span> is the checkpoint named in the first column.</caption>
-  <thead><tr><th>Extractor</th><th class="n">Checkpoint epoch</th><th class="n">Random init</th><th class="n">Trained</th><th class="n">Difference</th></tr></thead>
+  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor, one draw per row. The extractor in the first row has an end-to-end test AUROC of 0.7773; it is listed to show what this probe reads when an extractor has in fact learned something.</caption>
+  <thead><tr><th>Configuration</th><th class="n">Checkpoint epoch</th><th class="n">Random init</th><th class="n">Trained</th><th class="n">Difference</th></tr></thead>
   <tbody>
-    <tr><td>v9 · CelebDF++, face crop</td><td class="n">38</td><td class="n">0.5778</td><td class="n">0.7322</td><td class="n">+0.1544</td></tr>
-    <tr><td>Experiment 3 · CelebDF++, face crop</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
-    <tr><td>Experiment 1 · DFD, whole frame</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
-    <tr><td>DFD, whole frame, earlier checkpoint</td><td class="n">33</td><td class="n">0.5678</td><td class="n">0.4700</td><td class="n">−0.0978</td></tr>
+    <tr><td>CelebDF++, face crop · earlier split, before the donor constraint</td><td class="n">38</td><td class="n">0.5778</td><td class="n">0.7322</td><td class="n">+0.1544</td></tr>
+    <tr class="head"><td>CelebDF++, face crop · Experiment 3</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
+    <tr class="head"><td>DFD, whole frame · Experiment 1</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
+    <tr><td>DFD, whole frame · an earlier run</td><td class="n">33</td><td class="n">0.5678</td><td class="n">0.4700</td><td class="n">−0.0978</td></tr>
   </tbody>
 </table>
 </div>
