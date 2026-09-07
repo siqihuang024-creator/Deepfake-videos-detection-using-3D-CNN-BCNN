@@ -137,8 +137,8 @@
       <text x="415" y="16" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(b) 验证 AUROC（5241 条视频，57 身份）</text>
       <g stroke="var(--rule-soft)" stroke-width="1"><line x1="415" y1="220.9" x2="708" y2="220.9"/><line x1="415" y1="173.2" x2="708" y2="173.2"/><line x1="415" y1="125.5" x2="708" y2="125.5"/><line x1="415" y1="77.7" x2="708" y2="77.7"/><line x1="415" y1="30.0" x2="708" y2="30.0"/></g>
       <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end"><text x="409" y="224.4">0.50</text><text x="409" y="176.7">0.55</text><text x="409" y="129.0">0.60</text><text x="409" y="81.2">0.65</text><text x="409" y="33.5">0.70</text></g>
-      <line x1="415" y1="{ych:.1f}" x2="708" y2="{ych:.1f}" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
-      <text x="704" y="{ychl:.1f}" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--s2)" text-anchor="end">随机水平</text>
+      <line x1="415" y1="220.9" x2="708" y2="220.9" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="704" y="215.9" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--s2)" text-anchor="end">随机水平</text>
       <polyline fill="none" stroke="var(--s3)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="415.0,138.4 420.0,169.0 424.9,157.9 429.9,119.0 434.9,140.9 439.8,82.1 444.8,113.4 449.8,122.4 454.7,157.9 459.7,98.5 464.7,116.8 469.6,139.9 474.6,105.1 479.6,83.0 484.5,97.6 489.5,61.2 494.5,116.3 499.4,59.8 504.4,82.4 509.4,56.6 514.3,49.4 519.3,64.9 524.3,59.9 529.2,57.6 534.2,58.5 539.2,99.4 544.1,55.4 549.1,76.6 554.1,56.7 559.0,57.0 564.0,39.4 568.9,56.7 573.9,39.7 578.9,61.6 583.8,70.5 588.8,59.9 593.8,56.5 598.7,55.2 603.7,36.5 608.7,42.7 613.6,45.7 618.6,44.4 623.6,52.5 628.5,37.9 633.5,42.3 638.5,53.4 643.4,40.8 648.4,38.5 653.4,43.6 658.3,50.9 663.3,46.1 668.3,38.7 673.2,39.4 678.2,54.4 683.2,49.3 688.1,47.4 693.1,36.0 698.1,38.6 703.0,38.9 708.0,37.8"/>
       <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
         <text x="415" y="256">1</text><text x="513.7" y="256">21</text><text x="612.3" y="256">41</text><text x="708" y="256">60</text>
@@ -155,8 +155,8 @@
     <svg viewBox="0 0 720 250" role="img" aria-label="实验三阶段 B 的 17 个验证 epoch，最高 0.6569，而测试集读数为 0.5284。">
       <g stroke="var(--rule-soft)" stroke-width="1"><line x1="62" y1="197.6" x2="690" y2="197.6"/><line x1="62" y1="156.7" x2="690" y2="156.7"/><line x1="62" y1="115.8" x2="690" y2="115.8"/><line x1="62" y1="74.9" x2="690" y2="74.9"/><line x1="62" y1="34.0" x2="690" y2="34.0"/></g>
       <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end"><text x="56" y="201.1">0.50</text><text x="56" y="160.2">0.55</text><text x="56" y="119.3">0.60</text><text x="56" y="78.4">0.65</text><text x="56" y="37.5">0.70</text></g>
-      <line x1="62" y1="{ych2:.1f}" x2="690" y2="{ych2:.1f}" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
-      <text x="686" y="{ych2l:.1f}" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--s2)" text-anchor="end">随机水平 0.50</text>
+      <line x1="62" y1="197.6" x2="690" y2="197.6" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="686" y="192.6" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--s2)" text-anchor="end">随机水平 0.50</text>
       <polyline fill="none" stroke="var(--s3)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="62.0,117.9 90.6,135.5 119.2,115.0 147.9,110.6 176.5,107.5 205.1,104.5 233.8,94.4 262.4,91.8 291.0,69.3 319.6,101.8 348.2,89.1 376.9,82.4 405.5,84.1 434.1,91.9 462.8,92.3 491.4,111.0 520.0,95.0"/>
       <circle cx="291.0" cy="69.3" r="4.5" fill="var(--s3)" stroke="var(--surface)" stroke-width="2"/>
       <text x="297.0" y="58.3" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--s3)" text-anchor="middle">验证最佳 0.6569</text>
