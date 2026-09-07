@@ -1,0 +1,69 @@
+{
+  "manifest": "artifacts/manifests/combined_manifest_stage_a.csv",
+  "datasets": {
+    "CelebDFv3": {
+      "train": {
+        "target_only_fakes": 34479,
+        "with_donor": 22631,
+        "donor_in_train": 16302,
+        "excluded_by_rule": 6329,
+        "donor_in_train_share_of_all": 0.4728095362394501,
+        "donor_in_train_share_of_donored": 0.7203393575184481,
+        "excluded_share_of_all": 0.18356100814988835,
+        "donor_safe_fakes": 28150
+      },
+      "val": {
+        "target_only_fakes": 8462,
+        "with_donor": 4311,
+        "donor_in_train": 2554,
+        "excluded_by_rule": 3387,
+        "donor_in_train_share_of_all": 0.30181990073268733,
+        "donor_in_train_share_of_donored": 0.5924379494316864,
+        "excluded_share_of_all": 0.40025998581895533,
+        "donor_safe_fakes": 5075
+      },
+      "test": {
+        "target_only_fakes": 10255,
+        "with_donor": 5975,
+        "donor_in_train": 3879,
+        "excluded_by_rule": 4822,
+        "donor_in_train_share_of_all": 0.37825450999512433,
+        "donor_in_train_share_of_donored": 0.6492050209205021,
+        "excluded_share_of_all": 0.47020965382740126,
+        "donor_safe_fakes": 5433
+      }
+    },
+    "DFD": {
+      "train": {
+        "target_only_fakes": 2412,
+        "with_donor": 2412,
+        "donor_in_train": 1894,
+        "excluded_by_rule": 518,
+        "donor_in_train_share_of_all": 0.785240464344942,
+        "donor_in_train_share_of_donored": 0.785240464344942,
+        "excluded_share_of_all": 0.21475953565505804,
+        "donor_safe_fakes": 1894
+      },
+      "val": {
+        "target_only_fakes": 250,
+        "with_donor": 250,
+        "donor_in_train": 199,
+        "excluded_by_rule": 233,
+        "donor_in_train_share_of_all": 0.796,
+        "donor_in_train_share_of_donored": 0.796,
+        "excluded_share_of_all": 0.932,
+        "donor_safe_fakes": 17
+      },
+      "test": {
+        "target_only_fakes": 406,
+        "with_donor": 406,
+        "donor_in_train": 313,
+        "excluded_by_rule": 352,
+        "donor_in_train_share_of_all": 0.770935960591133,
+        "donor_in_train_share_of_donored": 0.770935960591133,
+        "excluded_share_of_all": 0.8669950738916257,
+        "donor_safe_fakes": 54
+      }
+    }
+  }
+}

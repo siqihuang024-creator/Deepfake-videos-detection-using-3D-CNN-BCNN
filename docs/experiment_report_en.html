@@ -229,7 +229,20 @@
 
 <p><b>Purpose:</b> to ensure that no identity in the test set appears in training, and that the source real video behind a forgery is not in the training set either.</p>
 
-<p>Splits are identity-disjoint, with an additional <b>donor constraint</b>: a forged video enters a subset only if <em>both</em> its target identity and its donor identity fall in that subset. DFD forgeries are named <span class="m">&lt;target&gt;_&lt;source&gt;__&lt;scene&gt;__&lt;id&gt;</span>, so both identities are recoverable from the filename. Splitting by video alone would leave 73.2% of the DFD test forgeries with their own source real video in the training set. The constraint discards 1103 forged videos in DFD (36%) and 14538 in CelebDF++ (27.3%).</p>
+<p>Splits are identity-disjoint, with an additional <b>donor constraint</b>: a forged video enters a subset only if <em>both</em> its target identity and its donor identity fall in that subset. DFD forgeries are named <span class="m">&lt;target&gt;_&lt;source&gt;__&lt;scene&gt;__&lt;id&gt;</span>, so both identities are recoverable from the filename. Splitting by video alone would leave 73.2% of the DFD test forgeries with their own source real video in the training set. The constraint discards 1103 forged videos in DFD (36%) and 14538 in CelebDF++ (27.3%). Table 2 reports how much overlap a target-only split leaves behind.</p>
+
+<div class="tw">
+<table>
+  <caption><b>Table 2.</b> Donor overlap left behind by a target-only split. The first column is the number of forgeries a subset would receive if each one simply followed its target identity. <b>Not every manipulation involves a second identity</b> — CelebDF++'s TalkingFace family drives a single identity from audio and has no donor face, so the donor rule never applies to it, which is why fewer than six in ten of its forgeries carry a donor at all. The donor-in-train percentage is taken over the forgeries that carry a donor; over every target-only forgery it is 37.8% for the CelebDF++ test subset. The last column is the protocol's <b>cost in data, not a leakage rate</b>: some discarded forgeries had their donor in validation rather than training.</caption>
+  <thead><tr><th>Dataset · subset</th><th class="n">Target-only forgeries</th><th class="n">Carrying a donor</th><th class="n">Donor seen in training</th><th class="n">Discarded by the rule</th></tr></thead>
+  <tbody>
+    <tr><td>DFD · validation</td><td class="n">250</td><td class="n">250 (100%)</td><td class="n">199 (79.6%)</td><td class="n">233 (93.2%)</td></tr>
+    <tr class="head"><td>DFD · test</td><td class="n">406</td><td class="n">406 (100%)</td><td class="n">313 (77.1%)</td><td class="n">352 (86.7%)</td></tr>
+    <tr><td>CelebDF++ · validation</td><td class="n">8462</td><td class="n">4311 (50.9%)</td><td class="n">2554 (59.2%)</td><td class="n">3387 (40.0%)</td></tr>
+    <tr class="head"><td>CelebDF++ · test</td><td class="n">10255</td><td class="n">5975 (58.3%)</td><td class="n">3879 (64.9%)</td><td class="n">4822 (47.0%)</td></tr>
+  </tbody>
+</table>
+</div>
 
 <h3>2.2 Preprocessing</h3>
 
@@ -249,7 +262,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 2.</b> Training configuration for the two stages. Both experiments share these settings; they differ only in dataset, input mode, and early-stopping patience (Table 3).</caption>
+  <caption><b>Table 3.</b> Training configuration for the two stages. Both experiments share these settings; they differ only in dataset, input mode, and early-stopping patience (Table 4).</caption>
   <thead><tr><th>Item</th><th>Stage A</th><th>Stage B</th></tr></thead>
   <tbody>
     <tr><td>Objective</td><td>binary cross-entropy</td><td>TraceGraph ELBO (Pyro SVI)</td></tr>
@@ -276,7 +289,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 3.</b> The two experiments recorded here. Network structure, input resolution, clip length, optimiser and learning-rate schedule are identical between them.</caption>
+  <caption><b>Table 4.</b> The two experiments recorded here. Network structure, input resolution, clip length, optimiser and learning-rate schedule are identical between them.</caption>
   <thead><tr><th>Experiment</th><th>Dataset</th><th>Input mode</th><th class="n">Stage A patience</th><th>Status</th></tr></thead>
   <tbody>
     <tr><td>Experiment 1</td><td>DFD</td><td>whole frame, pixel decimation</td><td class="n">12</td><td>complete</td></tr>
@@ -291,7 +304,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 4.</b> DFD split statistics. Label convention: 1 = real, 0 = fake. DFD contains 363 original videos and 3068 forgeries, recorded by 28 actors.</caption>
+  <caption><b>Table 5.</b> DFD split statistics. Label convention: 1 = real, 0 = fake. DFD contains 363 original videos and 3068 forgeries, recorded by 28 actors.</caption>
   <thead><tr><th>Subset</th><th class="n">Real</th><th class="n">Fake</th><th class="n">Identities</th><th>Use</th></tr></thead>
   <tbody>
     <tr><td>Train</td><td class="n">264</td><td class="n">1894</td><td class="n">20</td><td>Stage A / Stage B</td></tr>
@@ -364,7 +377,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 5.</b> Experiment 1 test results, 54 real / 54 fake, video-level. The threshold is calibrated on the validation split at 5% FPR. Stage B early-stopped at epoch 19, with a best validation AUROC of 0.6627 and a run mean of 0.6259.</caption>
+  <caption><b>Table 6.</b> Experiment 1 test results, 54 real / 54 fake, video-level. The threshold is calibrated on the validation split at 5% FPR. Stage B early-stopped at epoch 19, with a best validation AUROC of 0.6627 and a run mean of 0.6259.</caption>
   <thead><tr><th>Metric</th><th class="n">Value</th><th>Note</th></tr></thead>
   <tbody>
     <tr class="head"><td>Video-level AUROC</td><td class="n key">0.4877</td><td>identity-clustered 95% bootstrap interval <span class="m">[0.458, 0.531]</span>, 4 identity clusters</td></tr>
@@ -438,7 +451,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 6.</b> CelebDF++ split statistics. The test subset has a real-to-fake ratio of roughly 1:32.</caption>
+  <caption><b>Table 7.</b> CelebDF++ split statistics. The test subset has a real-to-fake ratio of roughly 1:32.</caption>
   <thead><tr><th>Subset</th><th class="n">Real</th><th class="n">Fake</th><th class="n">Identities</th><th>Use</th></tr></thead>
   <tbody>
     <tr><td>Train</td><td class="n">554</td><td class="n">28150</td><td class="n">245</td><td>Stage A / Stage B</td></tr>
@@ -513,7 +526,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 7.</b> Experiment 3 test results, 170 real / 5433 fake, of which 3 videos were skipped for a missing detection or a decode failure, leaving 169 real / 5431 fake scored. The threshold is the one stored with the checkpoint. The base rate of the test subset is 0.9698.</caption>
+  <caption><b>Table 8.</b> Experiment 3 test results, 170 real / 5433 fake, of which 3 videos were skipped for a missing detection or a decode failure, leaving 169 real / 5431 fake scored. The threshold is the one stored with the checkpoint. The base rate of the test subset is 0.9698.</caption>
   <thead><tr><th>Metric</th><th class="n">Value</th><th>Note</th></tr></thead>
   <tbody>
     <tr class="head"><td>Video-level AUROC</td><td class="n key">0.5284</td><td>identity-clustered 95% bootstrap interval <span class="m">[0.502, 0.572]</span>, 57 identity clusters</td></tr>
@@ -561,7 +574,7 @@
       <text x="404" y="140" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 404 140)">True positive rate</text>
     </svg>
   </div>
-  <figcaption><b>Figure 7.</b> Experiment 3 test set, drawn from 5600 per-video anomaly scores. <b>(a)</b> Score distributions; because the real-to-fake ratio is 1:32 the vertical axis is density rather than count. <b>(b)</b> ROC curve, AUC 0.5284, recomputed independently from the same score file and in agreement with Table 7.</figcaption>
+  <figcaption><b>Figure 7.</b> Experiment 3 test set, drawn from 5600 per-video anomaly scores. <b>(a)</b> Score distributions; because the real-to-fake ratio is 1:32 the vertical axis is density rather than count. <b>(b)</b> ROC curve, AUC 0.5284, recomputed independently from the same score file and in agreement with Table 8.</figcaption>
 </figure>
 
 <figure>
@@ -702,7 +715,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor, one draw per row; <span class="m">difference</span> is the gap between the two. Under the donor-safe protocol this work has no extractor that can serve as a positive control; see the note below.</caption>
+  <caption><b>Table 9.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor, one draw per row; <span class="m">difference</span> is the gap between the two. Under the donor-safe protocol this work has no extractor that can serve as a positive control; see the note below.</caption>
   <thead><tr><th>Measured on</th><th class="n">Checkpoint epoch</th><th class="n">Random init</th><th class="n">Trained</th><th class="n">Difference</th></tr></thead>
   <tbody>
     <tr class="head"><td>Experiment 1 · DFD, whole frame</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
@@ -724,7 +737,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 9.</b> Single-scalar metadata controls on the two test subsets, with 95% identity-clustered intervals. <b>File bitrate reads 0.2174 on CelebDF++, an orientation-adjusted 0.7826</b>; the same control reads 0.5243 on DFD. The four geometry controls are exactly 0.5000 on DFD because both classes there are 1920×1080 throughout. Crop-scale controls require the per-video face-box cache and are not included here.</caption>
+  <caption><b>Table 10.</b> Single-scalar metadata controls on the two test subsets, with 95% identity-clustered intervals. <b>File bitrate reads 0.2174 on CelebDF++, an orientation-adjusted 0.7826</b>; the same control reads 0.5243 on DFD. The four geometry controls are exactly 0.5000 on DFD because both classes there are 1920×1080 throughout. Crop-scale controls require the per-video face-box cache and are not included here.</caption>
   <thead><tr><th>Control</th><th>CelebDF++ test</th><th>DFD test</th></tr></thead>
   <tbody>
     <tr class="head"><td>File bitrate (MB/s)</td><td>0.2174 &nbsp;<span class="m">[0.187, 0.240]</span></td><td>0.5243 &nbsp;<span class="m">[0.454, 0.616]</span></td></tr>
@@ -742,7 +755,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 10.</b> Spearman rank correlation between the model anomaly score and the metadata measures, experiment 3 test set. The model's own AUROC on the same subset is 0.5284. A rank correlation detects monotonic association only; it does not rule out a non-linear dependence or an interaction with other quantities.</caption>
+  <caption><b>Table 11.</b> Spearman rank correlation between the model anomaly score and the metadata measures, experiment 3 test set. The model's own AUROC on the same subset is 0.5284. A rank correlation detects monotonic association only; it does not rule out a non-linear dependence or an interaction with other quantities.</caption>
   <thead><tr><th>Subset</th><th class="n">Videos</th><th class="n">ρ with bitrate</th><th class="n">ρ with bits per pixel</th></tr></thead>
   <tbody>
     <tr><td>All</td><td class="n">5600</td><td class="n">−0.0218</td><td class="n">−0.0049</td></tr>
@@ -762,7 +775,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>Table 11.</b> The same test scores under two resampling schemes, 95% percentile intervals. Uncertainty estimates are sensitive to the scheme; given the small and class-asymmetric number of identity clusters — three in DFD, twelve fake-bearing identities in CelebDF++ — <b>we do not interpret the nominal coverage as evidence of above-chance performance</b>.</caption>
+  <caption><b>Table 12.</b> The same test scores under two resampling schemes, 95% percentile intervals. Uncertainty estimates are sensitive to the scheme; given the small and class-asymmetric number of identity clusters — three in DFD, twelve fake-bearing identities in CelebDF++ — <b>we do not interpret the nominal coverage as evidence of above-chance performance</b>.</caption>
   <thead><tr><th>Run</th><th class="n">AUROC</th><th>Per video (unstratified)</th><th>Per identity (unstratified)</th><th class="n">Identities · with fakes</th></tr></thead>
   <tbody>
     <tr><td>Experiment 1 · DFD, whole frame</td><td class="n">0.4877</td><td><span class="m">[0.376, 0.600]</span> width 0.223, covers 0.50</td><td><span class="m">[0.458, 0.531]</span> width 0.073, covers 0.50</td><td class="n">4 · 3</td></tr>
@@ -772,7 +785,7 @@
 </div>
 
 <footer>
-  Sources: <span class="m">results/curves.csv</span>, <span class="m">results/summary.csv</span>, <span class="m">results/run_stage_a_dfd_decimate/reports/</span> (108 per-video scores for experiment 1), <span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span> (experiment 3 metrics, the per-method breakdown, and 5600 per-video scores), <span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>, <span class="m">results/diagnostics/feature_probe_*.json</span>, <span class="m">results/diagnostics/shortcut_controls_celeb_face.json</span> (Table 9), <span class="m">scripts/video_size_reports/video_sizes.csv</span> (Tables 9 and 10). Architecture and parameter counts are read from an instantiated model in <span class="m">src/video_bcnn/model.py</span>. The full running log is <span class="m">docs/stage_a_experiment_log.md</span>.
+  Sources: <span class="m">results/curves.csv</span>, <span class="m">results/summary.csv</span>, <span class="m">results/run_stage_a_dfd_decimate/reports/</span> (108 per-video scores for experiment 1), <span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span> (experiment 3 metrics, the per-method breakdown, and 5600 per-video scores), <span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>, <span class="m">results/diagnostics/feature_probe_*.json</span>, <span class="m">results/diagnostics/shortcut_controls_celeb_face.json</span> (Table 10), <span class="m">scripts/video_size_reports/video_sizes.csv</span> (Tables 9 and 10). Architecture and parameter counts are read from an instantiated model in <span class="m">src/video_bcnn/model.py</span>. The full running log is <span class="m">docs/stage_a_experiment_log.md</span>.
 </footer>
 
 </div>

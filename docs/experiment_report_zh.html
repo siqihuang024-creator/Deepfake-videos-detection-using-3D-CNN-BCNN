@@ -229,7 +229,20 @@
 
 <p><b>目的：</b>使测试集中的身份从未在训练中出现，且伪造视频的源真实视频不在训练集内。</p>
 
-<p>划分按身份不相交执行，并附加<b>供体约束</b>：一条伪造视频只有在其目标身份与供体身份<em>同时</em>落入该子集时才被纳入。DFD 的伪造视频命名遵循 <span class="m">&lt;target&gt;_&lt;source&gt;__&lt;scene&gt;__&lt;id&gt;</span>，两个身份均可从文件名恢复。若仅按视频划分，DFD 测试集中 73.2% 的伪造视频可在训练集中找到自己的源真实视频。该约束在 DFD 剔除 1103 条伪造视频（占 36%），在 CelebDF++ 剔除 14538 条（占 27.3%）。</p>
+<p>划分按身份不相交执行，并附加<b>供体约束</b>：一条伪造视频只有在其目标身份与供体身份<em>同时</em>落入该子集时才被纳入。DFD 的伪造视频命名遵循 <span class="m">&lt;target&gt;_&lt;source&gt;__&lt;scene&gt;__&lt;id&gt;</span>，两个身份均可从文件名恢复。若仅按视频划分，DFD 测试集中 73.2% 的伪造视频可在训练集中找到自己的源真实视频。该约束在 DFD 剔除 1103 条伪造视频（占 36%），在 CelebDF++ 剔除 14538 条（占 27.3%）。表 2 给出仅隔离目标身份时残留的重叠规模。</p>
+
+<div class="tw">
+<table>
+  <caption><b>表 2.</b> 仅按目标身份划分时残留的供体重叠。「target-only 伪造数」是每条伪造视频跟随其目标身份时该子集会得到的数量。<b>并非所有伪造方法都涉及第二个身份</b>——CelebDF++ 的 TalkingFace 家族由音频驱动单一身份，没有供体人脸，供体规则对其不适用，故「有供体」一列在该数据集上不足六成。「供体在训练集」的百分比以有供体的伪造视频为分母；若以全部 target-only 伪造视频为分母，CelebDF++ 测试子集为 37.8%。「被规则排除」是协议的<b>数据代价而非泄漏率</b>：被排除的视频中，部分供体位于验证集而非训练集。</caption>
+  <thead><tr><th>数据集 · 子集</th><th class="n">target-only 伪造数</th><th class="n">其中有供体</th><th class="n">供体在训练集</th><th class="n">被规则排除</th></tr></thead>
+  <tbody>
+    <tr><td>DFD · 验证</td><td class="n">250</td><td class="n">250 (100%)</td><td class="n">199 (79.6%)</td><td class="n">233 (93.2%)</td></tr>
+    <tr class="head"><td>DFD · 测试</td><td class="n">406</td><td class="n">406 (100%)</td><td class="n">313 (77.1%)</td><td class="n">352 (86.7%)</td></tr>
+    <tr><td>CelebDF++ · 验证</td><td class="n">8462</td><td class="n">4311 (50.9%)</td><td class="n">2554 (59.2%)</td><td class="n">3387 (40.0%)</td></tr>
+    <tr class="head"><td>CelebDF++ · 测试</td><td class="n">10255</td><td class="n">5975 (58.3%)</td><td class="n">3879 (64.9%)</td><td class="n">4822 (47.0%)</td></tr>
+  </tbody>
+</table>
+</div>
 
 <h3>2.2 预处理</h3>
 
@@ -249,7 +262,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 2.</b> 两个阶段的训练配置。三个实验共用同一套设置，差异仅在数据集、输入模式与早停耐心（见表 3）。</caption>
+  <caption><b>表 3.</b> 两个阶段的训练配置。三个实验共用同一套设置，差异仅在数据集、输入模式与早停耐心（见表 4）。</caption>
   <thead><tr><th>项</th><th>阶段 A</th><th>阶段 B</th></tr></thead>
   <tbody>
     <tr><td>目标函数</td><td>二元交叉熵</td><td>TraceGraph ELBO（Pyro SVI）</td></tr>
@@ -276,7 +289,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 3.</b> 本文档记录的两组实验。网络结构、输入尺寸、片段长度、优化器与学习率调度两者一致。</caption>
+  <caption><b>表 4.</b> 本文档记录的两组实验。网络结构、输入尺寸、片段长度、优化器与学习率调度两者一致。</caption>
   <thead><tr><th>实验</th><th>数据集</th><th>输入模式</th><th class="n">阶段A 早停耐心</th><th>状态</th></tr></thead>
   <tbody>
     <tr><td>实验一</td><td>DFD</td><td>整帧，隔点抽样</td><td class="n">12</td><td>完成</td></tr>
@@ -291,7 +304,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 4.</b> DFD 划分统计。标签约定：1 = 真实，0 = 伪造。DFD 含 363 条原始视频与 3068 条伪造视频，由 28 名演员录制。</caption>
+  <caption><b>表 5.</b> DFD 划分统计。标签约定：1 = 真实，0 = 伪造。DFD 含 363 条原始视频与 3068 条伪造视频，由 28 名演员录制。</caption>
   <thead><tr><th>子集</th><th class="n">真实</th><th class="n">伪造</th><th class="n">身份数</th><th>用途</th></tr></thead>
   <tbody>
     <tr><td>训练</td><td class="n">264</td><td class="n">1894</td><td class="n">20</td><td>阶段 A / 阶段 B</td></tr>
@@ -364,7 +377,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 5.</b> 实验一测试集结果，54 真 / 54 假，video-level。阈值在验证集上按 5% 假阳率校准。阶段 B 在第 19 个 epoch 触发早停，验证 AUROC 最佳 0.6627、全程均值 0.6259。</caption>
+  <caption><b>表 6.</b> 实验一测试集结果，54 真 / 54 假，video-level。阈值在验证集上按 5% 假阳率校准。阶段 B 在第 19 个 epoch 触发早停，验证 AUROC 最佳 0.6627、全程均值 0.6259。</caption>
   <thead><tr><th>指标</th><th class="n">数值</th><th>说明</th></tr></thead>
   <tbody>
     <tr class="head"><td>Video-level AUROC</td><td class="n key">0.4877</td><td>按身份聚类 95% 自助区间 <span class="m">[0.458, 0.531]</span>，4 个身份簇</td></tr>
@@ -438,7 +451,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 6.</b> CelebDF++ 划分统计。测试子集的真假比约为 1:32。</caption>
+  <caption><b>表 7.</b> CelebDF++ 划分统计。测试子集的真假比约为 1:32。</caption>
   <thead><tr><th>子集</th><th class="n">真实</th><th class="n">伪造</th><th class="n">身份数</th><th>用途</th></tr></thead>
   <tbody>
     <tr><td>训练</td><td class="n">554</td><td class="n">28150</td><td class="n">245</td><td>阶段 A / 阶段 B</td></tr>
@@ -513,7 +526,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 7.</b> 实验三测试集结果，170 真 / 5433 假，其中 3 条因检测缺失或解码失败被跳过，实际计入 169 真 / 5431 假。阈值取自 checkpoint。测试子集基准率为 0.9698。</caption>
+  <caption><b>表 8.</b> 实验三测试集结果，170 真 / 5433 假，其中 3 条因检测缺失或解码失败被跳过，实际计入 169 真 / 5431 假。阈值取自 checkpoint。测试子集基准率为 0.9698。</caption>
   <thead><tr><th>指标</th><th class="n">数值</th><th>说明</th></tr></thead>
   <tbody>
     <tr class="head"><td>Video-level AUROC</td><td class="n key">0.5284</td><td>按身份聚类 95% 自助区间 <span class="m">[0.502, 0.572]</span>，57 个身份簇</td></tr>
@@ -561,7 +574,7 @@
       <text x="404" y="140" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 404 140)">真阳率</text>
     </svg>
   </div>
-  <figcaption><b>图 7.</b> 实验三测试集，由 5600 条逐视频异常分数绘制。<b>(a)</b> 分数分布；因真假比为 1:32，纵轴取密度而非计数。<b>(b)</b> ROC 曲线，AUC 0.5284，由同一份分数文件独立重算，与表 7 一致。</figcaption>
+  <figcaption><b>图 7.</b> 实验三测试集，由 5600 条逐视频异常分数绘制。<b>(a)</b> 分数分布；因真假比为 1:32，纵轴取密度而非计数。<b>(b)</b> ROC 曲线，AUC 0.5284，由同一份分数文件独立重算，与表 8 一致。</figcaption>
 </figure>
 
 <figure>
@@ -702,7 +715,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 8.</b> 留出身份线性探针读数，每次测量 60 条视频。「随机初始化」是同一架构但未经训练的提取器，每行一次抽样；「差值」为两者之差。在供体安全协议下，本工作没有可用作正对照的提取器，见下方说明。</caption>
+  <caption><b>表 9.</b> 留出身份线性探针读数，每次测量 60 条视频。「随机初始化」是同一架构但未经训练的提取器，每行一次抽样；「差值」为两者之差。在供体安全协议下，本工作没有可用作正对照的提取器，见下方说明。</caption>
   <thead><tr><th>测量对象</th><th class="n">checkpoint 轮次</th><th class="n">随机初始化</th><th class="n">训练后</th><th class="n">差值</th></tr></thead>
   <tbody>
     <tr class="head"><td>实验一 · DFD，整帧</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
@@ -724,7 +737,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 9.</b> 单标量元数据控制项在两个测试子集上的 AUROC 与 95% 身份聚类区间。<b>码率一项在 CelebDF++ 上读 0.2174，等效判别力 0.7826</b>；同一项在 DFD 上为 0.5243。DFD 的四个几何量精确等于 0.5000，因为该数据集两类视频均为 1920×1080。裁剪尺度相关的控制项需要逐视频的人脸框缓存，未包含在本表内。</caption>
+  <caption><b>表 10.</b> 单标量元数据控制项在两个测试子集上的 AUROC 与 95% 身份聚类区间。<b>码率一项在 CelebDF++ 上读 0.2174，等效判别力 0.7826</b>；同一项在 DFD 上为 0.5243。DFD 的四个几何量精确等于 0.5000，因为该数据集两类视频均为 1920×1080。裁剪尺度相关的控制项需要逐视频的人脸框缓存，未包含在本表内。</caption>
   <thead><tr><th>控制项</th><th>CelebDF++ 测试集</th><th>DFD 测试集</th></tr></thead>
   <tbody>
     <tr class="head"><td>文件码率 (MB/s)</td><td>0.2174 &nbsp;<span class="m">[0.187, 0.240]</span></td><td>0.5243 &nbsp;<span class="m">[0.454, 0.616]</span></td></tr>
@@ -742,7 +755,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 10.</b> 模型异常分数与元数据的 Spearman 秩相关，实验三测试集。同一子集上模型自身的 AUROC 为 0.5284。秩相关只能检出单调关联，无法排除非线性依赖或与其他量的交互。</caption>
+  <caption><b>表 11.</b> 模型异常分数与元数据的 Spearman 秩相关，实验三测试集。同一子集上模型自身的 AUROC 为 0.5284。秩相关只能检出单调关联，无法排除非线性依赖或与其他量的交互。</caption>
   <thead><tr><th>子集</th><th class="n">视频数</th><th class="n">ρ 与码率</th><th class="n">ρ 与每像素比特数</th></tr></thead>
   <tbody>
     <tr><td>全部</td><td class="n">5600</td><td class="n">−0.0218</td><td class="n">−0.0049</td></tr>
@@ -762,7 +775,7 @@
 
 <div class="tw">
 <table>
-  <caption><b>表 11.</b> 同一批测试分数在两种重采样方案下的 95% percentile 区间。区间估计对方案敏感；鉴于身份簇数少且两类分布不对称（DFD 3 个、CelebDF++ 12 个携带伪造的身份），<b>我们不把名义上的区间覆盖情况解读为高于随机的证据</b>。</caption>
+  <caption><b>表 12.</b> 同一批测试分数在两种重采样方案下的 95% percentile 区间。区间估计对方案敏感；鉴于身份簇数少且两类分布不对称（DFD 3 个、CelebDF++ 12 个携带伪造的身份），<b>我们不把名义上的区间覆盖情况解读为高于随机的证据</b>。</caption>
   <thead><tr><th>运行</th><th class="n">AUROC</th><th>逐视频（非分层）</th><th>按身份（非分层）</th><th class="n">身份数 · 携带伪造</th></tr></thead>
   <tbody>
     <tr><td>实验一 · DFD，整帧</td><td class="n">0.4877</td><td><span class="m">[0.376, 0.600]</span> 宽 0.223，覆盖 0.50</td><td><span class="m">[0.458, 0.531]</span> 宽 0.073，覆盖 0.50</td><td class="n">4 · 3</td></tr>
@@ -772,7 +785,7 @@
 </div>
 
 <footer>
-  数据来源：<span class="m">results/curves.csv</span>、<span class="m">results/summary.csv</span>、<span class="m">results/run_stage_a_dfd_decimate/reports/</span>（实验一 108 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span>（实验三指标、22 种方法拆分与 5600 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>、<span class="m">results/diagnostics/</span>（探针与控制项，含 <span class="m">shortcut_controls_celeb_face.json</span>，见表 9）、<span class="m">scripts/video_size_reports/video_sizes.csv</span>（表 9、表 10）。架构与参数量由 <span class="m">src/video_bcnn/model.py</span> 实例化后读出。完整流水账见 <span class="m">docs/stage_a_experiment_log.md</span>。
+  数据来源：<span class="m">results/curves.csv</span>、<span class="m">results/summary.csv</span>、<span class="m">results/run_stage_a_dfd_decimate/reports/</span>（实验一 108 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span>（实验三指标、22 种方法拆分与 5600 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>、<span class="m">results/diagnostics/</span>（探针与控制项，含 <span class="m">shortcut_controls_celeb_face.json</span>，见表 10）、<span class="m">scripts/video_size_reports/video_sizes.csv</span>（表 10、表 11）。架构与参数量由 <span class="m">src/video_bcnn/model.py</span> 实例化后读出。完整流水账见 <span class="m">docs/stage_a_experiment_log.md</span>。
 </footer>
 
 </div>
