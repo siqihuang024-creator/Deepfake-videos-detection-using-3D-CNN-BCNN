@@ -1,0 +1,536 @@
+<title>批归一化与身份分层评估</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#F4F6F7;
+    --surface:#FFFFFF;
+    --surface-2:#EDF1F3;
+    --ink:#151C22;
+    --muted:#5B6873;
+    --faint:#8492A0;
+    --rule:#D7DEE3;
+    --rule-strong:#B6C2CA;
+    --accent:#13657A;
+    --accent-soft:#DCEAEE;
+    --gain:#2C6A53;
+    --gain-soft:#DDEBE4;
+    --regress:#93452A;
+    --regress-soft:#F0E2DB;
+    --measure:70ch;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0E1317;
+      --surface:#151B21;
+      --surface-2:#1B242B;
+      --ink:#E0E7EC;
+      --muted:#96A3AD;
+      --faint:#6F7E89;
+      --rule:#25313A;
+      --rule-strong:#38474F;
+      --accent:#54A8BD;
+      --accent-soft:#132B33;
+      --gain:#63A886;
+      --gain-soft:#16291F;
+      --regress:#C67B52;
+      --regress-soft:#2C1D16;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1317;
+    --surface:#151B21;
+    --surface-2:#1B242B;
+    --ink:#E0E7EC;
+    --muted:#96A3AD;
+    --faint:#6F7E89;
+    --rule:#25313A;
+    --rule-strong:#38474F;
+    --accent:#54A8BD;
+    --accent-soft:#132B33;
+    --gain:#63A886;
+    --gain-soft:#16291F;
+    --regress:#C67B52;
+    --regress-soft:#2C1D16;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:16px;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 28px 120px}
+
+  /* ---- masthead ---- */
+  header.mast{
+    padding:72px 0 34px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:0;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 18px;
+  }
+  h1{
+    font-family:"Noto Serif SC",Georgia,serif;
+    font-weight:700;font-size:clamp(30px,4.6vw,44px);
+    line-height:1.25;letter-spacing:.01em;margin:0;text-wrap:balance;
+  }
+  .standfirst{
+    max-width:var(--measure);
+    margin:20px 0 0;color:var(--muted);font-size:16.5px;
+  }
+  .meta{
+    display:flex;flex-wrap:wrap;gap:8px 30px;margin-top:26px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:12px;color:var(--faint);
+  }
+  .meta b{color:var(--muted);font-weight:500}
+
+  /* ---- sections ---- */
+  section{padding-top:52px}
+  h2{
+    font-family:"Noto Serif SC",Georgia,serif;
+    font-weight:700;font-size:23px;line-height:1.4;
+    margin:0 0 6px;display:flex;gap:14px;align-items:baseline;
+  }
+  h2 .num{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:13px;font-weight:500;color:var(--accent);
+    letter-spacing:.06em;flex:none;
+  }
+  h3{
+    font-family:"Noto Serif SC",Georgia,serif;
+    font-weight:500;font-size:17.5px;margin:34px 0 4px;color:var(--ink);
+  }
+  .lede{color:var(--muted);max-width:var(--measure);margin:0 0 8px 0;font-size:15px}
+  p{max-width:var(--measure);margin:14px 0}
+  ul,ol{max-width:var(--measure);padding-left:1.25em;margin:14px 0}
+  li{margin:7px 0}
+  strong{font-weight:500;color:var(--ink);background:linear-gradient(transparent 62%,var(--accent-soft) 62%);padding:0 1px}
+  em{font-style:normal;color:var(--accent)}
+  code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.9em;font-variant-numeric:tabular-nums}
+  code{background:var(--surface-2);padding:1px 5px;border-radius:2px}
+  hr{border:0;border-top:1px solid var(--rule);margin:52px 0 0}
+
+  /* ---- callout ---- */
+  .key{
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-left:3px solid var(--accent);
+    padding:20px 24px;margin:24px 0;max-width:var(--measure);
+  }
+  .key p{margin:0}
+  .key p + p{margin-top:12px}
+  .key .tag{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);display:block;margin-bottom:8px;
+  }
+
+  /* ---- tables ---- */
+  .tw{overflow-x:auto;margin:24px 0;border:1px solid var(--rule);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  caption{
+    caption-side:top;text-align:left;padding:14px 18px 12px;
+    font-size:13px;color:var(--muted);border-bottom:1px solid var(--rule);
+  }
+  caption b{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-weight:500;color:var(--accent);font-size:11.5px;
+    letter-spacing:.1em;text-transform:uppercase;margin-right:10px;
+  }
+  th,td{padding:9px 16px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:11px;font-weight:500;letter-spacing:.06em;
+    color:var(--muted);text-transform:uppercase;
+    border-bottom:1px solid var(--rule-strong);
+  }
+  tbody td{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+  tbody td:first-child,tbody th{font-family:"Noto Sans SC",sans-serif;font-weight:400}
+  tbody tr:last-child td{border-bottom:0}
+  tr.hi td{background:var(--accent-soft)}
+  tr.hi td:first-child{font-weight:500}
+  .up{color:var(--gain)}
+  .dn{color:var(--regress)}
+  .chip{
+    display:inline-block;padding:1px 7px;border-radius:2px;font-size:11.5px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  .chip.y{background:var(--gain-soft);color:var(--gain)}
+  .chip.n{background:var(--surface-2);color:var(--faint)}
+
+  /* ---- figure ---- */
+  figure{margin:28px 0;border:1px solid var(--rule);background:var(--surface);padding:22px 20px 16px}
+  figure svg{display:block;width:100%;height:auto}
+  figcaption{font-size:13px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--rule)}
+  figcaption b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;color:var(--accent);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin-right:10px}
+  .s-axis{stroke:var(--rule-strong);stroke-width:1}
+  .s-grid{stroke:var(--rule);stroke-width:1}
+  .s-wide{stroke:var(--accent);stroke-width:9;opacity:.28;stroke-linecap:butt}
+  .s-narrow{stroke:var(--accent);stroke-width:9;stroke-linecap:butt}
+  .s-pt{fill:var(--ink)}
+  .s-lab{fill:var(--muted);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px}
+  .s-run{fill:var(--ink);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px;font-weight:500}
+
+  /* ---- definition list ---- */
+  dl.terms{max-width:var(--measure);margin:20px 0;display:grid;grid-template-columns:auto 1fr;gap:10px 20px}
+  dl.terms dt{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px;color:var(--accent);white-space:nowrap}
+  dl.terms dd{margin:0;color:var(--muted);font-size:14.5px}
+
+  footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--rule);color:var(--faint);font-size:13px}
+
+  @media (max-width:640px){
+    .wrap{padding:0 18px 80px}
+    header.mast{padding-top:48px}
+    dl.terms{grid-template-columns:1fr;gap:2px 0}
+    dl.terms dd{margin-bottom:12px}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">实验报告 · CelebDFv3 监督检测</p>
+  <h1>批归一化与身份分层评估</h1>
+  <p class="standfirst">对贝叶斯三维卷积伪造视频检测器的九次消融实验记录。报告包含两项结论：一项关于评估协议的修正，一项关于架构改动的有效性验证。</p>
+  <div class="meta">
+    <span><b>数据集</b> CelebDFv3</span>
+    <span><b>测试样本</b> 164 真 / 2400 伪</span>
+    <span><b>比较模型</b> v6 · v7 · v8 · v9</span>
+    <span><b>日期</b> 2026-08-29</span>
+  </div>
+</header>
+
+<section>
+  <h2><span class="num">摘要</span>本报告的两项结论</h2>
+
+  <div class="key">
+    <span class="tag">结论一 · 评估协议</span>
+    <p>以<strong>视频</strong>为重采样单元计算的置信区间，将 AUROC 的真实不确定度<strong>低估了 4 至 8 倍</strong>。测试集的 10,433 个伪造视频仅源自 12 个目标身份，同一身份的视频高度相关，不构成独立样本。改用以<strong>身份</strong>为重采样单元后，v6 的 95% 置信区间由 <span class="mono">[0.7321, 0.7525]</span> 变为 <span class="mono">[0.6761, 0.8086]</span>。</p>
+    <p>据此重新审视，此前八次实验之间 0.01 至 0.03 的性能差异全部落在噪声范围内，<strong>在统计上不可区分</strong>。更严重的是，用于模型选择的验证集仅含 7 个伪造身份，其给出的架构排序与测试集相反，曾导致技术路线出现偏离。</p>
+  </div>
+
+  <div class="key">
+    <span class="tag">结论二 · 架构改动</span>
+    <p>在保持空间特征图分辨率（22×22）的前提下，向三维卷积提取器引入<strong>批归一化</strong>（batch normalization，仅增加 144 个参数），测试集 AUROC 达到 <span class="mono">0.7774</span>，为九次实验最优；等错误率降至 <span class="mono">0.3064</span>，5% 误报率下的检出率升至 <span class="mono">0.2683</span>，三项指标同时最优。</p>
+    <p>更具决定性的证据来自训练过程内部：该配置的训练损失<strong>首次低于 <span class="mono">ln 2 = 0.6931</span></strong>，即模型第一次真正拟合了自身的训练数据；提取器第三层输出的标准差在 60 轮内保持恒定，而对照配置在 40 轮内衰减 43%。这两项诊断量不受身份采样噪声影响。</p>
+  </div>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">1</span>实验设置</h2>
+  <p class="lede">本节说明数据划分、身份协议与模型结构，供后续结果解读参照。</p>
+
+  <h3>1.1 数据与划分</h3>
+  <p>全部实验在 CelebDFv3 上进行。该数据集的真实视频取自网络与 YouTube 两个来源，伪造视频由 22 种生成方法产生，分属换脸（FaceSwap）、面部重演（FaceReenact）与语音驱动人像（TalkingFace）三个族系。</p>
+
+  <div class="tw">
+    <table>
+      <caption><b>表 1</b>三个划分的视频数与身份数。身份数是本报告的核心变量。</caption>
+      <thead>
+        <tr><th>划分</th><th>真实视频</th><th>真实身份</th><th>伪造视频</th><th>伪造目标身份</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>训练</td><td>613</td><td>251</td><td>30,149</td><td>40</td></tr>
+        <tr><td>验证</td><td>113</td><td>54</td><td>5,428</td><td class="dn">7</td></tr>
+        <tr><td>测试</td><td>164</td><td>54</td><td>10,433</td><td class="dn">12</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>伪造身份数远少于真实身份数，是数据集构造方式的必然结果：制作一段伪造视频需要指定被替换的目标人物，而数据集作者仅对有限数量的人物进行了伪造。这一约束<em>无法通过改变划分方式消除</em>。</p>
+
+  <h3>1.2 身份协议</h3>
+  <p>划分遵循<strong>身份不相交</strong>（identity-disjoint）原则：验证集与测试集所涉及的人物身份，与训练集零重叠。这是人脸取证领域防止数据泄露的标准做法——若同一人物同时出现在训练与测试中，模型可以记忆该人物被伪造后的特定纹理，从而在不学习任何通用伪造痕迹的情况下取得高分。</p>
+
+  <p>本项目在此基础上额外施加了<strong>供体安全</strong>（donor-safe）约束。一段伪造视频涉及两个人物：<em>目标</em>（target，视频原本属于谁）与<em>供体</em>（donor，面部特征取自谁）。仅约束目标身份并不充分——若某段训练用伪造视频的供体属于测试身份，则测试身份的面部像素已在训练阶段被模型接触。因此规定：<strong>一段伪造视频进入训练集的前提是其目标身份与供体身份同时属于训练身份</strong>。该约束使 7,186 段伪造视频被排除在训练之外。</p>
+
+  <p>需如实说明一处不对称：评估侧的<em>供体</em>身份未做到与训练集不相交，测试集 51 个供体身份中有 36 个属于训练身份。该约束是单向的——训练集不含测试身份（这是防止成绩虚高的关键方向），但测试集含训练身份作为供体。考虑到这些供体身份在训练阶段于两个类别中均有出现，「识别该人物」无法干净地指向任一类别，其影响预计有限但非零。</p>
+
+  <h3>1.3 模型与训练</h3>
+  <dl class="terms">
+    <dt>特征提取器</dt><dd>三层三维卷积，空间核 5×5、时间核 3，空间平均池化，通道数 16/24/32，输出 22×22 空间特征图（特征维 15,488），共 90,136 个参数</dd>
+    <dt>贝叶斯分类头</dt><dd>均场高斯后验的两层全连接，15,488 → 512 → 1，第一层含 7,929,856 个权重</dd>
+    <dt>推断方式</dt><dd>Pyro 随机变分推断，<span class="mono">TraceGraph_ELBO</span>，伯努利观测似然</dd>
+    <dt>每轮采样</dt><dd>613 段真实 + 613 段伪造，按数据集与类别平衡，伪造侧按生成方法分层</dd>
+    <dt>片段设置</dt><dd>每片段 8 帧，训练步长 {1, 2}，评估步长 2</dd>
+  </dl>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">2</span>评估协议的修正</h2>
+  <p class="lede">本节说明为何常规的置信区间在本任务上系统性偏窄，以及正确的计算方式。</p>
+
+  <h3>2.1 问题</h3>
+  <p>测试集含 10,433 段伪造视频，但它们仅来自 <strong>12 个目标身份</strong>。同一身份的数百段视频共享同一张面孔、同一套光照条件与同一个伪造目标，彼此高度相关，不能视为独立观测。</p>
+  <p>其后果是：AUROC 的<em>有效样本量</em>接近 12，而非 10,433。若模型恰好在这 12 个人物上表现较好或较差，整体指标即随之移动，而这一波动与模型质量无关。</p>
+
+  <h3>2.2 两种自助法的对比</h3>
+  <p>为量化该效应，对同一批分数采用两种<strong>自助法</strong>（bootstrap，通过有放回重采样估计统计量分布的方法）重采样单元，各重复 20,000 次：</p>
+  <ul>
+    <li><em>视频级</em>——从 2,400 段伪造视频中有放回抽取 2,400 段（常规做法）</li>
+    <li><em>身份级</em>——从 12 个身份中有放回抽取 12 个，取其全部视频</li>
+  </ul>
+
+  <figure>
+    <svg viewBox="0 0 760 268" role="img" aria-label="四个模型在视频级与身份级自助法下的 95% 置信区间对比">
+      <line class="s-grid" x1="60" y1="34" x2="60" y2="212"/>
+      <line class="s-grid" x1="166.7" y1="34" x2="166.7" y2="212"/>
+      <line class="s-grid" x1="273.3" y1="34" x2="273.3" y2="212"/>
+      <line class="s-grid" x1="380" y1="34" x2="380" y2="212"/>
+      <line class="s-grid" x1="486.7" y1="34" x2="486.7" y2="212"/>
+      <line class="s-grid" x1="593.3" y1="34" x2="593.3" y2="212"/>
+      <line class="s-grid" x1="700" y1="34" x2="700" y2="212"/>
+
+      <line class="s-wide"   x1="329.0" y1="52" x2="611.7" y2="52"/>
+      <line class="s-narrow" x1="448.5" y1="52" x2="492.0" y2="52"/>
+      <circle class="s-pt" cx="470.4" cy="52" r="3.2"/>
+      <text class="s-run" x="50" y="56" text-anchor="end">v6</text>
+
+      <line class="s-wide"   x1="238.1" y1="96" x2="495.6" y2="96"/>
+      <line class="s-narrow" x1="336.9" y1="96" x2="384.1" y2="96"/>
+      <circle class="s-pt" cx="360.4" cy="96" r="3.2"/>
+      <text class="s-run" x="50" y="100" text-anchor="end">v7</text>
+
+      <line class="s-wide"   x1="172.0" y1="140" x2="514.8" y2="140"/>
+      <line class="s-narrow" x1="319.2" y1="140" x2="363.1" y2="140"/>
+      <circle class="s-pt" cx="340.9" cy="140" r="3.2"/>
+      <text class="s-run" x="50" y="144" text-anchor="end">v8</text>
+
+      <line class="s-wide"   x1="461.3" y1="184" x2="626.4" y2="184"/>
+      <line class="s-narrow" x1="524.9" y1="184" x2="565.1" y2="184"/>
+      <circle class="s-pt" cx="545.1" cy="184" r="3.2"/>
+      <text class="s-run" x="50" y="188" text-anchor="end">v9</text>
+
+      <line class="s-axis" x1="60" y1="212" x2="700" y2="212"/>
+      <text class="s-lab" x="60" y="230" text-anchor="middle">0.55</text>
+      <text class="s-lab" x="166.7" y="230" text-anchor="middle">0.60</text>
+      <text class="s-lab" x="273.3" y="230" text-anchor="middle">0.65</text>
+      <text class="s-lab" x="380" y="230" text-anchor="middle">0.70</text>
+      <text class="s-lab" x="486.7" y="230" text-anchor="middle">0.75</text>
+      <text class="s-lab" x="593.3" y="230" text-anchor="middle">0.80</text>
+      <text class="s-lab" x="700" y="230" text-anchor="middle">0.85</text>
+      <text class="s-lab" x="380" y="255" text-anchor="middle">测试集 AUROC</text>
+
+      <line class="s-wide"   x1="60" y1="20" x2="104" y2="20"/>
+      <text class="s-lab" x="112" y="24">身份级 95% 区间</text>
+      <line class="s-narrow" x1="250" y1="20" x2="294" y2="20"/>
+      <text class="s-lab" x="302" y="24">视频级 95% 区间</text>
+    </svg>
+    <figcaption><b>图 1</b>同一组分数、同一个点估计，两种重采样单元给出的 95% 置信区间。深色短线为视频级区间，浅色长线为身份级区间。视频级区间的窄度并非精度，而是把相关样本当作独立样本所产生的假象。</figcaption>
+  </figure>
+
+  <div class="tw">
+    <table>
+      <caption><b>表 2</b>两种自助法的 95% 置信区间宽度对比（20,000 次重采样）。</caption>
+      <thead>
+        <tr><th>模型</th><th>AUROC</th><th>身份级区间</th><th>宽度</th><th>视频级区间</th><th>宽度</th><th>低估倍数</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>v6</td><td>0.7424</td><td>[0.6761, 0.8086]</td><td>0.1325</td><td>[0.7321, 0.7525]</td><td>0.0205</td><td class="dn">6.5×</td></tr>
+        <tr><td>v7</td><td>0.6908</td><td>[0.6335, 0.7542]</td><td>0.1207</td><td>[0.6798, 0.7019]</td><td>0.0221</td><td class="dn">5.5×</td></tr>
+        <tr><td>v8</td><td>0.6817</td><td>[0.6025, 0.7632]</td><td>0.1607</td><td>[0.6715, 0.6921]</td><td>0.0207</td><td class="dn">7.8×</td></tr>
+        <tr class="hi"><td>v9</td><td>0.7774</td><td>[0.7381, 0.8155]</td><td>0.0774</td><td>[0.7679, 0.7868]</td><td>0.0190</td><td>4.1×</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>v9 的身份级区间宽度（0.0774）显著小于其余三者，说明其性能<em>在不同人物之间更为一致</em>——这是独立于平均性能之外的一项优点。</p>
+
+  <h3>2.3 对报告方式的要求</h3>
+  <p>本任务的 AUROC 必须以身份级区间报告。仅给出点估计，或给出视频级区间，都会使读者对结论的可靠性产生系统性误判。相应地，模型之间的比较不能依赖各自独立的区间是否重叠——在 ±0.06 的区间宽度下，任何小于该量级的改进都无法被证实。正确做法是<strong>配对比较</strong>：在同一批身份、同一批视频上计算模型间的差值，使身份带来的方差在做差时相互抵消。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">3</span>消融结果</h2>
+  <p class="lede">四个配置在完全相同的 2,564 段测试视频上评估。</p>
+
+  <div class="tw">
+    <table>
+      <caption><b>表 3</b>四个配置的参数差异。v7 相对 v6 同时改动六项，v8 在此基础上再改时间步长，v9 则回到 v6 并仅改动一项。</caption>
+      <thead>
+        <tr><th>配置</th><th>通道数</th><th>空间输出</th><th>池化</th><th>归一化</th><th>学习率</th><th>KL 权重</th><th>时间步长</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>v6 基线</td><td>16/24/32</td><td>22×22</td><td>平均</td><td>无</td><td>3e-5</td><td>6e-6</td><td>{1, 2}</td></tr>
+        <tr><td>v7</td><td class="dn">32/64/128</td><td class="dn">4×4</td><td class="dn">最大</td><td class="dn">批归一化</td><td class="dn">3e-4</td><td class="dn">1e-4</td><td>{1, 2}</td></tr>
+        <tr><td>v8</td><td class="dn">32/64/128</td><td class="dn">4×4</td><td class="dn">最大</td><td class="dn">批归一化</td><td class="dn">3e-4</td><td class="dn">1e-4</td><td class="dn">{4, 8}</td></tr>
+        <tr class="hi"><td>v9</td><td>16/24/32</td><td>22×22</td><td>平均</td><td class="up">批归一化</td><td>3e-5</td><td>6e-6</td><td>{1, 2}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>v7 的设计存在方法缺陷：六项参数同时变动，使得性能变化无法归因于任一具体改动。v9 修正了这一点，相对 v6 仅增加批归一化层，参数量由 90,136 变为 90,280，差值 144 恰为三层批归一化的缩放与偏移参数总数 2×(16+24+32)，从数值上确认了单变量条件成立。</p>
+
+  <div class="tw">
+    <table>
+      <caption><b>表 4</b>测试集性能。「身份宏平均」为 12 个身份各自 AUROC 的算术平均，不受各身份视频数量差异的影响。</caption>
+      <thead>
+        <tr><th>配置</th><th>AUROC</th><th>身份宏平均</th><th>等错误率</th><th>5%误报下检出率</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>v6 基线</td><td>0.7424</td><td>0.7331</td><td>0.3171</td><td>0.2558</td></tr>
+        <tr><td>v7</td><td>0.6908</td><td>0.7018</td><td>0.3794</td><td>0.2654</td></tr>
+        <tr><td>v8</td><td>0.6817</td><td>0.6737</td><td>0.3720</td><td>0.1700</td></tr>
+        <tr class="hi"><td>v9</td><td>0.7774</td><td>0.7700</td><td>0.3064</td><td>0.2683</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption><b>表 5</b>配对比较。差值在 12 个身份上逐一计算；置信区间由 20,000 次身份级自助法给出；符号检验为精确双侧检验，仅考察差值方向的一致性。</caption>
+      <thead>
+        <tr><th>比较</th><th>均值差</th><th>标准误</th><th>95% 置信区间</th><th>优势身份数</th><th>符号检验 p</th><th>区间是否含 0</th></tr>
+      </thead>
+      <tbody>
+        <tr class="hi"><td>v9 − v8</td><td class="up">+0.0963</td><td>0.0242</td><td>[+0.0531, +0.1432]</td><td>12 / 12</td><td>&lt; 0.001</td><td><span class="chip y">不含</span></td></tr>
+        <tr><td>v9 − v7</td><td class="up">+0.0682</td><td>0.0233</td><td>[+0.0221, +0.1096]</td><td>8 / 12</td><td>0.388</td><td><span class="chip y">不含</span></td></tr>
+        <tr><td>v9 − v6</td><td class="up">+0.0369</td><td>0.0206</td><td>[+0.0006, +0.0776]</td><td>7 / 12</td><td>0.774</td><td><span class="chip y">不含</span></td></tr>
+        <tr><td>v7 − v6</td><td class="dn">−0.0313</td><td>0.0255</td><td>[−0.0764, +0.0190]</td><td>4 / 12</td><td>0.388</td><td><span class="chip n">含</span></td></tr>
+        <tr><td>v8 − v6</td><td class="dn">−0.0594</td><td>0.0226</td><td>[−0.0993, −0.0142]</td><td>2 / 12</td><td>0.039</td><td><span class="chip y">不含</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>证据强度需分级陈述。</strong>v9 优于 v8 的结论最为可靠：12 个身份全部改善，符号检验 p &lt; 0.001。v9 优于 v7 的置信区间同样不含零。v9 优于 v6 的结论则<em>仅为中等强度</em>——自助法区间下界为 +0.0006，勉强不含零，而符号检验（7/12）完全不显著。该均值差主要由若干大幅改善拉动（id8 提升 0.204、id31 提升 0.091、id26 提升 0.080），而下降的身份幅度均较小。</p>
+
+  <p>方法分层提供了另一个角度：在 22 种生成方法中，v9 相对 v6 <strong>在 19 种上取得改善</strong>（符号检验 p ≈ 0.0009），下降的四种幅度分别为 SadTalker −0.035、FLOAT −0.013、LivePortrait −0.008、Real3DPortrait −0.003。需说明该检验与身份级检验基于同一批视频，二者并非相互独立，但 19/22 的方向一致性本身是有意义的证据。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">4</span>训练过程诊断</h2>
+  <p class="lede">以下三项指标源自训练过程内部，不受测试集身份采样噪声影响，因而比 AUROC 差值更具判别力。</p>
+
+  <h3>4.1 训练损失首次低于随机水平</h3>
+  <p>在二分类的伯努利似然下，随机猜测对应的负对数似然为 <span class="mono">ln 2 = 0.6931</span>。此前八次实验的训练损失始终高于该值，意味着模型连自身的训练数据都未能拟合。</p>
+  <div class="tw">
+    <table>
+      <caption><b>表 6</b>训练损失轨迹（含 KL 项，权重 6e-6 下 KL 贡献约 0.086）。</caption>
+      <thead><tr><th>配置</th><th>首轮</th><th>末轮</th><th>最低值</th><th>最低值出现轮次</th></tr></thead>
+      <tbody>
+        <tr><td>v6 基线</td><td>1.4466</td><td>0.7787</td><td>0.7787</td><td>40（末轮）</td></tr>
+        <tr class="hi"><td>v9</td><td>1.6946</td><td class="up">0.6576</td><td class="up">0.6576</td><td>60（末轮）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>扣除 KL 项后，v9 的分类似然明显低于 0.6931。这是九次实验中第一次出现模型真正拟合训练数据的证据。</p>
+
+  <h3>4.2 特征不再衰减</h3>
+  <p>提取器第三层激活输出的标准差反映特征的有效动态范围。该值持续下降意味着提取器逐渐失活、停止传递有效信息。</p>
+  <div class="tw">
+    <table>
+      <caption><b>表 7</b>第三层输出标准差（6 轮窗口平均）。</caption>
+      <thead><tr><th>配置</th><th>1–6 轮</th><th>19–24 轮</th><th>37–42 轮</th><th>55–60 轮</th><th>变化</th></tr></thead>
+      <tbody>
+        <tr><td>v6 基线</td><td>0.1741</td><td>0.1263</td><td>0.0990</td><td>—</td><td class="dn">40 轮内衰减 43%</td></tr>
+        <tr class="hi"><td>v9</td><td>0.5159</td><td>0.5196</td><td>0.5309</td><td>0.5153</td><td class="up">60 轮内基本恒定</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>批归一化精确地消除了这一衰减，且使特征标准差稳定在基线的约五倍水平。这解释了 v6 为何在第 28 轮后停止进步，而 v9 得以持续学习至第 44 轮。</p>
+
+  <h3>4.3 过拟合拐点</h3>
+  <p>v9 的验证 AUROC 在第 37–42 轮窗口达到 0.7656 后转为缓慢下降（43–48 轮 0.7625，49–54 轮 0.7610，55–60 轮 0.7521），而同期训练损失持续下降。训练损失下降与验证性能下降并存，是<strong>过拟合</strong>的标准特征。最优检查点出现在第 44 轮。</p>
+  <div class="key">
+    <span class="tag">诊断意义</span>
+    <p>过拟合的出现本身是积极信号。此前八次实验受限于「模型学不动」，而 v9 的限制因素已转变为「泛化不足」。这是性质不同的问题，且具有成熟的应对手段。相应地，<em>继续增加训练轮数不会带来改善</em>。</p>
+  </div>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">5</span>分层结果</h2>
+
+  <h3>5.1 身份分层</h3>
+  <p>各身份的 AUROC 由该身份的全部伪造视频与全部 164 段真实视频计算得到。</p>
+  <div class="tw">
+    <table>
+      <caption><b>表 8</b>12 个测试身份的 AUROC。跨度 0.318（v6）与 0.238（v9），远大于模型之间的差异。</caption>
+      <thead><tr><th>身份</th><th>伪造视频数</th><th>v6</th><th>v7</th><th>v8</th><th>v9</th><th>v9 − v6</th></tr></thead>
+      <tbody>
+        <tr><td>id8</td><td>104</td><td class="dn">0.4185</td><td>0.5398</td><td>0.5388</td><td>0.6225</td><td class="up">+0.2040</td></tr>
+        <tr><td>id31</td><td>390</td><td>0.6638</td><td>0.5705</td><td>0.5229</td><td>0.7549</td><td class="up">+0.0911</td></tr>
+        <tr><td>id26</td><td>300</td><td>0.6598</td><td>0.5962</td><td>0.6092</td><td>0.7399</td><td class="up">+0.0801</td></tr>
+        <tr><td>id59</td><td>105</td><td>0.7352</td><td>0.6703</td><td>0.5757</td><td>0.8037</td><td class="up">+0.0685</td></tr>
+        <tr><td>id11</td><td>105</td><td>0.7591</td><td>0.7249</td><td>0.6128</td><td>0.8264</td><td class="up">+0.0673</td></tr>
+        <tr><td>id51</td><td>181</td><td>0.6530</td><td>0.6864</td><td>0.6379</td><td>0.6842</td><td class="up">+0.0312</td></tr>
+        <tr><td>id48</td><td>189</td><td>0.7337</td><td>0.8581</td><td>0.7350</td><td>0.7616</td><td class="up">+0.0279</td></tr>
+        <tr><td>id23</td><td>425</td><td>0.8656</td><td>0.7295</td><td>0.8492</td><td>0.8602</td><td class="dn">−0.0054</td></tr>
+        <tr><td>id22</td><td>139</td><td>0.8531</td><td>0.8542</td><td>0.8168</td><td>0.8468</td><td class="dn">−0.0063</td></tr>
+        <tr><td>id54</td><td>141</td><td>0.7367</td><td>0.6280</td><td>0.6325</td><td>0.7085</td><td class="dn">−0.0282</td></tr>
+        <tr><td>id25</td><td>140</td><td>0.8247</td><td>0.8009</td><td>0.7449</td><td>0.7962</td><td class="dn">−0.0285</td></tr>
+        <tr><td>id56</td><td>181</td><td>0.8937</td><td>0.7628</td><td>0.8088</td><td>0.8347</td><td class="dn">−0.0590</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>基线配置在 id8 上的 AUROC 为 0.4185，<em>低于随机水平</em>，即该配置系统性地将 id8 的伪造视频判定得比真实视频更可信。v9 将其提升至 0.6225。</p>
+
+  <h3>5.2 方法分层</h3>
+  <p>不同生成方法的检测难度差异显著。以 v9 为例，最易检出的 TPSMM 为 0.9016，最难检出的 LivePortrait 为 0.6585。</p>
+  <div class="tw">
+    <table>
+      <caption><b>表 9</b>各生成方法的 AUROC 摘录，按 v9 相对 v6 的变化排序（22 种中列出首尾各 5 种）。</caption>
+      <thead><tr><th>生成方法</th><th>族系</th><th>v6</th><th>v9</th><th>v9 − v6</th></tr></thead>
+      <tbody>
+        <tr><td>MobileFaceSwap</td><td>换脸</td><td>0.7262</td><td>0.8101</td><td class="up">+0.0839</td></tr>
+        <tr><td>UniFace</td><td>换脸</td><td>0.5856</td><td>0.6572</td><td class="up">+0.0716</td></tr>
+        <tr><td>SimSwap</td><td>换脸</td><td>0.6829</td><td>0.7468</td><td class="up">+0.0639</td></tr>
+        <tr><td>AniTalker</td><td>语音驱动</td><td>0.7545</td><td>0.8151</td><td class="up">+0.0606</td></tr>
+        <tr><td>LIA</td><td>面部重演</td><td>0.8059</td><td>0.8622</td><td class="up">+0.0563</td></tr>
+        <tr><td colspan="5" style="text-align:center;color:var(--faint)">…… 其余 13 种改善幅度介于 +0.016 与 +0.053 之间 ……</td></tr>
+        <tr><td>Real3DPortrait</td><td>语音驱动</td><td>0.8300</td><td>0.8269</td><td class="dn">−0.0031</td></tr>
+        <tr><td>LivePortrait</td><td>面部重演</td><td>0.6666</td><td>0.6585</td><td class="dn">−0.0081</td></tr>
+        <tr><td>FLOAT</td><td>语音驱动</td><td>0.6956</td><td>0.6829</td><td class="dn">−0.0126</td></tr>
+        <tr><td>SadTalker</td><td>语音驱动</td><td>0.7186</td><td>0.6838</td><td class="dn">−0.0347</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>据此，本任务的性能不宜以单一数字概括。更恰当的表述是：<strong>v9 在 22 种生成方法上的 AUROC 介于 0.659 与 0.902 之间，均值 0.777</strong>。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">6</span>局限</h2>
+  <ol>
+    <li><strong>身份基数受限。</strong>测试集仅 12 个伪造身份，身份级 95% 区间宽度约 ±0.04 至 ±0.08。小于该量级的改进在本数据集上无法被证实。该限制源于数据集构造，不可通过重新划分解决。</li>
+    <li><strong>验证集身份更少。</strong>用于模型选择的验证集仅含 7 个伪造身份，其给出的架构排序曾与测试集相反。后续所有架构结论均须以测试集为准，验证集仅用于在单次运行内选择检查点。</li>
+    <li><strong>供体身份未完全隔离。</strong>见 1.2 节。</li>
+    <li><strong>单次运行。</strong>每个配置仅训练一次，未做随机种子重复。因此表 5 中的方差反映的是测试集采样波动，不包含训练过程本身的随机性。</li>
+    <li><strong>评估采样。</strong>为控制计算成本，测试集伪造视频按 2,400 段采样评估（占 10,433 段的 23%），四个模型使用完全相同的采样结果，故配对比较不受影响。</li>
+  </ol>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">7</span>后续工作</h2>
+  <p>鉴于 v9 的限制因素已由拟合能力转为泛化能力，下一步选择<strong>提高 KL 散度权重</strong>作为正则化手段。当前权重 6e-6 使 KL 项仅占损失约 0.086，贝叶斯先验实际上未起到约束作用，7,929,856 个后验参数近似退化为点估计。</p>
+  <p>下一实验（v10）将 KL 权重提高至 2e-5，使 KL 占比升至约 0.29，其余参数与 v9 完全一致。该量级的选择有据可依：此前五次实验因 KL 占损失的 95% 至 99.9% 而停滞于随机水平，而 6e-6 又过轻；2e-5 位于两者之间，仍保证分类似然主导目标函数。</p>
+  <p>若该方向的改进幅度仍在 ±0.04 以内，则应认为在本数据集上继续微调该架构已无法产生可证实的进展，届时需要改变问题设定——引入预训练主干、增加第二个评估数据集以扩大身份基数，或直接推进至仅使用伪造视频训练的异常检测目标。</p>
+</section>
+
+<footer>
+  实验记录基于 CelebDFv3 监督检测的 v6 至 v9 四个配置，测试集评估使用同一批 164 段真实视频与 2,400 段伪造视频。全部统计量由每段视频的异常分数重新计算，自助法重采样次数均为 20,000。
+</footer>
+
+</div>

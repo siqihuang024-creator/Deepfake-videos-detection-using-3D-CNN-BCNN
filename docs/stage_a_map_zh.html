@@ -1,0 +1,519 @@
+<title>DFD 阶段 A 实验地图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+SC:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+  :root {
+    --paper: #F3F5F7;
+    --surface: #FFFFFF;
+    --ink: #14171C;
+    --muted: #5C6674;
+    --faint: #8A94A2;
+    --rule: #D8DEE6;
+    --rule-soft: #E6EAF0;
+    --accent: #14655F;
+    --accent-soft: #E1EFED;
+    --warn: #9A5F16;
+    --warn-soft: #F6ECDC;
+    --dead: #7A8290;
+    --dead-soft: #E9ECF1;
+    --shadow: 0 1px 2px rgba(20, 23, 28, .05), 0 8px 24px -16px rgba(20, 23, 28, .3);
+    --sans: "IBM Plex Sans SC", system-ui, -apple-system, "Microsoft YaHei", sans-serif;
+    --display: "IBM Plex Serif", "IBM Plex Sans SC", Georgia, serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0F1216;
+      --surface: #171B21;
+      --ink: #E7EAEE;
+      --muted: #9AA4B2;
+      --faint: #6E7887;
+      --rule: #2A313A;
+      --rule-soft: #222831;
+      --accent: #5FBDB2;
+      --accent-soft: #16302E;
+      --warn: #D79A4E;
+      --warn-soft: #2E2416;
+      --dead: #79838F;
+      --dead-soft: #212730;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0F1216;
+    --surface: #171B21;
+    --ink: #E7EAEE;
+    --muted: #9AA4B2;
+    --faint: #6E7887;
+    --rule: #2A313A;
+    --rule-soft: #222831;
+    --accent: #5FBDB2;
+    --accent-soft: #16302E;
+    --warn: #D79A4E;
+    --warn-soft: #2E2416;
+    --dead: #79838F;
+    --dead-soft: #212730;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 56px 24px 96px; }
+
+  header { border-bottom: 2px solid var(--ink); padding-bottom: 22px; margin-bottom: 40px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 600; font-size: 34px;
+    line-height: 1.25; margin: 0 0 12px; text-wrap: balance; letter-spacing: -.01em;
+  }
+  .standfirst { color: var(--muted); max-width: 62ch; margin: 0; font-size: 15.5px; }
+
+  h2 {
+    font-family: var(--display); font-weight: 600; font-size: 22px;
+    margin: 52px 0 6px; text-wrap: balance; letter-spacing: -.005em;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  h2 .num {
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    color: var(--accent); letter-spacing: .08em; flex: none;
+  }
+  h3 { font-family: var(--display); font-weight: 500; font-size: 17px; margin: 32px 0 4px; }
+  p { max-width: 66ch; margin: 12px 0; }
+  strong { font-weight: 600; }
+  code, .mono { font-family: var(--mono); font-size: .875em; }
+  code { background: var(--rule-soft); padding: 1px 5px; border-radius: 3px; }
+  a { color: var(--accent); }
+
+  figure { margin: 28px 0 8px; }
+  .figbox {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 6px; padding: 20px 16px; overflow-x: auto; box-shadow: var(--shadow);
+  }
+  figure svg { display: block; width: 100%; max-width: 100%; height: auto; min-width: 620px; }
+  figcaption {
+    font-size: 13.5px; color: var(--muted); margin-top: 10px;
+    padding-left: 2px; max-width: 66ch;
+  }
+
+  .tablewrap { overflow-x: auto; margin: 22px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 560px; }
+  th, td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  th {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--faint); font-weight: 500;
+    border-bottom: 1px solid var(--rule); white-space: nowrap;
+  }
+  td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; padding-right: 18px; }
+  tbody tr:last-child td { border-bottom: none; }
+  .cmd { font-family: var(--mono); font-size: 12.5px; line-height: 1.55; color: var(--ink); }
+
+  .chip {
+    display: inline-block; font-family: var(--mono); font-size: 11px;
+    letter-spacing: .05em; padding: 2px 8px; border-radius: 3px; white-space: nowrap;
+  }
+  .chip-dead { background: var(--dead-soft); color: var(--dead); }
+  .chip-live { background: var(--warn-soft); color: var(--warn); }
+  .chip-yes { background: var(--accent-soft); color: var(--accent); }
+
+  .callout {
+    border-left: 3px solid var(--accent); background: var(--surface);
+    padding: 16px 20px; margin: 26px 0; border-radius: 0 5px 5px 0;
+    box-shadow: var(--shadow);
+  }
+  .callout p { margin: 6px 0; max-width: none; }
+  .callout .lead {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+  }
+  .callout.open { border-left-color: var(--warn); }
+  .callout.open .lead { color: var(--warn); }
+
+  .branches { display: grid; gap: 16px; margin: 24px 0; }
+  @media (min-width: 700px) { .branches { grid-template-columns: 1fr 1fr; } }
+  .branch {
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 6px;
+    padding: 18px 20px; box-shadow: var(--shadow);
+  }
+  .branch h4 {
+    font-family: var(--display); font-size: 16px; font-weight: 600; margin: 0 0 8px;
+  }
+  .branch p { font-size: 14.5px; margin: 8px 0 0; color: var(--muted); max-width: none; }
+
+  hr { border: none; border-top: 1px solid var(--rule); margin: 48px 0 0; }
+  footer { color: var(--faint); font-size: 13px; margin-top: 20px; }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Stage A · 2026-09-04 / 05</div>
+  <h1>DFD 阶段 A 实验地图</h1>
+  <p class="standfirst">两天里跑了十二条命令。这页把它们放回一张图上：每条在测什么假设，得到了什么，排除了什么，以及八个假设全部关闭之后剩下的那个结论。</p>
+</header>
+
+<h2><span class="num">00</span>先说清楚：阶段 A 到底在做什么</h2>
+
+<p>阶段 A 的产出<strong>不是一个分类器</strong>，而是一个<strong>特征提取器</strong>。分类头只是训练时的脚手架，训完就丢掉，只有提取器的权重会交给阶段 B。</p>
+
+<figure>
+  <div class="figbox">
+    <svg viewBox="0 0 860 250" role="img" aria-label="阶段 A 的流水线：DFD 视频抽点成 8 帧片段，经 3D-CNN 提取器得到 15488 维特征，再经线性头判真假；训练结束后头被丢弃，只有提取器交给阶段 B。">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"/>
+        </marker>
+      </defs>
+
+      <g fill="none" stroke="currentColor" stroke-width="1.25">
+        <rect x="16" y="58" width="164" height="72" rx="4"/>
+        <rect x="240" y="58" width="164" height="72" rx="4"/>
+        <rect x="464" y="58" width="164" height="72" rx="4" stroke="#14655F" stroke-width="2"/>
+        <rect x="688" y="58" width="156" height="72" rx="4" stroke-dasharray="4 3"/>
+      </g>
+
+      <g font-family="IBM Plex Sans SC, sans-serif" font-size="13" fill="currentColor" text-anchor="middle">
+        <text x="98" y="88">DFD 视频</text>
+        <text x="322" y="88">8 帧片段</text>
+        <text x="546" y="82" fill="#14655F" font-weight="600">3D-CNN 提取器</text>
+        <text x="766" y="82">线性头</text>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" text-anchor="middle" opacity=".62">
+        <text x="98" y="108">1920 × 1080</text>
+        <text x="322" y="108">960 × 540</text>
+        <text x="546" y="102">90,280 参数</text>
+        <text x="546" y="118">→ 15488 维特征</text>
+        <text x="766" y="102">7,930,881 参数</text>
+        <text x="766" y="118">→ 真 / 假</text>
+      </g>
+
+      <g stroke="currentColor" stroke-width="1.25" marker-end="url(#ar)">
+        <line x1="180" y1="94" x2="232" y2="94"/>
+        <line x1="404" y1="94" x2="456" y2="94"/>
+        <line x1="628" y1="94" x2="680" y2="94"/>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" text-anchor="middle" opacity=".72">
+        <text x="206" y="84">抽点 ×2</text>
+        <text x="430" y="84">卷积</text>
+        <text x="654" y="84">BCE</text>
+      </g>
+
+      <g stroke="#14655F" stroke-width="1.25" fill="none">
+        <path d="M 546 130 L 546 172 L 300 172" marker-end="url(#ar)"/>
+      </g>
+      <text x="292" y="176" font-family="IBM Plex Sans SC, sans-serif" font-size="12.5" fill="#14655F" text-anchor="end" font-weight="600">唯一的产出 → 阶段 B</text>
+
+      <g stroke="currentColor" stroke-width="1.25" fill="none" stroke-dasharray="4 3" opacity=".55">
+        <path d="M 766 130 L 766 208 L 640 208"/>
+      </g>
+      <text x="628" y="212" font-family="IBM Plex Sans SC, sans-serif" font-size="12.5" fill="currentColor" text-anchor="end" opacity=".7">训完丢弃</text>
+    </svg>
+  </div>
+  <figcaption>那个头是 <code>fc1 → dropout → out</code>，<strong>两个线性层之间没有激活函数</strong>（<span class="mono">model.py:253-255</span>）。两个线性映射复合起来还是线性的，所以 793 万参数等价于一个 15488 维的权重向量。这意味着「阶段 A 成功了吗」只有一个含义：<strong>一个线性分类器能不能从提取器的特征里分开真假。</strong></figcaption>
+</figure>
+
+<div class="callout">
+  <div class="lead">成功判据</div>
+  <p>在<strong>没见过的身份</strong>上，线性探针的 AUROC 显著高于 0.5。训练损失只是健康检查，不是判据——它只说明能不能拟合训练集。</p>
+</div>
+
+<h2><span class="num">01</span>主实验：跑了，失败了</h2>
+
+<p>DFD 整帧、抽点 ×2、ReLU + BatchNorm，计划 60 轮。第 11 轮起训练损失就钉在 <span class="mono">ln 2 = 0.6931</span> 不动——那是「对所有输入都输出 0.5」的平凡解，也就是<strong>什么都没学到</strong>。</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>epoch</th><th class="num">训练 BCE</th><th class="num">验证 AUROC</th><th>状态</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">1</td><td class="num">1.5400</td><td class="num">0.4745</td><td>下降中</td></tr>
+    <tr><td class="mono">2</td><td class="num">0.8420</td><td class="num">0.5660</td><td>下降中</td></tr>
+    <tr><td class="mono">11</td><td class="num">0.6980</td><td class="num">0.3948</td><td>触底</td></tr>
+    <tr><td class="mono">13</td><td class="num">0.6964</td><td class="num">0.4366</td><td>不动</td></tr>
+    <tr><td class="mono">15</td><td class="num">0.6943</td><td class="num">0.4275</td><td>不动</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>验证 AUROC 在 0.39–0.61 之间乱跳，但那 62 条视频的区间本来就盖住 0.5，读不出信息。真正的信号是训练损失。</p>
+
+<h2><span class="num">02</span>为什么失败？四个可能，各自对应不同的修法</h2>
+
+<p>这就是后面十二条命令的由来。每一条都在打其中一个假设，因为<strong>直接重跑主实验来试错，一次要 11 小时</strong>。</p>
+
+<figure>
+  <div class="figbox">
+    <svg viewBox="0 0 840 470" role="img" aria-label="假设排除图：主实验失败后分出学习率、表征、实现、数据四个假设，四个分支全部关闭；v9arch 实验指出问题跟着数据集走，结论是 DFD 在这套架构下不可学。">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"/>
+        </marker>
+      </defs>
+
+      <rect x="270" y="12" width="300" height="46" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <text x="420" y="32" font-family="IBM Plex Sans SC, sans-serif" font-size="13.5" fill="currentColor" text-anchor="middle" font-weight="600">主实验失败</text>
+      <text x="420" y="49" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" text-anchor="middle" opacity=".65">train BCE = ln 2 = 0.6931</text>
+
+      <g stroke="currentColor" stroke-width="1.25" fill="none">
+        <path d="M 420 58 L 420 78"/>
+        <path d="M 110 78 L 730 78"/>
+        <path d="M 110 78 L 110 100" marker-end="url(#ar2)"/>
+        <path d="M 317 78 L 317 100" marker-end="url(#ar2)"/>
+        <path d="M 523 78 L 523 100" marker-end="url(#ar2)"/>
+        <path d="M 730 78 L 730 100" marker-end="url(#ar2)"/>
+      </g>
+
+      <g fill="none" stroke="currentColor" stroke-width="1.25">
+        <rect x="20" y="104" width="180" height="40" rx="4"/>
+        <rect x="227" y="104" width="180" height="40" rx="4"/>
+        <rect x="433" y="104" width="180" height="40" rx="4"/>
+        <rect x="640" y="104" width="180" height="40" rx="4"/>
+      </g>
+      <g font-family="IBM Plex Sans SC, sans-serif" font-size="13" fill="currentColor" text-anchor="middle" font-weight="600">
+        <text x="110" y="129">① 优化</text>
+        <text x="317" y="129">② 表征</text>
+        <text x="523" y="129">③ 实现</text>
+        <text x="730" y="129">④ 数据</text>
+      </g>
+
+      <g font-family="IBM Plex Sans SC, sans-serif" font-size="11.5" fill="currentColor" text-anchor="middle" opacity=".68">
+        <text x="110" y="164">学习率衰减太快</text>
+        <text x="317" y="164">整帧把人脸稀释了</text>
+        <text x="523" y="164">代码或流水线有 bug</text>
+        <text x="730" y="164">视频损坏 / 标签噪声</text>
+      </g>
+
+      <g stroke="currentColor" stroke-width="1.25" fill="none" marker-end="url(#ar2)">
+        <line x1="110" y1="174" x2="110" y2="196"/>
+        <line x1="317" y1="174" x2="317" y2="196"/>
+        <line x1="523" y1="174" x2="523" y2="196"/>
+        <line x1="730" y1="174" x2="730" y2="196"/>
+      </g>
+
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" text-anchor="middle" opacity=".8">
+        <text x="110" y="212">C：恒定学习率</text>
+        <text x="317" y="212">s44 / max pooling</text>
+        <text x="317" y="228">特征探针</text>
+        <text x="523" y="212">v9 校准探针</text>
+        <text x="730" y="212">解码扫描 + seek 保真</text>
+      </g>
+
+      <g stroke="currentColor" stroke-width="1.25" fill="none" marker-end="url(#ar2)">
+        <line x1="110" y1="222" x2="110" y2="252"/>
+        <line x1="317" y1="238" x2="317" y2="252"/>
+        <line x1="523" y1="222" x2="523" y2="252"/>
+        <line x1="730" y1="222" x2="730" y2="252"/>
+      </g>
+
+      <g stroke-width="1.25">
+        <rect x="42" y="256" width="136" height="30" rx="15" fill="none" stroke="currentColor" stroke-dasharray="4 3" opacity=".5"/>
+        <rect x="249" y="256" width="136" height="30" rx="15" fill="none" stroke="currentColor" stroke-dasharray="4 3" opacity=".5"/>
+        <rect x="455" y="256" width="136" height="30" rx="15" fill="none" stroke="currentColor" stroke-dasharray="4 3" opacity=".5"/>
+        <rect x="662" y="256" width="136" height="30" rx="15" fill="none" stroke="currentColor" stroke-dasharray="4 3" opacity=".5"/>
+      </g>
+      <g font-family="IBM Plex Sans SC, sans-serif" font-size="12" text-anchor="middle" font-weight="600">
+        <text x="110" y="276" fill="currentColor" opacity=".62">已排除</text>
+        <text x="317" y="276" fill="currentColor" opacity=".62">探针 = 随机</text>
+        <text x="523" y="276" fill="currentColor" opacity=".62">已排除</text>
+        <text x="730" y="276" fill="currentColor" opacity=".62">已排除</text>
+      </g>
+
+      <g stroke="currentColor" stroke-width="1.25" fill="none">
+        <path d="M 317 286 L 317 320"/>
+        <path d="M 317 320 L 420 320"/>
+        <path d="M 420 320 L 420 340" marker-end="url(#ar2)"/>
+      </g>
+
+      <rect x="150" y="344" width="540" height="46" rx="4" fill="none" stroke="currentColor" stroke-width="1.25"/>
+      <text x="420" y="364" font-family="IBM Plex Sans SC, sans-serif" font-size="12.5" fill="currentColor" text-anchor="middle">「整帧不行」还是「DFD 不行」？v9arch 拆开这个混淆</text>
+      <text x="420" y="381" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" text-anchor="middle" opacity=".65">DFD + 人脸裁剪 → 探针只动 +0.012</text>
+
+      <line x1="420" y1="390" x2="420" y2="412" stroke="currentColor" stroke-width="1.25" marker-end="url(#ar2)" fill="none"/>
+
+      <rect x="190" y="412" width="460" height="48" rx="4" fill="none" stroke="#14655F" stroke-width="2"/>
+      <text x="420" y="436" font-family="IBM Plex Sans SC, sans-serif" font-size="13.5" fill="#14655F" text-anchor="middle" font-weight="600">DFD 在这套架构下不可学</text>
+      <text x="420" y="452" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#14655F" text-anchor="middle" opacity=".8">八个假设全部关闭</text>
+    </svg>
+  </div>
+  <figcaption>四个假设各自需要完全不同的修法，所以必须先分清是哪一个。虚线圈表示已经关闭的分支。</figcaption>
+</figure>
+
+<h2><span class="num">03</span>每条命令在干什么</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>#</th><th>命令</th><th>目的</th><th>结果</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="mono">1</td>
+      <td class="cmd">pretrain_extractor.py<br>--config stage_a_dfd.yaml</td>
+      <td>主实验第一次启动</td>
+      <td>一轮就杀掉：配置漏了 <code>activation</code> / <code>norm</code>，回退成 sigmoid 老架构</td>
+    </tr>
+    <tr>
+      <td class="mono">2</td>
+      <td class="cmd">同上<br>--activation relu --norm batch</td>
+      <td>主实验，正确架构</td>
+      <td><strong>失败</strong>。第 11 轮起钉在 ln 2</td>
+    </tr>
+    <tr>
+      <td class="mono">3</td>
+      <td class="cmd">--train-identities 4<br>--samples-per-group 64</td>
+      <td>能不能学？只给 71 条视频看它记不记得住</td>
+      <td>平台 <span class="mono">0.5241</span>。能学一点，但很吃力</td>
+    </tr>
+    <tr>
+      <td class="mono">4</td>
+      <td class="cmd">--spatial-output-size 44</td>
+      <td>假设②：把最后一步的 14.6:1 平均降到 3.7:1</td>
+      <td><span class="chip chip-dead">不定</span> 头涨了 4 倍而学习率没调，没收敛</td>
+    </tr>
+    <tr>
+      <td class="mono">5</td>
+      <td class="cmd">--pool-type max</td>
+      <td>假设②：平均池化会抹掉高频伪造痕迹吗</td>
+      <td>平台 <span class="mono">0.5161</span>，和基线无差别</td>
+    </tr>
+    <tr>
+      <td class="mono">6</td>
+      <td class="cmd">--config stage_a_dfd_constlr.yaml</td>
+      <td>假设①：学习率衰减把训练饿死了吗</td>
+      <td><span class="chip chip-dead">排除</span> 恒定学习率<strong>每一段都更差</strong></td>
+    </tr>
+    <tr>
+      <td class="mono">7</td>
+      <td class="cmd">同上 + --spatial-output-size 44</td>
+      <td>本想给 s44 配更合适的学习率</td>
+      <td>设计有误：恒定 1e-4 后期反而<strong>更高</strong>，没测到想测的东西</td>
+    </tr>
+    <tr>
+      <td class="mono">8</td>
+      <td class="cmd">feature_diagnostics.py<br>--checkpoint …decimate_pretrain</td>
+      <td>直接量：提取器的特征里到底有没有类别信息</td>
+      <td>留出探针 <span class="mono">0.4778</span>，随机初始化 <span class="mono">0.4878</span></td>
+    </tr>
+    <tr>
+      <td class="mono">9</td>
+      <td class="cmd">feature_diagnostics.py<br>--checkpoint …v9_bn</td>
+      <td><strong>校准这把尺子</strong>：拿它量一个已知成功的旧模型</td>
+      <td><span class="chip chip-yes">尺子可信</span> <span class="mono">0.7322</span>，对比它真实的 0.7773</td>
+    </tr>
+    <tr>
+      <td class="mono">10</td>
+      <td class="cmd">feature_diagnostics.py<br>--checkpoint …v9arch</td>
+      <td>拆开混淆：是整帧的错，还是 DFD 的错</td>
+      <td><span class="chip chip-yes">关键</span> DFD + 人脸裁剪也只有 <span class="mono">+0.012</span></td>
+    </tr>
+    <tr>
+      <td class="mono">12</td>
+      <td class="cmd">seek_fidelity.py<br>--workers 12</td>
+      <td>假设④之二：seek 是不是拿错了帧、把片段读成静止的</td>
+      <td><span class="chip chip-dead">排除</span> 两轮都是 100% 命中、0% 冻结</td>
+    </tr>
+    <tr>
+      <td class="mono">11</td>
+      <td class="cmd">scan_decode_health.py</td>
+      <td>假设④：DFD 的视频文件是不是坏的</td>
+      <td><span class="chip chip-dead">排除</span> 2328 条全部干净，零损坏</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>第 9 条是整件事的转折。前面八条都在整帧路线内调参数，而第 9、10 条只是<strong>读两个几个月前就存在的旧 checkpoint</strong>，不训练任何东西，十几分钟就把方向问题定了。</p>
+
+<div class="callout">
+  <div class="lead">教训</div>
+  <p>假设①（优化）和③（实现）应该<strong>最先排除</strong>，因为它们最便宜。我把顺序搞反了，先花半天在假设②上逐个试超参。</p>
+</div>
+
+<h2><span class="num">04</span>决定方向的那张表</h2>
+
+<p>同一把校准过的尺子，量三个 checkpoint。<span class="mono">增量</span> = 训练后的探针减去随机初始化的探针，也就是「训练到底带来了多少」。</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th></th><th>v9</th><th>v9arch</th><th>主实验</th></tr></thead>
+  <tbody>
+    <tr><td>数据集</td><td>CelebDFv3</td><td><strong>DFD</strong></td><td>DFD</td></tr>
+    <tr><td>输入</td><td>人脸裁剪</td><td><strong>人脸裁剪</strong></td><td>整帧</td></tr>
+    <tr><td>端到端 AUROC</td><td class="num">0.7773</td><td class="num">0.6083</td><td class="num">0.6157</td></tr>
+    <tr><td>探针（训练后）</td><td class="num">0.7322</td><td class="num">0.5956</td><td class="num">0.4778</td></tr>
+    <tr><td>探针（随机初始化）</td><td class="num">0.5422</td><td class="num">0.5833</td><td class="num">0.4878</td></tr>
+    <tr><td><strong>增量</strong></td><td class="num"><strong>+0.1900</strong></td><td class="num"><strong>+0.0122</strong></td><td class="num"><strong>−0.0100</strong></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>v9 的探针读 0.7322，而它真实的端到端成绩是 0.7773——尺子不只是「能报正数」，读数本身就贴近真实性能。而 DFD 无论裁不裁脸，增量都只有 v9 的<strong>十分之一</strong>。</p>
+
+<p>补充一条关键核实：v9arch <strong>跑满了 60 轮</strong>，最好的验证成绩停在第 4 轮再没提升，训练损失最终是 <span class="mono">0.9198</span>——仍然在 ln 2 之上。<strong>DFD 加人脸裁剪，跑满 60 轮，连训练集都没拟合。</strong></p>
+
+<h2><span class="num">05</span>结论：这是结果，不是失败</h2>
+
+<p>最后两个假设也关掉了。<strong>2328 条 DFD 视频逐帧完整解码，零损坏、零超时</strong>，两个类别都是 0.0%；<strong>seek 保真测试两轮 100% 命中、0% 冻结</strong>，第二轮还专门对齐了训练时的 12 路并发、复用句柄、整条视频的条件。</p>
+
+<p>训练日志里那些 <span class="mono">Invalid NAL unit size</span> 和 30 秒超时确实发生过，但它们没有导致模型拿到错误或重复的帧。读取路径是干净的。</p>
+
+<div class="callout">
+  <div class="lead">最终结论</div>
+  <p><strong>DFD 在这套架构下不可学。</strong>同一套流水线、同一个提取器、同一把校准过的尺子：在 CelebDFv3 上把留出探针推到 <span class="mono">+0.190</span>，在 DFD 上无论裁不裁脸都只有 <span class="mono">+0.012</span> 和 <span class="mono">−0.010</span>。</p>
+  <p>证据链是完整的：一把在已知成功模型上校准过的仪器，量了三个 checkpoint，加上八个逐一关闭的假设。<strong>这是可以写进论文的阴性结果。</strong></p>
+</div>
+
+<h3>接下来是方案决定，不是再做诊断</h3>
+
+<p>诊断预算用尽了。剩下的三个选项要跟导师商量：</p>
+
+<div class="branches">
+  <div class="branch">
+    <h4>① 阶段 A 挪到 CelebDFv3</h4>
+    <p>DFD 退成跨数据集测试集。保留身份不相交划分和会上定下的每一条，唯一改动是「谁来训练提取器」。<strong>代价</strong>：会上定的「DFD 用整帧抽点」失去落点，需要重新讨论。</p>
+  </div>
+  <div class="branch">
+    <h4>② 保留 DFD，大改提取器</h4>
+    <p>换更深或预训练的骨干网络。<strong>代价</strong>：偏离 Leyva 那篇的复现，而复现正是这个课题的出发点。</p>
+  </div>
+  <div class="branch">
+    <h4>③ 把不可学本身作为结果报告</h4>
+    <p>论文建在 CelebDFv3 上，DFD 的阴性结果单独成节。和 ① 是互补的，不是替代。</p>
+  </div>
+  <div class="branch">
+    <h4>还有一个悬着的问题</h4>
+    <p>Leyva 那篇的 FC1 后面到底有没有激活函数？仓库里没有任何注释记录当前这个线性头的出处。<strong>如果原文有，那是复现层面的 bug，阶段 B 一样受影响。</strong>这个只能查原文。</p>
+  </div>
+</div>
+
+<h2><span class="num">06</span>已经关掉的假设，别再重测</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>假设</th><th>状态</th><th>证据</th></tr></thead>
+  <tbody>
+    <tr><td>学习率衰减太快</td><td><span class="chip chip-dead">排除</span></td><td>恒定学习率每一段都更差，保持 <code>lr_gamma: 0.95</code></td></tr>
+    <tr><td>特征塌缩</td><td><span class="chip chip-dead">排除</span></td><td><span class="mono">relative_variation</span> = 0.97，视频间差异很大</td></tr>
+    <tr><td>特征可分但优化传不过卷积</td><td><span class="chip chip-dead">排除</span></td><td>留出探针本来就在随机水平</td></tr>
+    <tr><td>整帧输入是瓶颈</td><td><span class="chip chip-dead">排除</span></td><td>DFD 换人脸裁剪同样失败</td></tr>
+    <tr><td>身份数量不够</td><td><span class="chip chip-dead">更早排除</span></td><td>v11 把 CelebDFv3 砍到 20 个身份只掉 0.03</td></tr>
+    <tr><td>人脸检测失败</td><td><span class="chip chip-dead">更早排除</span></td><td>Haar / MTCNN / RetinaFace 对比测量过</td></tr>
+    <tr><td>视频文件损坏</td><td><span class="chip chip-dead">排除</span></td><td>2328 条 DFD 视频逐帧解码，两类都是 0.0%</td></tr>
+    <tr><td>读取路径拿错帧</td><td><span class="chip chip-dead">排除</span></td><td>单进程与 12 路并发下都是 100% 命中、0% 冻结</td></tr>
+    <tr><td>clip 级标签噪声</td><td><span class="chip chip-live">未测</span></td><td>视频级 fake 标签打在没有可见篡改的 8 帧窗口上；诊断预算已用尽，留作论文里的讨论</td></tr>
+  </tbody>
+</table>
+</div>
+
+<hr>
+<footer>
+  完整数字与逐轮记录见仓库 <span class="mono">docs/stage_a_experiment_log.md</span>；实验方案见 <span class="mono">docs/stage_a_protocol.html</span>。
+</footer>
+
+</div>

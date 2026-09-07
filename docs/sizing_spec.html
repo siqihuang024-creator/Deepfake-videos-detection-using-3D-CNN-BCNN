@@ -1,0 +1,277 @@
+<title>CelebDF++ and DFD Frame Sizing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#F0F1F4; --surface:#FFFFFF; --surface-2:#E7E9EE;
+    --ink:#16181E; --muted:#585F6A; --faint:#8A929D;
+    --rule:#DADDE3; --rule-strong:#B4BAC4;
+    --accent:#34518F; --accent-soft:#E2E7F3;
+    --gain:#2A6647; --gain-soft:#DCEAE2;
+    --regress:#9C4526; --regress-soft:#F2E2DA;
+    --measure:68ch;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1115;--surface:#171A20;--surface-2:#1E222A;
+      --ink:#E2E5EA;--muted:#98A1AC;--faint:#6E7783;
+      --rule:#262B34;--rule-strong:#3A414C;
+      --accent:#8098DB;--accent-soft:#1A2136;
+      --gain:#66A987;--gain-soft:#152420;
+      --regress:#C9805A;--regress-soft:#2A1B14;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1115;--surface:#171A20;--surface-2:#1E222A;
+    --ink:#E2E5EA;--muted:#98A1AC;--faint:#6E7783;
+    --rule:#262B34;--rule-strong:#3A414C;
+    --accent:#8098DB;--accent-soft:#1A2136;
+    --gain:#66A987;--gain-soft:#152420;
+    --regress:#C9805A;--regress-soft:#2A1B14;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    font-size:15.5px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:0 26px 100px}
+  header.mast{padding:64px 0 26px;border-bottom:2px solid var(--ink)}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  h1{font-weight:600;font-size:clamp(28px,4.2vw,38px);line-height:1.2;margin:0;
+    letter-spacing:-.015em;text-wrap:balance}
+  .standfirst{max-width:var(--measure);margin:16px 0 0;color:var(--muted);font-size:16px}
+  section{padding-top:44px}
+  h2{font-weight:600;font-size:21px;line-height:1.35;margin:0 0 4px;
+    display:flex;gap:12px;align-items:baseline}
+  h2 .num{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:500;
+    color:var(--accent);flex:none}
+  h3{font-weight:600;font-size:16px;margin:28px 0 2px}
+  p{max-width:var(--measure);margin:12px 0}
+  ul,ol{max-width:var(--measure);padding-left:1.2em;margin:12px 0}
+  li{margin:6px 0}
+  strong{font-weight:500;background:linear-gradient(transparent 62%,var(--accent-soft) 62%);padding:0 1px}
+  code,.mono{font-family:"IBM Plex Mono",monospace;font-size:.9em;font-variant-numeric:tabular-nums}
+  code{background:var(--surface-2);padding:1px 5px;border-radius:2px}
+  hr{border:0;border-top:1px solid var(--rule);margin:44px 0 0}
+  .tw{overflow-x:auto;margin:20px 0;border:1px solid var(--rule);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  caption{caption-side:top;text-align:left;padding:12px 18px 10px;font-size:13px;
+    color:var(--muted);border-bottom:1px solid var(--rule)}
+  caption b{font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--accent);
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-right:10px}
+  th,td{padding:8px 14px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;
+    letter-spacing:.05em;color:var(--muted);text-transform:uppercase;
+    border-bottom:1px solid var(--rule-strong)}
+  tbody td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  tbody td:first-child{font-family:"IBM Plex Sans",sans-serif}
+  tbody tr:last-child td{border-bottom:0}
+  tr.hi td{background:var(--gain-soft)}
+  tr.warn td{background:var(--regress-soft)}
+  .up{color:var(--gain)} .dn{color:var(--regress)} .dim{color:var(--faint)}
+  .key{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+    padding:16px 20px;margin:20px 0;max-width:var(--measure)}
+  .key.warn{border-left-color:var(--regress)}
+  .key p{margin:0;max-width:none} .key p+p{margin-top:10px}
+  .key .tag{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+  .key.warn .tag{color:var(--regress)}
+  .spec{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;max-width:var(--measure);margin:16px 0}
+  .spec dt{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--accent);white-space:nowrap}
+  .spec dd{margin:0;color:var(--muted);font-size:14.5px}
+  footer{margin-top:54px;padding-top:18px;border-top:1px solid var(--rule);color:var(--faint);font-size:12.5px}
+  @media (max-width:640px){
+    .wrap{padding:0 16px 70px}
+    .spec{grid-template-columns:1fr;gap:1px 0}
+    .spec dd{margin-bottom:10px}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Preprocessing specification &middot; 2026-09-02</p>
+  <h1>CelebDF++ and DFD Frame Sizing</h1>
+  <p class="standfirst">The input resolution each dataset is mapped to, the transformation applied to reach it, and how that resolution is handled in the two cross-dataset settings.</p>
+</header>
+
+<section>
+  <h2><span class="num">Summary</span>One canvas for all four settings</h2>
+
+  <div class="key">
+    <span class="tag">Specification</span>
+    <p>Every video in both datasets is resized to a single <strong>768 &times; 432</strong> canvas: scaled to fit while preserving aspect ratio, then padded on the short side with replicated edge pixels. No face detection, no cropping. The whole frame is kept.</p>
+    <p>The same transformation is applied in training, validation and testing, and in all four train/test combinations. Only the data source differs between settings.</p>
+  </div>
+
+  <p>The rest of this document gives the measurements behind the choice of 768&times;432, the argument for a single canvas rather than one per dataset, and one confound that the choice does not remove.</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">1</span>What the datasets actually contain</h2>
+  <p>Measured over all 57,517 videos for resolution, and over 40 sampled videos per category for face size (Haar cascade, middle frame of each video).</p>
+
+  <div class="tw">
+    <table>
+      <caption><b>Table 1</b>Resolution. CelebDF++ is heterogeneous and the heterogeneity is class-correlated; DFD is uniform.</caption>
+      <thead><tr><th>Dataset / class</th><th>Videos</th><th>Distinct sizes</th><th>Median aspect</th><th>Square</th><th>Most common</th></tr></thead>
+      <tbody>
+        <tr><td>CelebDF++ real</td><td>890</td><td>128</td><td>1.79</td><td class="up">0.2%</td><td>892&times;500, 856&times;478</td></tr>
+        <tr class="warn"><td>CelebDF++ fake</td><td>53,196</td><td>137</td><td>1.00</td><td class="dn">59.6%</td><td>256&times;256 (43%), 512&times;512 (16%)</td></tr>
+        <tr><td>DFD real</td><td>363</td><td>1</td><td>1.78</td><td>0%</td><td>1920&times;1080</td></tr>
+        <tr><td>DFD fake</td><td>3,068</td><td>1</td><td>1.78</td><td>0%</td><td>1920&times;1080</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption><b>Table 2</b>Face size, measured rather than assumed. The thirteen CelebDF++ methods that write squares emit a head-and-shoulders close-up; the eight FaceSwap methods composite back into the source frame and match the reals.</caption>
+      <thead><tr><th>Category</th><th>Frame</th><th>Face width</th><th>Share of frame width</th></tr></thead>
+      <tbody>
+        <tr><td>CelebDF++ real (Web)</td><td>942&times;500</td><td>164 px</td><td>19.7%</td></tr>
+        <tr><td>CelebDF++ real (YouTube)</td><td>892&times;500</td><td>172 px</td><td>19.6%</td></tr>
+        <tr><td>CelebDF++ fake, FaceSwap</td><td>wide</td><td>148 px</td><td>17.4%</td></tr>
+        <tr class="warn"><td>CelebDF++ fake, FaceReenact</td><td>256&times;256</td><td>148 px</td><td class="dn">57.8%</td></tr>
+        <tr class="warn"><td>CelebDF++ fake, TalkingFace</td><td>256&times;256</td><td>164 px</td><td class="dn">64.1%</td></tr>
+        <tr><td>DFD real</td><td>1920&times;1080</td><td>206 px</td><td>10.7%</td></tr>
+        <tr><td>DFD fake</td><td>1920&times;1080</td><td>238 px</td><td>12.4%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">2</span>Choosing 768 &times; 432</h2>
+  <p>The canvas has to leave the face large enough to carry the evidence. Two reference points from earlier runs fix the scale:</p>
+  <ul>
+    <li><strong>149 px</strong> &mdash; the face size under the face-cropped pipeline used through run v15, which reached 0.7774 test AUROC (0.7226 on the resolution-matched subset).</li>
+    <li><strong>47 px</strong> &mdash; the face size when run v12 used the whole frame at 224&times;224. All eight FaceSwap methods collapsed from 0.742 to 0.547, essentially chance. Blending seams are two to three pixels wide and did not survive.</li>
+  </ul>
+
+  <div class="tw">
+    <table>
+      <caption><b>Table 3</b>Face size in the network input under each candidate canvas, aspect ratio preserved.</caption>
+      <thead><tr><th>Canvas</th><th>CelebDF++ real</th><th>CelebDF++ wide fake</th><th>CelebDF++ square fake</th><th>DFD</th></tr></thead>
+      <tbody>
+        <tr class="warn"><td>256 &times; 256</td><td class="dn">50 px</td><td class="dn">45 px</td><td>148 px</td><td class="dn">27 px</td></tr>
+        <tr><td>512 &times; 512</td><td>101 px</td><td>89 px</td><td>296 px</td><td>55 px</td></tr>
+        <tr class="hi"><td>768 &times; 432</td><td class="up">151 px</td><td class="up">134 px</td><td>250 px</td><td>82 px</td></tr>
+        <tr><td>896 &times; 504</td><td>177 px</td><td>156 px</td><td>291 px</td><td>96 px</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>256&times;256 is not viable.</strong> It puts a CelebDF++ face at 50 px and a DFD face at 27 px, both at or below the size at which v12's face-swap detection collapsed.</p>
+
+  <p><strong>768&times;432 keeps the face at 151 px</strong> &mdash; the same detail the face-cropped pipeline had &mdash; while retaining the whole scene. A 16:9 canvas rather than a square one because every real video and every DFD video is close to 16:9: a square canvas would spend 44% of its pixels on padding for exactly those videos.</p>
+
+  <h3>Transformation per source resolution</h3>
+  <div class="tw">
+    <table>
+      <caption><b>Table 4</b>What the transformation does to each common source size. Scale factor is <span class="mono">min(768/W, 432/H)</span>; padding is replicated edge pixels, split evenly.</caption>
+      <thead><tr><th>Source</th><th>Where it occurs</th><th>Scale</th><th>Content size</th><th>Padding</th></tr></thead>
+      <tbody>
+        <tr><td>892 &times; 500</td><td>CelebDF++ real</td><td>&times;0.861</td><td>768 &times; 431</td><td>0.2%</td></tr>
+        <tr><td>856 &times; 478</td><td>CelebDF++ real / FaceSwap</td><td>&times;0.897</td><td>768 &times; 429</td><td>0.7%</td></tr>
+        <tr><td>942 &times; 500</td><td>CelebDF++ real / FaceSwap</td><td>&times;0.815</td><td>768 &times; 408</td><td>5.6%</td></tr>
+        <tr class="warn"><td>256 &times; 256</td><td>CelebDF++ FaceReenact, TalkingFace</td><td>&times;1.688</td><td>432 &times; 432</td><td class="dn">43.8%</td></tr>
+        <tr class="warn"><td>512 &times; 512</td><td>CelebDF++ TalkingFace</td><td>&times;0.844</td><td>432 &times; 432</td><td class="dn">43.8%</td></tr>
+        <tr><td>1920 &times; 1080</td><td>DFD, all</td><td>&times;0.400</td><td>768 &times; 432</td><td>0%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>DFD needs no special handling: it is uniformly 16:9, so it maps onto the canvas with no padding at all and is only downsampled.</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">3</span>Why one canvas rather than one per dataset</h2>
+  <p>A per-dataset canvas &mdash; say 256&times;256 for CelebDF++ and native 1920&times;1080 for DFD &mdash; is coherent for settings&nbsp;1 and&nbsp;2, where each model only ever sees one scale. It breaks in settings&nbsp;3 and&nbsp;4 for two reasons.</p>
+
+  <p><strong>Convolution kernels have a fixed pixel scale.</strong> A 5&times;5 kernel spans a different physical extent at each resolution. A model trained where faces are 50 px wide and tested where they are 27 px is being asked to read structures at roughly half the size it learned. The resulting number would measure scale mismatch, not generalisation.</p>
+
+  <div class="tw">
+    <table>
+      <caption><b>Table 5</b>Face size seen in training versus at cross-dataset test, if each dataset kept its own canvas.</caption>
+      <thead><tr><th>Setting</th><th>Face in training</th><th>Face at test</th><th>Mismatch</th></tr></thead>
+      <tbody>
+        <tr class="warn"><td>CelebDF++ @256 &rarr; DFD @256</td><td>50 px</td><td>27 px</td><td class="dn">1.9&times;</td></tr>
+        <tr class="warn"><td>DFD @1920 &rarr; CelebDF++ @1920</td><td>206 px</td><td>334 px</td><td class="dn">1.6&times;</td></tr>
+        <tr class="hi"><td>Single 768&times;432 canvas</td><td>151 px</td><td>82 px</td><td>1.8&times;<sup>&dagger;</sup></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><sup>&dagger;</sup> The residual 1.8&times; under a single canvas is not a preprocessing artefact: DFD frames people at full length (face 10.7% of frame width) while CelebDF++ frames them at half length (19.7%). That is a genuine domain difference between the two corpora, and it is the difference cross-dataset evaluation is supposed to expose. The per-dataset variants add a second, artificial mismatch on top of it.</p>
+
+  <p><strong>Training DFD at native resolution is not affordable.</strong> The first convolution over a 1920&times;1080 input produces 43&times; the activations of a 224&times;224 input. An epoch would go from roughly 3 minutes to over 2 hours, and a 60-epoch run from 4 hours to more than a week.</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">4</span>The four settings</h2>
+  <p>Because the canvas is shared, the specification is identical in all four rows. The table is written out in full so nothing is implicit.</p>
+
+  <div class="tw">
+    <table>
+      <caption><b>Table 6</b>Input size and video transformation for each train/test combination.</caption>
+      <thead><tr><th>#</th><th>Train</th><th>Test</th><th>Input size</th><th>Transformation applied to the training videos</th><th>Transformation applied to the test videos</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>CelebDF++</td><td>CelebDF++</td><td>768&times;432</td><td>Fit to canvas, aspect preserved, pad short side</td><td>Same</td></tr>
+        <tr><td>2</td><td>DFD</td><td>DFD</td><td>768&times;432</td><td>Downsample &times;0.400, no padding needed</td><td>Same</td></tr>
+        <tr><td>3</td><td>CelebDF++</td><td>DFD</td><td>768&times;432</td><td>Fit to canvas, aspect preserved, pad short side</td><td>Downsample &times;0.400, no padding needed</td></tr>
+        <tr><td>4</td><td>DFD</td><td>CelebDF++</td><td>768&times;432</td><td>Downsample &times;0.400, no padding needed</td><td>Fit to canvas, aspect preserved, pad short side</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <dl class="spec">
+    <dt>Canvas</dt><dd>768 &times; 432 pixels, 16:9</dd>
+    <dt>Resize</dt><dd>Scale by <span class="mono">min(768/W, 432/H)</span>, aspect ratio preserved. <span class="mono">INTER_AREA</span> when downsampling, <span class="mono">INTER_LINEAR</span> when upsampling.</dd>
+    <dt>Padding</dt><dd>Replicated edge pixels, split evenly between the two sides. Not a constant colour: a flat border is a signal no natural frame carries.</dd>
+    <dt>Face detection</dt><dd>None. This also removes the 50.3% clip-level Haar failure rate DFD suffers, and about 93% of per-item preprocessing time.</dd>
+    <dt>Normalisation</dt><dd>ImageNet channel statistics, unchanged from earlier runs.</dd>
+    <dt>Temporal</dt><dd>Independent of this specification. 8 frames per clip for the 3D model, 1 frame for the 2D control.</dd>
+  </dl>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">5</span>What this does not fix</h2>
+
+  <div class="key warn">
+    <span class="tag">Confound</span>
+    <p>In CelebDF++, aspect ratio is correlated with the label: <strong>99.8% of real videos are wide, and 59.6% of fakes are square.</strong> Under any fit-and-pad scheme the padded fraction therefore carries class information &mdash; 0.2&ndash;5.6% for reals against 43.8% for the square fakes.</p>
+    <p>The same thirteen methods also frame their subject differently: a face fills 58&ndash;64% of their frame width against 17&ndash;20% for the reals and for the eight FaceSwap methods. Proportional resizing cannot change that ratio, because it multiplies face and frame by the same factor.</p>
+  </div>
+
+  <p>No choice of canvas removes either signal. A square canvas pads the wide videos instead of the square ones; an intermediate aspect pads both, on different axes. The confound is a property of the corpus, not of the preprocessing.</p>
+
+  <h3>Proposed handling</h3>
+  <p>Train on all 22 forgery methods, and report results stratified by whether a method's output matches the reals' framing:</p>
+  <ul>
+    <li><strong>Composition-matched subset</strong> &mdash; the 8 FaceSwap methods plus LivePortrait, all native wide, 996 test videos. This is the headline number.</li>
+    <li><strong>Square subset</strong> &mdash; the remaining 13 methods, reported separately with the framing difference stated.</li>
+  </ul>
+  <p>Run v15 supports training on everything rather than filtering: restricting training to the 9 matched methods gave 0.7047 on the matched test subset against 0.7226 for training on all 22 &mdash; a difference of 0.018, not significant across the 12 test identities. <strong>Training with the shortcut available did not damage what the model learned; it only inflated the aggregate number.</strong> Stratified reporting is therefore sufficient, and the full dataset can be used.</p>
+
+  <div class="key">
+    <span class="tag">Question</span>
+    <p>Is stratified reporting on all 22 methods acceptable, or would you prefer training restricted to the 9 composition-matched methods, accepting the narrower coverage claim?</p>
+  </div>
+</section>
+
+<footer>
+  Resolutions measured over all 57,517 videos in both corpora. Face sizes from a Haar frontal cascade on the middle frame of 40 randomly sampled videos per category; they are indicative rather than exact, and the cascade misses profile and distant faces, which is itself why detection is dropped from the pipeline. Reference AUROC figures are video-level, from a 3D CNN with a mean-field Bayesian classification head, on identity-disjoint splits.
+</footer>
+
+</div>

@@ -1,0 +1,655 @@
+<title>CelebDFv3 三维贝叶斯检测实验</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --paper:#F0F1F4; --surface:#FFFFFF; --surface-2:#E7E9EE;
+    --ink:#16181E; --muted:#585F6A; --faint:#8A929D;
+    --rule:#DADDE3; --rule-strong:#B4BAC4;
+    --accent:#34518F; --accent-soft:#E2E7F3;
+    --gain:#2A6647; --gain-soft:#DCEAE2;
+    --regress:#9C4526; --regress-soft:#F2E2DA;
+    --warn:#8A6414; --warn-soft:#F4EBD6;
+    --measure:70ch;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1115;--surface:#171A20;--surface-2:#1E222A;
+      --ink:#E2E5EA;--muted:#98A1AC;--faint:#6E7783;
+      --rule:#262B34;--rule-strong:#3A414C;
+      --accent:#8098DB;--accent-soft:#1A2136;
+      --gain:#66A987;--gain-soft:#152420;
+      --regress:#C9805A;--regress-soft:#2A1B14;
+      --warn:#C6A253;--warn-soft:#272013;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1115;--surface:#171A20;--surface-2:#1E222A;
+    --ink:#E2E5EA;--muted:#98A1AC;--faint:#6E7783;
+    --rule:#262B34;--rule-strong:#3A414C;
+    --accent:#8098DB;--accent-soft:#1A2136;
+    --gain:#66A987;--gain-soft:#152420;
+    --regress:#C9805A;--regress-soft:#2A1B14;
+    --warn:#C6A253;--warn-soft:#272013;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);
+    font-family:"Noto Sans SC","IBM Plex Sans",system-ui,sans-serif;
+    font-size:15.5px;line-height:1.85;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:0 26px 110px}
+  header.mast{padding:70px 0 30px;border-bottom:2px solid var(--ink)}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+  h1{font-family:"IBM Plex Sans","Noto Sans SC",sans-serif;font-weight:600;
+    font-size:clamp(29px,4.4vw,42px);line-height:1.22;margin:0;
+    letter-spacing:-.01em;text-wrap:balance}
+  .standfirst{max-width:var(--measure);margin:18px 0 0;color:var(--muted);font-size:16px}
+  .statline{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:30px}
+  .statline div{background:var(--surface);padding:13px 16px}
+  .statline dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--faint);margin:0 0 4px}
+  .statline dd{margin:0;font-family:"IBM Plex Mono",monospace;font-size:19px;
+    font-weight:500;font-variant-numeric:tabular-nums}
+  .statline dd small{font-size:12px;color:var(--muted);font-weight:400;margin-left:5px}
+  section{padding-top:50px}
+  h2{font-family:"IBM Plex Sans","Noto Sans SC",sans-serif;font-weight:600;
+    font-size:22px;line-height:1.4;margin:0 0 4px;display:flex;gap:13px;align-items:baseline}
+  h2 .num{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:500;color:var(--accent);flex:none}
+  h3{font-family:"IBM Plex Sans","Noto Sans SC",sans-serif;font-weight:600;font-size:16.5px;margin:32px 0 2px}
+  .lede{color:var(--muted);max-width:var(--measure);margin:0 0 6px;font-size:14.5px}
+  p{max-width:var(--measure);margin:13px 0}
+  ul,ol{max-width:var(--measure);padding-left:1.2em;margin:13px 0}
+  li{margin:6px 0}
+  strong{font-weight:500;background:linear-gradient(transparent 62%,var(--accent-soft) 62%);padding:0 1px}
+  em{font-style:normal;color:var(--accent)}
+  code,.mono{font-family:"IBM Plex Mono",monospace;font-size:.9em;font-variant-numeric:tabular-nums}
+  code{background:var(--surface-2);padding:1px 5px;border-radius:2px}
+  hr{border:0;border-top:1px solid var(--rule);margin:50px 0 0}
+  .tl{margin-top:30px}
+  .rec{display:grid;grid-template-columns:80px 1fr;gap:0 22px;position:relative;padding-bottom:26px}
+  .rec::before{content:"";position:absolute;left:39px;top:34px;bottom:0;width:1px;background:var(--rule-strong)}
+  .rec:last-child::before{display:none}
+  .vchip{grid-column:1;font-family:"IBM Plex Mono",monospace;font-weight:500;
+    font-size:13.5px;text-align:center;padding:5px 0;border:1px solid var(--rule-strong);
+    background:var(--surface);height:34px;line-height:22px;position:relative;z-index:1}
+  .vchip.best{border-color:var(--gain);background:var(--gain-soft);color:var(--gain)}
+  .vchip.bad{border-color:var(--regress);background:var(--regress-soft);color:var(--regress)}
+  .vchip.run{border-color:var(--warn);background:var(--warn-soft);color:var(--warn)}
+  .rbody{grid-column:2;border:1px solid var(--rule);background:var(--surface)}
+  .rhead{padding:14px 20px 12px;border-bottom:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+  .rtitle{font-family:"IBM Plex Sans","Noto Sans SC",sans-serif;font-weight:600;font-size:16px}
+  .rmeta{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--faint);margin-left:auto}
+  .rgrid{display:grid;grid-template-columns:auto 1fr;gap:0}
+  .rgrid dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--faint);padding:12px 0 12px 20px;
+    border-top:1px solid var(--rule);white-space:nowrap}
+  .rgrid dd{margin:0;padding:12px 20px 12px 18px;border-top:1px solid var(--rule);font-size:14.5px}
+  .rgrid dt:first-of-type,.rgrid dd:first-of-type{border-top:0}
+  .rgrid dd p{margin:0;max-width:none}
+  .rgrid dd p + p{margin-top:8px}
+  .verdict.ok{color:var(--gain)} .verdict.no{color:var(--regress)} .verdict.mid{color:var(--warn)}
+  .nums{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:13.5px;color:var(--muted)}
+  .nums b{color:var(--ink);font-weight:500}
+  .tw{overflow-x:auto;margin:22px 0;border:1px solid var(--rule);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  caption{caption-side:top;text-align:left;padding:13px 18px 11px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--rule)}
+  caption b{font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--accent);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-right:10px}
+  th,td{padding:8px 14px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.05em;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--rule-strong)}
+  tbody td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  tbody td:first-child{font-family:"IBM Plex Mono",monospace;font-weight:500}
+  tbody tr:last-child td{border-bottom:0}
+  tr.hi td{background:var(--gain-soft)}
+  tr.bad td{background:var(--regress-soft)}
+  .up{color:var(--gain)} .dn{color:var(--regress)} .dim{color:var(--faint)}
+  figure{margin:26px 0;border:1px solid var(--rule);background:var(--surface);padding:22px 20px 16px}
+  figure svg{display:block;width:100%;height:auto}
+  figcaption{font-size:13px;color:var(--muted);margin-top:14px;padding-top:13px;border-top:1px solid var(--rule)}
+  figcaption b{font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--accent);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-right:10px}
+  .g-box{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1}
+  .g-box4{fill:var(--regress-soft);stroke:var(--regress);stroke-width:1}
+  .g-lab{fill:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:11px}
+  .g-lab2{fill:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500}
+  .g-red{fill:var(--regress);font-family:"IBM Plex Mono",monospace;font-size:11px}
+  .g-rule{stroke:var(--rule);stroke-width:1}
+  .g-bar-a{fill:var(--accent)} .g-bar-b{fill:var(--rule-strong)}
+  .s-wide{stroke:var(--accent);stroke-width:9;opacity:.28}
+  .s-narrow{stroke:var(--accent);stroke-width:9}
+  .s-pt{fill:var(--ink)} .s-axis{stroke:var(--rule-strong);stroke-width:1}
+  .key{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);padding:18px 22px;margin:22px 0;max-width:var(--measure)}
+  .key.alarm{border-left-color:var(--regress)}
+  .key p{margin:0;max-width:none} .key p+p{margin-top:11px}
+  .key .tag{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
+  .key.alarm .tag{color:var(--regress)}
+  dl.terms{max-width:var(--measure);margin:18px 0;display:grid;grid-template-columns:auto 1fr;gap:9px 20px}
+  dl.terms dt{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--accent);white-space:nowrap}
+  dl.terms dd{margin:0;color:var(--muted);font-size:14px}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--rule);color:var(--faint);font-size:12.5px}
+  @media (max-width:680px){
+    .wrap{padding:0 16px 70px}
+    .rec{grid-template-columns:56px 1fr;gap:0 14px} .rec::before{left:27px}
+    .rgrid{grid-template-columns:1fr}
+    .rgrid dt{padding:11px 18px 0} .rgrid dd{padding:2px 18px 12px;border-top:0}
+    .rgrid dt:first-of-type{border-top:0}
+    dl.terms{grid-template-columns:1fr;gap:1px 0} dl.terms dd{margin-bottom:11px}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">实验记录 · 2026-08-22 至 2026-08-31</p>
+  <h1>CelebDFv3 三维贝叶斯检测实验</h1>
+  <p class="standfirst">以三维卷积网络作特征提取器、贝叶斯全连接层作分类头的伪造视频监督检测。本文记录从初始基线到第十五次运行的全部配置、每次改动的动机与结果，以及期间对评估协议的两次重大修正。</p>
+  <dl class="statline">
+    <div><dt>完整训练</dt><dd>13 <small>次</small></dd></div>
+    <div><dt>诊断实验</dt><dd>14 <small>次</small></dd></div>
+    <div><dt>当前可信成绩</dt><dd>0.7226 <small>测试 AUROC</small></dd></div>
+    <div><dt>提取器参数</dt><dd>90,280</dd></div>
+    <div><dt>贝叶斯头参数</dt><dd>7,930,369</dd></div>
+  </dl>
+</header>
+
+<section>
+  <h2><span class="num">摘要</span>三条主要结论</h2>
+
+  <div class="key alarm">
+    <span class="tag">结论一 · 数据集捷径（最重要）</span>
+    <p>CelebDFv3 的伪造视频有 <strong>61% 是 256×256 或 512×512 的方形低分辨率</strong>，而真实视频 <strong>100% 是宽幅、高度 466–500</strong>。经过「裁剪人脸再缩放到 224」的流水线之后，这些伪造视频系统性地更模糊 —— <strong>模型只需判断清晰度就能答对 61% 的伪造样本，完全不必理解伪造痕迹。</strong></p>
+    <p>剔除该捷径后，最好的模型（v9）的成绩由 <span class="mono">0.7774</span> 降至 <span class="mono">0.7226</span>。此前认为「不裁剪人脸有助于检测语音驱动类伪造」以及「两种预处理融合可达 0.8148」两项结论，在无捷径子集上均不成立。</p>
+  </div>
+
+  <div class="key">
+    <span class="tag">结论二 · 评估必须按身份进行</span>
+    <p>测试集的 10,433 段伪造视频仅来自 <strong>12 个目标身份</strong>，验证集仅来自 <strong>7 个</strong>。以视频为重采样单元的自助法将不确定度<strong>低估 4 至 8 倍</strong>。七身份的验证集曾三次给出与测试集相反的模型排序，并因此导致两次方向错误的架构改动。</p>
+  </div>
+
+  <div class="key">
+    <span class="tag">结论三 · 性能上限与数据规模无关</span>
+    <p>训练身份由 251 减至 20、真实视频由 613 减至 206，测试 AUROC 仅下降 0.033 且不显著。提取器容量、时间窗口、KL 正则化的改动亦全部无效或有害。<strong>该架构的上限不由数据量或这些超参数决定。</strong></p>
+  </div>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">1</span>实验目标</h2>
+  <p>本实验是 Leyva 等人《Data-agnostic Face Image Synthesis Detection using Bayesian CNNs》的时序扩展：将原文用于单帧人脸图像的二维卷积提取器沿时间轴膨胀为三维卷积，保留其贝叶斯全连接分类头不变，在视频级伪造检测任务上验证。</p>
+  <p>整体路线分两步。<strong>第一步是监督检测</strong>——用真实与伪造视频共同训练二分类器，把性能推到可信水平。<strong>第二步是异常检测</strong>——改为单类训练，将二分类问题转化为异常检测问题。本文记录的全部工作属于第一步。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">2</span>模型架构</h2>
+  <p class="lede">以下为基线结构，v1–v6、v9–v11、v15 共用；v7 与 v8 改动了其中若干项，见第 5 节。</p>
+
+  <div class="tw">
+    <table>
+      <caption><b>表 1</b>逐层张量形状。输入为 8 帧、224×224 的人脸裁剪片段。</caption>
+      <thead><tr><th>层</th><th>配置</th><th>输出形状 (C×T×H×W)</th><th>参数量</th></tr></thead>
+      <tbody>
+        <tr><td>输入片段</td><td>8 帧人脸裁剪</td><td>3 × 8 × 224 × 224</td><td class="dim">—</td></tr>
+        <tr><td>Conv3d 1</td><td>3→16，核 3×5×5，时间维补零</td><td>16 × 8 × 220 × 220</td><td>1,216</td></tr>
+        <tr><td>AvgPool3d 1</td><td>核 1×4×4，步长 1×2×2</td><td>16 × 8 × 109 × 109</td><td class="dim">—</td></tr>
+        <tr><td>Conv3d 2</td><td>16→24，核 3×5×5</td><td>24 × 8 × 105 × 105</td><td>28,824</td></tr>
+        <tr><td>AvgPool3d 2</td><td>核 1×4×4，步长 1×2×2</td><td>24 × 8 × 51 × 51</td><td class="dim">—</td></tr>
+        <tr><td>Conv3d 3</td><td>24→32，核 3×5×5</td><td>32 × 8 × 47 × 47</td><td>57,632</td></tr>
+        <tr><td>AvgPool3d 3</td><td>核 1×4×4，步长 1×2×2</td><td>32 × 8 × 22 × 22</td><td class="dim">—</td></tr>
+        <tr><td>时间维平均</td><td>沿 T 取均值</td><td>32 × 22 × 22</td><td class="dim">—</td></tr>
+        <tr><td>BatchNorm2d + 展平</td><td>确定性，非贝叶斯</td><td>15,488</td><td>64</td></tr>
+        <tr class="hi"><td>贝叶斯 FC1</td><td>均场高斯后验，15488→512</td><td>512</td><td>7,929,856</td></tr>
+        <tr class="hi"><td>贝叶斯 FC2</td><td>均场高斯后验，512→1</td><td>1</td><td>513</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>三层卷积均使用 5×5 空间核与 3 帧时间核，时间维补零以保持长度，池化只作用于空间维。因此<strong>时序感受野为 1 + 3×(3−1) = 7 帧</strong>，28 fps 下约合 0.25 秒；超出该范围的时间信息由末端的时间维平均汇总，不参与卷积建模。</p>
+
+  <figure>
+    <svg viewBox="0 0 900 300" role="img" aria-label="空间分辨率逐层收缩与参数量分布">
+      <text class="g-lab2" x="0" y="16">空间分辨率的逐层收缩</text>
+      <rect class="g-box" x="0" y="34" width="130" height="130"/>
+      <text class="g-lab" x="65" y="182" text-anchor="middle">224</text>
+      <text class="g-lab" x="65" y="196" text-anchor="middle">输入</text>
+      <rect class="g-box" x="160" y="100" width="63" height="63"/>
+      <text class="g-lab" x="191" y="182" text-anchor="middle">109</text>
+      <text class="g-lab" x="191" y="196" text-anchor="middle">第一段后</text>
+      <rect class="g-box" x="253" y="133" width="30" height="30"/>
+      <text class="g-lab" x="268" y="182" text-anchor="middle">51</text>
+      <text class="g-lab" x="268" y="196" text-anchor="middle">第二段后</text>
+      <rect class="g-box" x="313" y="150" width="13" height="13"/>
+      <text class="g-lab" x="319" y="182" text-anchor="middle">22</text>
+      <text class="g-lab" x="319" y="196" text-anchor="middle">第三段后</text>
+      <rect class="g-box4" x="356" y="160" width="3" height="3"/>
+      <text class="g-red" x="358" y="182" text-anchor="middle">4</text>
+      <text class="g-red" x="358" y="196" text-anchor="middle">v7 / v8</text>
+      <line class="g-rule" x1="0" y1="163" x2="420" y2="163"/>
+      <text class="g-lab2" x="500" y="16">参数量分布</text>
+      <rect class="g-bar-a" x="500" y="40" width="4.5" height="26"/>
+      <rect class="g-bar-b" x="504.5" y="40" width="395.5" height="26"/>
+      <text class="g-lab" x="500" y="86">三维卷积提取器 90,280（1.1%）</text>
+      <text class="g-lab" x="900" y="86" text-anchor="end">贝叶斯全连接头 7,930,369（98.9%）</text>
+      <line class="g-rule" x1="500" y1="110" x2="900" y2="110"/>
+      <text class="g-lab" x="500" y="132">时序感受野</text>
+      <text class="g-lab2" x="900" y="132" text-anchor="end">7 帧 ≈ 0.25 秒</text>
+      <text class="g-lab" x="500" y="156">特征维度</text>
+      <text class="g-lab2" x="900" y="156" text-anchor="end">32 × 22 × 22 = 15,488</text>
+      <text class="g-lab" x="500" y="180">观测似然</text>
+      <text class="g-lab2" x="900" y="180" text-anchor="end">伯努利</text>
+      <text class="g-lab" x="500" y="204">推断方式</text>
+      <text class="g-lab2" x="900" y="204" text-anchor="end">Pyro SVI · TraceGraph ELBO</text>
+    </svg>
+    <figcaption><b>图 1</b>左：空间尺寸从 224 收缩至 22；红色小方块为 v7/v8 采用的 4×4，面积仅为 22×22 的三十分之一。右：提取器仅占全模型参数的 1.1%。</figcaption>
+  </figure>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">3</span>阶段一：问题定位（DFD）</h2>
+  <p class="lede">最初的基线停留于随机水平。为定位原因，进行了 11 次小规模过拟合诊断。</p>
+  <p>初始监督运行的 AUROC 为 <span class="mono">0.5159</span>，训练损失两轮内从 15.0831 仅降至 15.0485。诊断方法是<strong>过拟合测试</strong>：取极少量视频反复训练，若模型连这几十段都无法拟合，则限制因素在架构或优化，而非数据。</p>
+  <div class="tw">
+    <table>
+      <caption><b>表 2</b>DFD 过拟合诊断摘录。损失起点的巨大差异直接暴露了目标函数的构成问题。</caption>
+      <thead><tr><th>诊断</th><th>设定</th><th>损失起点</th><th>损失终点</th><th>降幅</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>基线（SGD，KL 权重 1e-3）</td><td>874.62</td><td>874.25</td><td class="dn">0.04%</td></tr>
+        <tr><td>D</td><td>改用 Adam</td><td>893.88</td><td>739.41</td><td>17.3%</td></tr>
+        <tr><td>F</td><td>降低 KL 权重</td><td>21.16</td><td>0.0876</td><td class="up">99.6%</td></tr>
+        <tr><td>H</td><td>完全移除 KL 项</td><td>20.91</td><td>0.0009</td><td class="up">100%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="key">
+    <span class="tag">定位结论</span>
+    <p><strong>目标函数的 95% 至 99.9% 是 KL 散度，而非分类似然。</strong>贝叶斯 FC1 含 7,929,856 个权重，初始后验下每权重贡献约 2.20 奈特；折算后 KL 项为 14.26，分类似然仅约 0.69。该解析预测在三组不同设定下与实测初始损失吻合（874.66/874.62、89.66/90.76、14.95/15.08）。</p>
+    <p>同时确认：SGD 在 1e-4 下 150 轮仅使损失下降 0.03%，Adam 达 5.85%；Adam 在 1e-3 下一轮内导致嵌入坍缩，1e-4 稳定。</p>
+  </div>
+  <p><strong>处置：</strong>KL 权重下调至 6e-6，优化器改为 Adam，学习率 1e-4。所有后续实验沿用。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">4</span>阶段二：数据集选择</h2>
+  <p class="lede">修正目标函数后，DFD 仍无法泛化。在相同规模下与 CelebDFv3 做了一次对照。</p>
+  <div class="tw">
+    <table>
+      <caption><b>表 3</b>两数据集的身份基数与匹配条件下的表现（各取 200 段训练视频，超参数一致）。</caption>
+      <thead><tr><th>数据集</th><th>训练真实身份</th><th>验证身份</th><th>测试身份</th><th>末段 AUROC</th></tr></thead>
+      <tbody>
+        <tr><td>DFD（sigmoid）</td><td>20</td><td>4</td><td>4</td><td class="dn">0.5177</td></tr>
+        <tr><td>DFD（relu）</td><td>20</td><td>4</td><td>4</td><td class="dn">0.5222</td></tr>
+        <tr class="hi"><td>CelebDFv3</td><td>251</td><td>54</td><td>54</td><td class="up">0.6361</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>处置：</strong>后续主实验转至 CelebDFv3。<em>注：当时据此认为「20 个身份无法泛化」，该结论后被 v11 证伪，见第 5 节。</em></p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">5</span>主实验：v1 至 v15</h2>
+  <p class="lede">按时间顺序记录每次运行的动机、改动与结果。「验证 AUROC」为末十轮均值；测试集评估自 v6 起补做。</p>
+
+  <div class="tl">
+
+    <div class="rec"><div class="vchip">v1</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">首个完整运行</span><span class="rmeta">5 轮 · 中断</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>在 CelebDFv3 全量数据上建立基线。</dd>
+        <dt>配置</dt><dd>sigmoid，通道 16/24/32，空间 22×22，平均池化，无归一化，Adam，lr 1e-4，KL 6e-6。</dd>
+        <dt>结果</dt><dd class="nums">损失 1.5739 → 0.8185　验证 AUROC <b>0.7015</b></dd>
+        <dt>判断</dt><dd class="verdict mid">第 5 轮被单段无法解码的视频中断，未得结论。</dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip">v2</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">同配置重跑</span><span class="rmeta">6 轮 · 中断</span></div>
+      <dl class="rgrid">
+        <dt>改动</dt><dd>无。</dd>
+        <dt>结果</dt><dd class="nums">损失 1.5553 → 0.8438　验证 AUROC <b>0.7089</b></dd>
+        <dt>判断</dt><dd class="verdict mid">再次中断。随后加入解码重试与坏样本丢弃机制，运行不再因单段视频终止。</dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip">v3</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">首个可用基线</span><span class="rmeta">22 轮 · 完成</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>取得完整训练曲线，并借助新增的逐层饱和度记录判断激活函数是否构成瓶颈。</dd>
+        <dt>改动</dt><dd>无架构改动；新增每轮记录各卷积段的预激活饱和比例与输出标准差。</dd>
+        <dt>结果</dt><dd class="nums">损失 1.5660 → 0.7355　验证 AUROC <b>0.7304</b><br>第三层饱和比例 0.1845 → <b>0.9180</b></dd>
+        <dt>判断</dt><dd class="verdict no">训练末期第三层 <strong>91.8% 的预激活绝对值超过 4</strong>，此处 sigmoid 导数低于 0.018，梯度基本无法回传。三层 sigmoid 串联使到达第一层的梯度上限为 0.25³。</dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip">v4</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">更换激活函数</span><span class="rmeta">18 轮 · 完成</span></div>
+      <dl class="rgrid">
+        <dt>改动</dt><dd><strong>sigmoid → ReLU</strong>，其余不变。</dd>
+        <dt>结果</dt><dd class="nums">损失 2.3093 → 1.0072　验证 AUROC <b>0.7214</b><br>第三层输出标准差 0.8288 → <b>3.3470</b></dd>
+        <dt>判断</dt><dd class="verdict mid">饱和转化为数值膨胀：ReLU 无上界，在 1e-4 下激活幅度持续增长。检测性能未改善。</dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip">v5</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">降低学习率</span><span class="rmeta">12 轮 · 早停</span></div>
+      <dl class="rgrid">
+        <dt>改动</dt><dd><strong>学习率 1e-4 → 3e-5</strong>。</dd>
+        <dt>结果</dt><dd class="nums">损失 1.4390 → 0.9988　验证 AUROC <b>0.6988</b>　各层饱和比例全程为 0</dd>
+        <dt>判断</dt><dd class="verdict mid">数值稳定性恢复，但第 12 轮被早停终止，而训练损失仍在下降——早停判据是仅含 64 段伪造视频的验证集，其 AUROC 逐轮标准差达 0.042–0.056，实际触发于噪声。</dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip">v6</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">扩大验证集</span><span class="rmeta">40 轮 · 完成</span></div>
+      <dl class="rgrid">
+        <dt>改动</dt><dd><strong>验证集伪造视频 64 → 512</strong>，架构与优化设定同 v5。</dd>
+        <dt>结果</dt><dd class="nums">损失 1.4466 → 0.7787　验证 <b>0.7137</b>　<b>测试 0.7424</b>　EER 0.3171</dd>
+        <dt>判断</dt><dd class="verdict ok">首个跑满全部轮数的运行，成为后续基线。但第三层输出标准差 40 轮内由 0.1685 衰减至 0.0986（−43%），验证性能自第 28 轮停滞——提取器在训练中逐渐失活。</dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip bad">v7</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">重新分配容量</span><span class="rmeta">60 轮 · 完成</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>提取器仅占全模型参数 1.1%，推测其表达能力构成瓶颈。</dd>
+        <dt>改动</dt><dd><p><strong>同时改动六项：</strong>通道 16/24/32 → 32/64/128；空间输出 22×22 → 4×4；平均→最大池化；新增批归一化；lr 3e-5 → 3e-4；KL 6e-6 → 1e-4。</p></dd>
+        <dt>结果</dt><dd class="nums">验证 <b>0.7408</b>（高于 v6）　<b>测试 0.6908</b>（低于 v6）</dd>
+        <dt>判断</dt><dd class="verdict no"><p>验证集与测试集给出<strong>相反</strong>的结论，促成第 6 节的评估协议修正。</p><p>方法缺陷：六项参数同时变动，无法归因。事后按空间分辨率解释为「30 倍压缩抹掉了高频证据」；<em>该解释在第 7 节被进一步修正</em>。</p></dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip bad">v8</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">延长时间窗口</span><span class="rmeta">34 轮 · 早停</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>时序感受野仅 7 帧（0.25 秒），而身份漂移、眨眼节律等破绽多发生于 1–3 秒尺度。</dd>
+        <dt>改动</dt><dd>在 v7 基础上，<strong>训练步长 {1,2} → {4,8}，评估步长 2 → 4</strong>。片段仍为 8 帧，时间跨度由 0.28 秒扩至 2.0 秒。</dd>
+        <dt>结果</dt><dd class="nums">验证 <b>0.6905</b>　<b>测试 0.6817</b></dd>
+        <dt>判断</dt><dd class="verdict no"><p>逐窗对比显示 v8 与 v7 在全部 34 轮上重合。<strong>时间窗口扩大 7 倍，净效果为零。</strong>v8 每轮训练损失均低于 v7 而 AUROC 未同步提高——更长窗口提供了更多可拟合但不泛化的内容。</p><p>第 34 轮再次误触发早停：第 14 轮取得 0.7089，阈值定在 0.7109，其后二十轮最高 0.7092，差 0.0017 未达标。</p></dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip best">v9</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">回到基线，仅加批归一化</span><span class="rmeta">60 轮 · 完成 · 当前最优</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>v7/v8 的多变量改动均劣于基线，回到 v6 逐项推进。批归一化是其中唯一有独立证据支持的改动。</dd>
+        <dt>改动</dt><dd><p>以 v6 全部配置为准，<strong>仅新增批归一化层</strong>。参数量 90,136 → 90,280，差值 144 恰为 2×(16+24+32)，从数值上确认单变量条件成立。</p></dd>
+        <dt>结果</dt><dd class="nums">损失 1.6946 → <b>0.6576</b>（最低值在末轮）　验证 <b>0.7564</b><br><b>测试 0.7774</b>　EER <b>0.3064</b>　第三层标准差 0.5159 → 0.5153（60 轮基本恒定）</dd>
+        <dt>判断</dt><dd class="verdict ok"><p>四项测试指标同时最优。两项训练内部诊断更具决定性：<strong>训练损失首次低于 ln 2 = 0.6931</strong>；特征标准差不再衰减，且稳定在基线的约五倍。二者不受测试集采样噪声影响。</p><p>验证 AUROC 自第 42 轮起缓降而训练损失继续下降，为过拟合特征。限制因素由「拟合不足」转为「泛化不足」。</p></dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip bad">v10</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">提高 KL 正则化</span><span class="rmeta">60 轮 · 完成</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>限制因素已是泛化不足，选择模型自身的正则化机制——KL 项。原权重 6e-6 使 KL 仅占损失约 0.086，先验几乎未起约束。</dd>
+        <dt>改动</dt><dd><strong>KL 权重 6e-6 → 2e-5</strong>，其余同 v9。</dd>
+        <dt>结果</dt><dd class="nums">损失 1.8900 → 0.8506　<b>测试 0.7302</b><br>配对：v10 − v9 = <b>−0.0507</b>，95% CI [−0.0773, −0.0236]，12 身份中仅胜 1，<b>p=0.006</b></dd>
+        <dt>判断</dt><dd class="verdict no"><p>本项目最确凿的一次否定结论。解析与实测吻合：KL 项由 0.0855 增至 0.2849，预测损失差 0.1994，实测初始差 0.1954、末轮差 0.1930。<strong>首尾差值相同说明 KL 全程近似常数，扣除后两模型似然几乎一致</strong>（0.572 / 0.566）。</p><p>过拟合亦未被抑制（v9 第 44 轮见顶，v10 第 40 轮），特征统计量无变化。<strong>分类头上的 KL 项不是该失效模式对应的正则化手段。</strong></p></dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip">v11</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">身份数消融</span><span class="rmeta">60 轮 · 完成</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>DFD 用 20 个身份只得 0.52，CelebDFv3 用 251 个得 0.78，但两者还差在分辨率、人脸检测失败率、伪造方法数上。把 CelebDFv3 砍到同样 20 个身份，可将身份多样性与这些因素分离。</dd>
+        <dt>改动</dt><dd><strong><span class="mono">--train-identities 20</span></strong>：训练集由 251 身份 / 613 真 / 30,149 伪 降至 <strong>20 / 206 / 11,593</strong>。验证与测试集不动。</dd>
+        <dt>结果</dt><dd class="nums"><b>测试 0.7499</b>　TPR@5%FPR <b>0.3104</b>（全部实验最高）<br>配对：v11 − v9 = −0.0330，95% CI [−0.0754, +0.0050]，<b>不显著</b></dd>
+        <dt>判断</dt><dd class="verdict ok"><p><strong>身份稀缺假设被证伪。</strong>训练身份少 92%、真实视频少 66%，性能无显著变化。因此 DFD 的失败不能归因于身份数。</p><p>同时说明：<strong>该架构的上限与数据规模无关</strong>。</p></dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip bad">v12</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">取消人脸裁剪</span><span class="rmeta">60 轮 · 完成</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>裁剪框跟踪人脸并以 α=0.6 平滑，等于做了运动稳定——<strong>全局头部运动在进入时序卷积之前就被减掉了</strong>。这可能正是 v8 延长时间窗口无效的原因。</dd>
+        <dt>改动</dt><dd><strong><span class="mono">--face-crop off</span></strong>：取画面中心正方形而非人脸框，同时完全跳过 Haar 检测。</dd>
+        <dt>结果</dt><dd class="nums"><b>测试 0.7369</b>（全部伪造）<br>按族系：FaceSwap 0.742 → <b>0.547</b>；TalkingFace 0.784 → <b>0.882</b></dd>
+        <dt>判断</dt><dd class="verdict no"><p>初步解释为「两种预处理各自销毁了对方保留的证据」，并据此得到「后融合达 0.8148」的结论。</p><p><strong>该解释在第 7 节被推翻</strong>：族系差异实为分辨率差异。在分辨率匹配子集上 v12 仅 <span class="mono">0.5543</span>，接近随机。</p></dd>
+      </dl>
+    </div></div>
+
+    <div class="rec"><div class="vchip run">v15</div><div class="rbody">
+      <div class="rhead"><span class="rtitle">分辨率匹配重训</span><span class="rmeta">60 轮 · 进行中</span></div>
+      <dl class="rgrid">
+        <dt>目的</dt><dd>把分辨率捷径从<strong>梯度</strong>中移除，而不仅是从报告中移除。</dd>
+        <dt>改动</dt><dd><strong><span class="mono">--fake-methods "FaceSwap/" LivePortrait</span></strong>：训练与模型选择只用 9 种原生分辨率的伪造方法，伪造训练视频由 30,149 降至 10,536，真实视频全部保留。</dd>
+        <dt>判据</dt><dd>对比 v9 在同一干净子集上的 <span class="mono">0.7226</span>：明显更高说明捷径伤害了特征学习；相当则说明捷径只污染了报告数字。</dd>
+      </dl>
+    </div></div>
+
+  </div>
+
+  <h3>5.1 DFD 侧的对照运行</h3>
+  <p>以完全相同的 v9 架构、训练预算与轮数在 DFD 上训练一次，补齐 2×2 矩阵。</p>
+  <div class="tw">
+    <table>
+      <caption><b>表 4</b>训练 / 测试的 2×2 矩阵。三格处于随机水平。</caption>
+      <thead><tr><th>训练 \ 测试</th><th>CelebDFv3</th><th>DFD</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>CelebDFv3（v9）</td><td>0.7774</td><td>0.5112</td></tr>
+        <tr><td>DFD（v9 架构）</td><td>0.5925</td><td>0.4765 best / 0.5227 last</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>三点值得记录：<strong>（1）</strong>DFD 的 <span class="mono">best.pt</span> 比 <span class="mono">last.pt</span> 更差（0.4765 vs 0.5227）——由 4 个身份的验证集挑出的检查点是有害的。<strong>（2）</strong>DFD 训练损失 1.8854 → 0.9198，<strong>始终未跌破 ln 2</strong>，它连自己的训练集都未拟合好。<strong>（3）</strong>DFD 训练的模型在未见过的 CelebDFv3 上（0.5925）反而优于自己的测试集（0.5227）。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">6</span>评估协议的第一次修正：身份分层</h2>
+  <p class="lede">v7 的验证集与测试集结论相反，促使检查评估方式本身。</p>
+  <p>测试集含 10,433 段伪造视频，仅来自 <strong>12 个目标身份</strong>；验证集含 5,428 段，仅来自 <strong>7 个</strong>。同一身份的数百段视频共享面孔与伪造目标，不构成独立观测，AUROC 的有效样本量接近身份数而非视频数。</p>
+
+  <figure>
+    <svg viewBox="0 0 760 268" role="img" aria-label="视频级与身份级自助法置信区间对比">
+      <line class="g-rule" x1="60" y1="34" x2="60" y2="212"/><line class="g-rule" x1="166.7" y1="34" x2="166.7" y2="212"/>
+      <line class="g-rule" x1="273.3" y1="34" x2="273.3" y2="212"/><line class="g-rule" x1="380" y1="34" x2="380" y2="212"/>
+      <line class="g-rule" x1="486.7" y1="34" x2="486.7" y2="212"/><line class="g-rule" x1="593.3" y1="34" x2="593.3" y2="212"/>
+      <line class="g-rule" x1="700" y1="34" x2="700" y2="212"/>
+      <line class="s-wide" x1="329.0" y1="52" x2="611.7" y2="52"/><line class="s-narrow" x1="448.5" y1="52" x2="492.0" y2="52"/>
+      <circle class="s-pt" cx="470.4" cy="52" r="3.2"/><text class="g-lab2" x="50" y="56" text-anchor="end">v6</text>
+      <line class="s-wide" x1="238.1" y1="96" x2="495.6" y2="96"/><line class="s-narrow" x1="336.9" y1="96" x2="384.1" y2="96"/>
+      <circle class="s-pt" cx="360.4" cy="96" r="3.2"/><text class="g-lab2" x="50" y="100" text-anchor="end">v7</text>
+      <line class="s-wide" x1="172.0" y1="140" x2="514.8" y2="140"/><line class="s-narrow" x1="319.2" y1="140" x2="363.1" y2="140"/>
+      <circle class="s-pt" cx="340.9" cy="140" r="3.2"/><text class="g-lab2" x="50" y="144" text-anchor="end">v8</text>
+      <line class="s-wide" x1="461.3" y1="184" x2="626.4" y2="184"/><line class="s-narrow" x1="524.9" y1="184" x2="565.1" y2="184"/>
+      <circle class="s-pt" cx="545.1" cy="184" r="3.2"/><text class="g-lab2" x="50" y="188" text-anchor="end">v9</text>
+      <line class="s-axis" x1="60" y1="212" x2="700" y2="212"/>
+      <text class="g-lab" x="60" y="230" text-anchor="middle">0.55</text><text class="g-lab" x="166.7" y="230" text-anchor="middle">0.60</text>
+      <text class="g-lab" x="273.3" y="230" text-anchor="middle">0.65</text><text class="g-lab" x="380" y="230" text-anchor="middle">0.70</text>
+      <text class="g-lab" x="486.7" y="230" text-anchor="middle">0.75</text><text class="g-lab" x="593.3" y="230" text-anchor="middle">0.80</text>
+      <text class="g-lab" x="700" y="230" text-anchor="middle">0.85</text>
+      <text class="g-lab" x="380" y="255" text-anchor="middle">测试集 AUROC</text>
+      <line class="s-wide" x1="60" y1="20" x2="104" y2="20"/><text class="g-lab" x="112" y="24">身份级 95% 区间</text>
+      <line class="s-narrow" x1="250" y1="20" x2="294" y2="20"/><text class="g-lab" x="302" y="24">视频级 95% 区间</text>
+    </svg>
+    <figcaption><b>图 2</b>同一组分数、同一个点估计，两种重采样单元给出的 95% 置信区间。视频级区间的窄度并非精度，而是把相关样本当作独立样本产生的假象——低估 4 至 8 倍。</figcaption>
+  </figure>
+
+  <div class="tw">
+    <table>
+      <caption><b>表 5</b>配对比较。差值在 12 个身份上逐一计算，20,000 次身份级自助法；符号检验为精确双侧。</caption>
+      <thead><tr><th>比较</th><th>均值差</th><th>95% 置信区间</th><th>优势身份</th><th>p</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>v9 − v8</td><td class="up">+0.0963</td><td>[+0.0531, +0.1432]</td><td>12 / 12</td><td>&lt; 0.001</td></tr>
+        <tr><td>v9 − v7</td><td class="up">+0.0682</td><td>[+0.0221, +0.1096]</td><td>8 / 12</td><td>0.388</td></tr>
+        <tr><td>v9 − v6</td><td class="up">+0.0369</td><td>[+0.0006, +0.0776]</td><td>7 / 12</td><td>0.774</td></tr>
+        <tr class="bad"><td>v10 − v9</td><td class="dn">−0.0507</td><td>[−0.0773, −0.0236]</td><td>1 / 12</td><td>0.006</td></tr>
+        <tr><td>v11 − v9</td><td class="dn">−0.0330</td><td>[−0.0754, +0.0050]</td><td>4 / 12</td><td>0.388</td></tr>
+        <tr class="bad"><td>v8 − v6</td><td class="dn">−0.0594</td><td>[−0.0993, −0.0142]</td><td>2 / 12</td><td>0.039</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="key">
+    <span class="tag">修正内容</span>
+    <p>一、AUROC 必须以<strong>身份级</strong>置信区间报告。二、模型间比较采用<strong>配对差值</strong>，使身份方差在做差时抵消，可分辨门槛由约 ±0.06 降至约 ±0.02。三、<strong>架构结论一律以测试集为准</strong>，验证集仅用于单次运行内选择检查点。</p>
+  </div>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">7</span>评估协议的第二次修正：分辨率捷径</h2>
+  <p class="lede">检查预处理时发现的问题，改写了第 5 节中若干条结论。</p>
+
+  <h3>7.1 现象</h3>
+  <div class="tw">
+    <table>
+      <caption><b>表 6</b>测试集视频的原始分辨率分布。</caption>
+      <thead><tr><th>类别</th><th>样本</th><th>主要分辨率</th><th>方形且 ≤512 的占比</th></tr></thead>
+      <tbody>
+        <tr><td>真实</td><td>164</td><td>856×478 (27%)、892×500 (16%)、850×472、942×500</td><td class="up">0%</td></tr>
+        <tr class="bad"><td>伪造</td><td>10,431</td><td>256×256 (44%)、512×512 (17%)、850×472、856×478</td><td class="dn">61%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>分辨率与伪造族系几乎完全共线：<strong>全部 8 种 FaceSwap 输出原生宽幅；7 种 FaceReenact 中的 6 种输出 256×256；全部 7 种 TalkingFace 输出 256×256 或 512×512。</strong></p>
+  <p>经过「按人脸尺寸裁剪、统一缩放到 224」的流水线后，低分辨率来源的伪造视频需要<em>上采样</em>，真实视频则被<em>下采样</em>——<strong>伪造视频到达网络时系统性地更模糊</strong>。判断模糊程度是卷积网络第一层就能完成的任务，比识别融合边界容易若干数量级。</p>
+
+  <h3>7.2 影响</h3>
+  <div class="tw">
+    <table>
+      <caption><b>表 7</b>按伪造视频原始分辨率分层的测试 AUROC，负类固定为全部 164 段真实视频。</caption>
+      <thead><tr><th>模型</th><th>全部伪造 (2399)</th><th>方形低清 (1403)</th><th>原生宽幅 (996)</th></tr></thead>
+      <tbody>
+        <tr><td>v9（裁剪人脸）</td><td>0.7774</td><td>0.8163</td><td class="up">0.7226</td></tr>
+        <tr class="bad"><td>v12（不裁剪）</td><td>0.7369</td><td>0.8665</td><td class="dn">0.5543</td></tr>
+        <tr class="bad"><td>v9 + v12 融合</td><td>0.8148</td><td>0.9056</td><td class="dn">0.6868</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="key alarm">
+    <span class="tag">三条结论被推翻</span>
+    <p><strong>一、v12 的「TalkingFace 大涨」是捷径。</strong>TalkingFace 恰好全部是方形视频，而 v12 看得到整个画面。在分辨率匹配子集上 v12 仅 0.5543，接近随机。</p>
+    <p><strong>二、融合 0.8148 不成立。</strong>干净子集上融合为 0.6868，<em>低于</em> v9 单独的 0.7226。融合把两个「看分辨率」的视角叠加，在真实任务上是负贡献。</p>
+    <p><strong>三、v7/v12 的族系机制解释是错的。</strong>此前将族系差异归因于「平均池化滤除高频、模型偏好结构性线索」。铁证是 <strong>LivePortrait</strong>——唯一一种原生分辨率的 FaceReenact 方法，v9 给它 0.6585，位于全部 FaceSwap 方法之间。在干净子集上 10 种方法全部落在 0.66–0.81，<strong>没有任何族系分层</strong>。</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption><b>表 8</b>仅用原生分辨率伪造视频（与真实视频同分辨率族）的逐方法 AUROC。</caption>
+      <thead><tr><th>方法</th><th>族系</th><th>n</th><th>v9</th><th>v12</th></tr></thead>
+      <tbody>
+        <tr><td>MobileFaceSwap</td><td>换脸</td><td>109</td><td>0.8101</td><td>0.5779</td></tr>
+        <tr><td>BlendFace</td><td>换脸</td><td>108</td><td>0.7678</td><td>0.5887</td></tr>
+        <tr><td>GHOST</td><td>换脸</td><td>109</td><td>0.7481</td><td>0.5515</td></tr>
+        <tr><td>SimSwap</td><td>换脸</td><td>109</td><td>0.7468</td><td>0.5387</td></tr>
+        <tr><td>HifiFace</td><td>换脸</td><td>109</td><td>0.7175</td><td>0.5121</td></tr>
+        <tr><td>Celeb-DF-v2</td><td>换脸</td><td>109</td><td>0.6966</td><td>0.5123</td></tr>
+        <tr><td>InSwapper</td><td>换脸</td><td>109</td><td>0.6908</td><td>0.5070</td></tr>
+        <tr><td>LivePortrait</td><td>面部重演</td><td>109</td><td>0.6585</td><td>0.5618</td></tr>
+        <tr><td>UniFace</td><td>换脸</td><td>109</td><td>0.6572</td><td>0.5854</td></tr>
+        <tr class="hi"><td>均值</td><td>—</td><td>—</td><td>0.7287</td><td>0.5858</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>应报告的数字是 v9 = 0.7226</strong>（996 段伪造 vs 164 段真实，分辨率匹配），而非 0.7774。一个佐证：DFD 两类分辨率完全一致（均为 1920×1080），不存在该捷径，其成绩为 0.52——说明 CelebDFv3 并非纯靠捷径，但原报告值虚高约 +0.055。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">8</span>单类可行性预检</h2>
+  <p class="lede">路线第二步是仅用伪造视频训练的异常检测。用 v10 的 15,488 维测试嵌入先做了可行性检验：按身份对半拆分，用一半拟合，在另一半上打分，三个随机划分。</p>
+  <div class="tw">
+    <table>
+      <caption><b>表 9</b>单类可行性代理指标（三次随机划分的均值）。</caption>
+      <thead><tr><th>单类打分方式</th><th>只用伪造训练 → 检出真实</th><th>只用真实训练 → 检出伪造</th></tr></thead>
+      <tbody>
+        <tr><td>欧氏质心距离</td><td>0.603</td><td>0.511</td></tr>
+        <tr><td>余弦质心距离</td><td>0.551</td><td class="up">0.637</td></tr>
+        <tr class="bad"><td>k 近邻距离 (k=20)</td><td class="dn">0.420</td><td class="up">0.638</td></tr>
+        <tr><td>PCA 重构误差</td><td>0.568</td><td>0.519</td></tr>
+        <tr><td class="dim">有监督参照（同批视频）</td><td class="dim">0.73</td><td class="dim">0.73</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>k 近邻一列为 <strong>0.420，低于随机</strong>：在余弦近邻意义上，<strong>真实视频比留出的伪造视频更靠近伪造训练集</strong>——真实样本落在伪造流形<em>内部</em>，而非之外。单类检测要求目标类围出一个另一类落在外面的区域，该几何在「真实→伪造」方向成立，在反方向不成立。</p>
+  <p>此外还有设计层面的理由：只用这 22 种生成器训练的模型，会把「不像这 22 种」判为真实，因此<strong>对第 23 种未见方法天然无法泛化</strong>——恰与可泛化检测的目标相反。</p>
+  <div class="key">
+    <span class="tag">处置</span>
+    <p>第二步改用 <span class="mono">one_class_real</span>（仅真实视频训练），而非原计划的 <span class="mono">one_class_fake</span>。真实视频数量不足的问题通过每段视频多采样片段解决，而非通过反转方向绕开。<em>注：该预检使用监督模型的嵌入，表示本身为二分类对比优化过；两个方向使用同一组嵌入，故方向之间的比较是公平的，但 0.638 不是单类模型能达到水平的预测值。</em></p>
+  </div>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">9</span>版本总表</h2>
+  <div class="tw">
+    <table>
+      <caption><b>表 10</b>全部运行的配置与结果。验证 AUROC 为末十轮均值。灰色表示未做该项评估。</caption>
+      <thead>
+        <tr><th>版本</th><th>激活</th><th>通道</th><th>空间</th><th>池化</th><th>归一化</th><th>学习率</th><th>KL</th><th>关键改动</th><th>轮数</th><th>验证</th><th>测试</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>v1</td><td>sigmoid</td><td>16/24/32</td><td>22</td><td>平均</td><td>无</td><td>1e-4</td><td>6e-6</td><td class="dim">基线</td><td>5</td><td>0.7015</td><td class="dim">—</td></tr>
+        <tr><td>v2</td><td>sigmoid</td><td>16/24/32</td><td>22</td><td>平均</td><td>无</td><td>1e-4</td><td>6e-6</td><td class="dim">重跑</td><td>6</td><td>0.7089</td><td class="dim">—</td></tr>
+        <tr><td>v3</td><td>sigmoid</td><td>16/24/32</td><td>22</td><td>平均</td><td>无</td><td>1e-4</td><td>6e-6</td><td>饱和度记录</td><td>22</td><td>0.7304</td><td class="dim">—</td></tr>
+        <tr><td>v4</td><td class="up">relu</td><td>16/24/32</td><td>22</td><td>平均</td><td>无</td><td>1e-4</td><td>6e-6</td><td>换激活</td><td>18</td><td>0.7214</td><td class="dim">—</td></tr>
+        <tr><td>v5</td><td>relu</td><td>16/24/32</td><td>22</td><td>平均</td><td>无</td><td class="up">3e-5</td><td>6e-6</td><td>降学习率</td><td>12</td><td>0.6988</td><td class="dim">—</td></tr>
+        <tr><td>v6</td><td>relu</td><td>16/24/32</td><td>22</td><td>平均</td><td>无</td><td>3e-5</td><td>6e-6</td><td class="up">验证集 64→512</td><td>40</td><td>0.7137</td><td>0.7424</td></tr>
+        <tr class="bad"><td>v7</td><td>relu</td><td class="dn">32/64/128</td><td class="dn">4</td><td class="dn">最大</td><td class="dn">批</td><td class="dn">3e-4</td><td class="dn">1e-4</td><td class="dn">六项齐改</td><td>60</td><td>0.7408</td><td class="dn">0.6908</td></tr>
+        <tr class="bad"><td>v8</td><td>relu</td><td class="dn">32/64/128</td><td class="dn">4</td><td class="dn">最大</td><td class="dn">批</td><td class="dn">3e-4</td><td class="dn">1e-4</td><td class="dn">时序步长 4/8</td><td>34</td><td>0.6905</td><td class="dn">0.6817</td></tr>
+        <tr class="hi"><td>v9</td><td>relu</td><td>16/24/32</td><td>22</td><td>平均</td><td class="up">批</td><td>3e-5</td><td>6e-6</td><td class="up">仅加批归一化</td><td>60</td><td>0.7564</td><td class="up">0.7774</td></tr>
+        <tr class="bad"><td>v10</td><td>relu</td><td>16/24/32</td><td>22</td><td>平均</td><td>批</td><td>3e-5</td><td class="dn">2e-5</td><td class="dn">KL 提高 3.3×</td><td>60</td><td>0.7227</td><td class="dn">0.7302</td></tr>
+        <tr><td>v11</td><td>relu</td><td>16/24/32</td><td>22</td><td>平均</td><td>批</td><td>3e-5</td><td>6e-6</td><td>训练身份 251→20</td><td>60</td><td>0.7360</td><td>0.7499</td></tr>
+        <tr class="bad"><td>v12</td><td>relu</td><td>16/24/32</td><td>22</td><td>平均</td><td>批</td><td>3e-5</td><td>6e-6</td><td class="dn">取消人脸裁剪</td><td>60</td><td>0.7785</td><td class="dn">0.7369</td></tr>
+        <tr><td>DFD</td><td>relu</td><td>16/24/32</td><td>22</td><td>平均</td><td>批</td><td>3e-5</td><td>6e-6</td><td>换数据集</td><td>60</td><td>0.5725</td><td>0.5227</td></tr>
+        <tr><td>v15</td><td>relu</td><td>16/24/32</td><td>22</td><td>平均</td><td>批</td><td>3e-5</td><td>6e-6</td><td class="up">仅原生分辨率方法</td><td>60</td><td class="dim">进行中</td><td class="dim">进行中</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="lede">v6 起的超参数取自检查点保存的配置。v1–v5 依据命令历史与初始损失的一致性推断——三次 sigmoid 运行的初始损失（1.5739 / 1.5553 / 1.5660）与首轮第三层饱和度（0.1605 / 0.2148 / 0.1845）高度一致，可确认为同一配置。v13、v14 为已规划但因分辨率问题暂停的运行编号。</p>
+</section>
+
+<hr>
+
+<section>
+  <h2><span class="num">10</span>现状与后续</h2>
+
+  <h3>10.1 已确认、已排除、已否定</h3>
+  <dl class="terms">
+    <dt>已修正</dt><dd>KL 散度主导目标函数（阶段一）；sigmoid 饱和（v4）；ReLU 数值膨胀（v5）；验证集噪声支配模型选择（v6）；提取器特征衰减（v9）</dd>
+    <dt>已排除</dt><dd>时间窗口过短（v8，扩大 7 倍无效）；训练数据量与身份多样性（v11，砍去 92% 身份仅降 0.033）；人脸检测漏检（CelebDFv3 上有漏检的视频 AUROC 反而更高）</dd>
+    <dt>已否定</dt><dd>提取器容量不足（v7）；分类头 KL 正则化（v10，p=0.006）；「两种预处理互补」与「族系机制」（第 7 节）</dd>
+    <dt>待解决</dt><dd>泛化不足（v9 自第 42 轮起过拟合）；测试身份仅 12，小于 ±0.05 的改进无法证实；DFD 在四格中三格处于随机水平，原因未定</dd>
+  </dl>
+
+  <h3>10.2 计算资源的现实</h3>
+  <p>实测：<strong>CPU 占用 99.8%，GPU 占用 0%，显存 6.1%</strong>。单条样本中 Haar 人脸检测约 750 ms（DFD 1080p）或每帧 73 ms（CelebDFv3），而 <strong>GPU 前向加反向仅 5–10 ms</strong>，占空比约 1%。机器为 14 核、32 GB，12 个 worker 已接近饱和。</p>
+  <p>每轮 CelebDFv3 需 29,808 次人脸检测，其中<strong>验证段占 67%，且因使用确定性片段而在 60 轮中重复检测完全相同的 20,000 帧</strong>。缓存原始检测框（保留后续插值、平滑与裁剪逻辑，输出逐像素相同）预计可提速约 3 倍，且不影响任何已有结果的可复现性。</p>
+
+  <h3>10.3 后续</h3>
+  <ol>
+    <li><strong>v15 完成后判定捷径是否伤害了特征学习</strong>——这决定后续全部实验是否需要在分辨率匹配条件下重跑。</li>
+    <li><strong>DFD 取消人脸裁剪</strong>：DFD 的 clip 级人脸检测失败率为 50.3%（CelebDFv3 为 11.8%），<span class="mono">--face-crop off</span> 可将其直接归零，是目前解释 DFD 失败的最低成本实验。</li>
+    <li><strong>更强的特征提取器</strong>：容量、时间窗口、数据量、正则化均已排除，剩余唯一有文献支持的方向。Celeb-DF++ 榜首 Effort 使用 CLIP 主干（83.0），冻结自监督探针为 79.7，而本实验的提取器为 90,280 参数、从零训练。可仅替换提取器而保留贝叶斯头，使「贝叶斯头 + 不同强度提取器」成为一组干净的消融。</li>
+    <li><strong>推进第二步</strong>：以 <span class="mono">one_class_real</span> 进行单类训练，监督结果作为上界参照。</li>
+  </ol>
+
+  <h3>10.4 已知局限</h3>
+  <ol>
+    <li><strong>分辨率捷径</strong>（第 7 节）。评估侧可通过分层报告修正；训练侧的影响由 v15 判定。</li>
+    <li><strong>身份基数受限</strong>。测试集 12 个伪造身份，身份级 95% 区间宽度约 ±0.04 至 ±0.08。小于该量级的改进在本数据集上无法被证实。</li>
+    <li><strong>协议与官方基准不可比</strong>。Celeb-DF++ 官方协议 GF-eval 仅在 Celeb-DF 换脸场景上训练、在其余 21 种未见方法上测试；本实验 22 种方法全部参与训练，是显著更容易的设定，且本文为视频级 AUROC 而文献多为帧级。</li>
+    <li><strong>供体身份未完全隔离</strong>。身份不相交约束是单向的：训练集不含测试身份，但测试集 51 个供体身份中有 36 个属于训练身份。</li>
+    <li><strong>单次运行</strong>。每个配置仅训练一次，未做随机种子重复，表 5 的方差不含训练过程本身的随机性。</li>
+  </ol>
+</section>
+
+<footer>
+  数据集 CelebDFv3（即 Celeb-DF++，arXiv 2507.18015）：训练 613 真 / 30,149 伪（251 / 40 身份），验证 113 / 5,428（54 / 7 身份），测试 164 / 10,433（54 / 12 身份）。DFD：训练 264 真 / 1,894 伪（20 身份），验证与测试各 4 身份。每轮采样 613 真 + 613 伪，按类别平衡、按生成方法分层。片段长度 8 帧，人脸裁剪 224×224。全部统计量由每段视频的异常分数重新计算，自助法重采样 20,000 次。
+</footer>
+
+</div>

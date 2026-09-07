@@ -54,3 +54,8 @@ remote_env.sh
 # returned. The checkpoints inside are the point, and they are far too large
 # for git; the logs beside them are already in results/.
 checkpoints_backup/
+
+# Downloads pulled off the rented pod for one-off analysis, kept out of git for
+# size: 290 MB of embeddings, logs and score dumps whose numbers already live in
+# results/. Delete freely once the pod is returned.
+scratch_archive/
