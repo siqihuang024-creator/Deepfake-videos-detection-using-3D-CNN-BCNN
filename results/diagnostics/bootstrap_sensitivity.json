@@ -1,0 +1,66 @@
+{
+  "draws": 2000,
+  "seed": 42,
+  "runs": [
+    {
+      "scores": "results/run_stage_a_dfd_decimate/reports/test_scores.csv",
+      "videos": 108,
+      "real": 54,
+      "fake": 54,
+      "identities_total": 4,
+      "identities_with_real": 4,
+      "identities_with_fake": 3,
+      "effective_clusters": 3,
+      "per_video_bootstrap": {
+        "auroc": 0.4876543209876543,
+        "low": 0.3761929382506948,
+        "high": 0.5996043913516823,
+        "standard_error": 0.05680748447085669,
+        "clusters": 108,
+        "draws": 2000,
+        "width": 0.22341145310098753,
+        "covers_chance": true
+      },
+      "per_identity_bootstrap": {
+        "auroc": 0.4876543209876543,
+        "low": 0.45777777777777773,
+        "high": 0.53125,
+        "standard_error": 0.017634790268934494,
+        "clusters": 4,
+        "draws": 1993,
+        "width": 0.07347222222222227,
+        "covers_chance": true
+      }
+    },
+    {
+      "scores": "results/run_stage_a_celebdfv3_face_stageb_celeb/report_test_scores.csv",
+      "videos": 5600,
+      "real": 169,
+      "fake": 5431,
+      "identities_total": 57,
+      "identities_with_real": 57,
+      "identities_with_fake": 12,
+      "effective_clusters": 12,
+      "per_video_bootstrap": {
+        "auroc": 0.5283769811481098,
+        "low": 0.4839149997325082,
+        "high": 0.5726607305878025,
+        "standard_error": 0.022181906769289064,
+        "clusters": 5600,
+        "draws": 2000,
+        "width": 0.08874573085529436,
+        "covers_chance": true
+      },
+      "per_identity_bootstrap": {
+        "auroc": 0.5283769811481098,
+        "low": 0.5019157047666094,
+        "high": 0.5724571055120965,
+        "standard_error": 0.017789055342022873,
+        "clusters": 57,
+        "draws": 2000,
+        "width": 0.07054140074548709,
+        "covers_chance": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "scores": "results/run_stage_a_celebdfv3_face_stageb_celeb/report_test_scores.csv",
+  "dataset": "CelebDFv3",
+  "videos": 5600,
+  "real": 169,
+  "fake": 5431,
+  "model_auroc": 0.5283769811481098,
+  "controls": {
+    "aspect_ratio": {
+      "auroc": 0.12463405891447195,
+      "orientation_adjusted": 0.875365941085528,
+      "spearman_with_score": {
+        "all": -0.11391346739428877,
+        "real": -0.02252995872905375,
+        "fake": -0.11760945180738902
+      }
+    },
+    "bitrate_mb_per_second": {
+      "auroc": 0.21873117180682017,
+      "orientation_adjusted": 0.7812688281931799,
+      "spearman_with_score": {
+        "all": -0.021803084309500682,
+        "real": -0.08659191487245786,
+        "fake": -0.019180781666447027
+      }
+    },
+    "bits_per_pixel": {
+      "auroc": 0.6138587486476387,
+      "orientation_adjusted": 0.6138587486476387,
+      "spearman_with_score": {
+        "all": -0.004873744985041066,
+        "real": -0.08900104420466412,
+        "fake": -0.003997347535213893
+      }
+    },
+    "frame_count": {
+      "auroc": 0.09979473524223748,
+      "orientation_adjusted": 0.9002052647577625,
+      "spearman_with_score": {
+        "all": -0.06963417430047021,
+        "real": 0.08805628760379891,
+        "fake": -0.06998030310134756
+      }
+    },
+    "frame_height": {
+      "auroc": 0.39337563559622113,
+      "orientation_adjusted": 0.6066243644037789,
+      "spearman_with_score": {
+        "all": 0.011263359597501445,
+        "real": -0.0253592561284869,
+        "fake": 0.02732391452585321
+      }
+    },
+    "frame_pixels": {
+      "auroc": 0.07752993716762963,
+      "orientation_adjusted": 0.9224700628323703,
+      "spearman_with_score": {
+        "all": 0.018919717895581382,
+        "real": -0.011446472079956242,
+        "fake": 0.0014521036624647655
+      }
+    },
+    "frame_width": {
+      "auroc": 0.07588041039877362,
+      "orientation_adjusted": 0.9241195896012264,
+      "spearman_with_score": {
+        "all": -0.024278912149017787,
+        "real": -0.020657848938391926,
+        "fake": 0.021198659789634436
+      }
+    }
+  }
+}
