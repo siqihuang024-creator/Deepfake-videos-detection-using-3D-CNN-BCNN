@@ -349,13 +349,12 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
 
 <div class="tw">
 <table>
-  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor, one draw per row. The extractor in the first row has an end-to-end test AUROC of 0.7773; it is listed to show what this probe reads when an extractor has in fact learned something.</caption>
-  <thead><tr><th>Configuration</th><th class="n">Checkpoint epoch</th><th class="n">Random init</th><th class="n">Trained</th><th class="n">Difference</th></tr></thead>
+  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor, one draw per row; <span class="m">difference</span> is the gap between the two. <b>The first row is the scale</b>: it measures an extractor whose end-to-end test AUROC is 0.7773, and shows how large a gain this probe reads when an extractor has in fact learned something linearly separable.</caption>
+  <thead><tr><th>Measured on</th><th class="n">Checkpoint epoch</th><th class="n">Random init</th><th class="n">Trained</th><th class="n">Difference</th></tr></thead>
   <tbody>
-    <tr><td>CelebDF++, face crop · earlier split, before the donor constraint</td><td class="n">38</td><td class="n">0.5778</td><td class="n">0.7322</td><td class="n">+0.1544</td></tr>
-    <tr class="head"><td>CelebDF++, face crop · Experiment 3</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
-    <tr class="head"><td>DFD, whole frame · Experiment 1</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
-    <tr><td>DFD, whole frame · an earlier run</td><td class="n">33</td><td class="n">0.5678</td><td class="n">0.4700</td><td class="n">−0.0978</td></tr>
+    <tr><td class="dim">Scale: an extractor with an end-to-end test AUROC of 0.7773</td><td class="n dim">38</td><td class="n dim">0.5778</td><td class="n dim">0.7322</td><td class="n dim">+0.1544</td></tr>
+    <tr class="head"><td>Experiment 1 · DFD, whole frame</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
+    <tr class="head"><td>Experiment 3 · CelebDF++, face crop</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
   </tbody>
 </table>
 </div>

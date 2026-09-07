@@ -211,13 +211,12 @@ DOC = '''<title>3D-CNN 贝叶斯检测实验</title>
 
 <div class="tw">
 <table>
-  <caption><b>表 8.</b> 留出身份线性探针读数，每次测量 60 条视频。「随机初始化」是同一架构但未经训练的提取器，每行一次抽样。第一行那个提取器的端到端测试 AUROC 为 0.7773，列在此处是为了说明当提取器确实学到东西时，该探针会给出什么样的读数。</caption>
-  <thead><tr><th>配置</th><th class="n">checkpoint 轮次</th><th class="n">随机初始化</th><th class="n">训练后</th><th class="n">差值</th></tr></thead>
+  <caption><b>表 8.</b> 留出身份线性探针读数，每次测量 60 条视频。「随机初始化」是同一架构但未经训练的提取器，每行一次抽样；「差值」为两者之差。<b>第一行是量表</b>：它测的是一个端到端测试 AUROC 达 0.7773 的提取器，用于显示当提取器确实学到了可线性分离的信息时，该探针会读出多大的增益。</caption>
+  <thead><tr><th>测量对象</th><th class="n">checkpoint 轮次</th><th class="n">随机初始化</th><th class="n">训练后</th><th class="n">差值</th></tr></thead>
   <tbody>
-    <tr><td>CelebDF++，人脸裁剪 · 早期划分，未施加供体约束</td><td class="n">38</td><td class="n">0.5778</td><td class="n">0.7322</td><td class="n">+0.1544</td></tr>
-    <tr class="head"><td>CelebDF++，人脸裁剪 · 实验三</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
-    <tr class="head"><td>DFD，整帧 · 实验一</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
-    <tr><td>DFD，整帧 · 更早的一次运行</td><td class="n">33</td><td class="n">0.5678</td><td class="n">0.4700</td><td class="n">−0.0978</td></tr>
+    <tr><td class="dim">量表：一个端到端测试 AUROC 为 0.7773 的提取器</td><td class="n dim">38</td><td class="n dim">0.5778</td><td class="n dim">0.7322</td><td class="n dim">+0.1544</td></tr>
+    <tr class="head"><td>实验一 · DFD，整帧</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
+    <tr class="head"><td>实验三 · CelebDF++，人脸裁剪</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
   </tbody>
 </table>
 </div>
