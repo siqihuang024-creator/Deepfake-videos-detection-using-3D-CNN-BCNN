@@ -217,8 +217,8 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
     <tr><td>Optimiser</td><td>Adam</td><td>SGD</td></tr>
     <tr><td>Learning rate</td><td>1×10⁻⁴, exponential decay γ = 0.95</td><td>1×10⁻⁴, exponential decay γ = 0.95</td></tr>
     <tr><td>Training sample</td><td>both classes, 1000 clips per class per epoch</td><td>real videos only</td></tr>
-    <tr><td>Batch size</td><td class="n">4</td><td class="n">4</td></tr>
-    <tr><td>Epoch budget</td><td class="n">60</td><td class="n">50</td></tr>
+    <tr><td>Batch size</td><td>4</td><td>4</td></tr>
+    <tr><td>Epoch budget</td><td>60</td><td>50</td></tr>
     <tr><td>Extractor</td><td>trainable</td><td>frozen, BatchNorm statistics included</td></tr>
     <tr><td>Checkpoint selection</td><td>highest validation AUROC</td><td>highest validation macro AUROC</td></tr>
   </tbody>
