@@ -1,4 +1,4 @@
-<title>两阶段深伪检测的阴性结果</title>
+<title>3D-CNN 贝叶斯检测实验</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
@@ -87,53 +87,198 @@
 <div class="page">
 
 <header>
-  <h1>3D-CNN 加贝叶斯单类头的深度伪造视频检测：两个数据集上的阴性结果</h1>
-  <p class="sub">身份不相交划分下，整帧输入的 DFD 与人脸裁剪输入的 CelebDF++ 各自的完整评估</p>
-  <p class="meta">实验期间 2026-09-04 — 2026-09-06 · 45 次运行 · 2180 个 epoch · 草稿 v3</p>
+  <h1>3D-CNN 与贝叶斯单类头的深度伪造视频检测实验</h1>
+  <p class="sub">实验方法、每一步的目的，以及实测数据</p>
+  <p class="meta">实验期间 2026-09-04 — 2026-09-07 · 46 次运行 · 2210 个 epoch</p>
 </header>
 
 <div class="abstract">
-  <div class="lead">摘要</div>
-  <p>我们评估了一个两阶段检测器：阶段 A 以监督方式预训练 3D-CNN 特征提取器，阶段 B 冻结该提取器并仅在真实视频上训练贝叶斯单类异常检测头。两个数据集、两种输入模式各自跑完整流程。<b>实验一</b>在 DeepFakeDetection (DFD) 上使用整帧输入（1920×1080 隔点抽样至 960×540，不做人脸检测），平衡测试集上 <b>video-level AUC 0.4877</b>，按身份聚类的 95% 自助区间 [0.458, 0.531]。<b>实验三</b>在 CelebDF++ 上使用 dlib 81 点检测、眼线对齐、×2.0 外扩、256×256 的人脸裁剪，阶段 A 的验证 AUROC 升至 0.69、阶段 B 验证最佳 0.6569，但测试集读数 <b>AUC 0.5284</b>，区间 [0.502, 0.572]（57 个身份簇）——下界高出随机水平 0.002，实践上不可区分。两个实验共享同一失败形态：<b>验证集看似有信号，测试集没有</b>，落差分别为 0.17 与 0.13。八项候选解释——学习率调度、特征塌缩、优化传导、输入模式、身份数量、人脸检测、文件损坏、帧读取保真——均由受控测量逐一排除。</p>
+  <div class="lead">本文档的范围</div>
+  <p>本文档记录三组实验的<b>方法、步骤目的与实测数据</b>：网络结构、划分协议、预处理、训练配置，以及每一步得到的曲线、表格与指标。文档不含对这些数据的解释或结论。所有数值均由 <span class="m">results/</span> 下的文件计算，未经转录。</p>
 </div>
 
-<h2><span class="n">1</span>实验设计</h2>
+<h2><span class="n">1</span>模型架构</h2>
 
-<p>失败可以归因于数据集，也可以归因于输入模式。要把两者分开，单个实验不够——需要一个把这两个因子正交开的设计。本工作按下表组织：实验一由导师指定采用整帧输入，实验二是为分离两个因子而补的那一格。</p>
+<p>特征提取器沿用 Leyva 等人 (2024) 的 fine-to-coarse 结构并沿时间轴膨胀为 3D，后接两种形状相同的分类头，分别用于两个训练阶段。</p>
+
+<figure>
+  <div class="figbox">
+    <svg viewBox="0 0 720 400" role="img" aria-label="模型架构：三段 3D 卷积的特征提取器输出 15488 维特征，同一提取器分别接阶段 A 的确定性头与阶段 B 的贝叶斯头。">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+        </marker>
+        <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--s1)"/>
+        </marker>
+        <marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--s3)"/>
+        </marker>
+      </defs>
+
+      <g fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.85">
+        <rect x="20" y="40" width="88" height="58" rx="3"/>
+        <rect x="120" y="40" width="88" height="58" rx="3"/>
+        <rect x="220" y="40" width="88" height="58" rx="3"/>
+        <rect x="320" y="40" width="88" height="58" rx="3"/>
+        <rect x="420" y="40" width="88" height="58" rx="3"/>
+        <rect x="520" y="40" width="88" height="58" rx="3"/>
+        <rect x="620" y="40" width="88" height="58" rx="3"/>
+      </g>
+      <g font-family="Source Serif 4, serif" font-size="11.5" fill="currentColor" text-anchor="middle">
+        <text x="64" y="63">输入片段</text><text x="164" y="63">卷积段 1</text><text x="264" y="63">卷积段 2</text>
+        <text x="364" y="63">卷积段 3</text><text x="464" y="63">时间维均值</text><text x="564" y="63">自适应池化</text>
+        <text x="664" y="63">特征向量</text>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="9" fill="var(--muted)" text-anchor="middle">
+        <text x="64" y="80">3×8×256×256</text><text x="164" y="80">16×8×125×125</text><text x="264" y="80">24×8×59×59</text>
+        <text x="364" y="80">32×8×26×26</text><text x="464" y="80">32×26×26</text><text x="564" y="80">32×22×22</text>
+        <text x="664" y="80">15488</text>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="8.5" fill="var(--faint)" text-anchor="middle">
+        <text x="64" y="93">人脸裁剪</text><text x="164" y="93">3→16</text><text x="264" y="93">16→24</text>
+        <text x="364" y="93">24→32</text><text x="464" y="93">8 帧取平均</text><text x="564" y="93">+BatchNorm2d</text>
+        <text x="664" y="93">展平</text>
+      </g>
+      <g stroke="currentColor" stroke-width="1.2" marker-end="url(#ah)" opacity="0.7">
+        <line x1="108" y1="69" x2="118" y2="69"/><line x1="208" y1="69" x2="218" y2="69"/>
+        <line x1="308" y1="69" x2="318" y2="69"/><line x1="408" y1="69" x2="418" y2="69"/>
+        <line x1="508" y1="69" x2="518" y2="69"/><line x1="608" y1="69" x2="618" y2="69"/>
+      </g>
+
+      <path d="M 120 108 L 120 116 L 408 116 L 408 108" fill="none" stroke="var(--faint)" stroke-width="1"/>
+      <text x="264" y="132" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--faint)" text-anchor="middle">每段：Conv3d k=3×5×5 → AvgPool3d 4×4 步长 2 → BatchNorm3d → ReLU</text>
+
+      <path d="M 664 98 L 664 162 L 190 162" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.7"/>
+      <text x="600" y="156" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--faint)" text-anchor="end">同一组提取器权重</text>
+      <line x1="190" y1="162" x2="190" y2="192" stroke="var(--s1)" stroke-width="1.5" marker-end="url(#ah1)"/>
+      <line x1="530" y1="162" x2="530" y2="192" stroke="var(--s3)" stroke-width="1.5" marker-end="url(#ah3)"/>
+
+      <rect x="40" y="196" width="300" height="186" rx="3" fill="none" stroke="var(--s1)" stroke-width="1.4"/>
+      <text x="56" y="218" font-family="Source Serif 4, serif" font-size="12.5" font-weight="600" fill="var(--s1)">阶段 A · 监督预训练</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor">
+        <text x="56" y="242">Linear  15488 → 512</text>
+        <text x="56" y="259">Dropout p = 0.2</text>
+        <text x="56" y="276">Linear  512 → 1</text>
+      </g>
+      <g font-family="Source Serif 4, serif" font-size="11" fill="var(--muted)">
+        <text x="56" y="300">目标：二元交叉熵，真伪两类</text>
+        <text x="56" y="320">两层之间无激活函数</text>
+        <text x="56" y="340">头参数 7,930,881</text>
+        <text x="56" y="366">训练结束后丢弃此头</text>
+      </g>
+
+      <rect x="380" y="196" width="300" height="186" rx="3" fill="none" stroke="var(--s3)" stroke-width="1.4"/>
+      <text x="396" y="218" font-family="Source Serif 4, serif" font-size="12.5" font-weight="600" fill="var(--s3)">阶段 B · 单类异常检测</text>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor">
+        <text x="396" y="242">FC1 ~ N(μ, σ)  15488 → 512</text>
+        <text x="396" y="259">Dropout p = 0.2</text>
+        <text x="396" y="276">FC2 ~ N(μ, σ)  512 → 1</text>
+      </g>
+      <g font-family="Source Serif 4, serif" font-size="11" fill="var(--muted)">
+        <text x="396" y="300">目标：TraceGraph ELBO，Pyro SVI</text>
+        <text x="396" y="320">先验 N(0, 0.1²)，KL 权重 10⁻³</text>
+        <text x="396" y="340">提取器冻结，含 BatchNorm 统计量</text>
+        <text x="396" y="366">仅使用真实视频训练</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption><b>图 1.</b> 网络结构与两阶段训练流程。特征提取器为三段 3D 卷积，每段的顺序是卷积、平均池化、批归一化、激活；三段之后沿时间轴取均值，自适应平均池化到 22×22，再经一次 BatchNorm2d 展平为 15488 维。张量尺寸以人脸裁剪输入 256×256 为例，整帧输入 540×960 经同一路径同样得到 15488 维（自适应池化吸收了尺寸差异）。同一组提取器权重先在阶段 A 由确定性头以监督方式训练，该头随后丢弃；阶段 B 冻结提取器，只训练形状相同的均值场贝叶斯头。</figcaption>
+</figure>
 
 <div class="tw">
 <table>
-  <caption><b>表 1.</b> 实验设计。<b>实验一与实验二</b>固定数据集、只变输入模式；<b>实验二与实验三</b>固定输入模式、只变数据集。除下表所列因子外，网络结构、输入尺寸、片段长度、优化器与学习率调度在三个实验之间完全一致，唯一的配置差异是实验三阶段 B 的早停耐心为 8 而其余为 12。</caption>
-  <thead><tr><th>实验</th><th>数据集</th><th>输入模式</th><th>状态</th><th class="n">测试 AUC</th></tr></thead>
+  <caption><b>表 1.</b> 逐层输出尺寸与参数量，以人脸裁剪输入 3×8×256×256 为例。3D 卷积的时间维填充为 1，故时间长度全程保持 8；时间感受野为 7 帧。</caption>
+  <thead><tr><th>层</th><th>算子</th><th class="n">输出尺寸</th><th class="n">参数量</th></tr></thead>
   <tbody>
-    <tr class="head"><td>实验一</td><td>DFD</td><td>整帧，隔点抽样</td><td>完成</td><td class="n key">0.4877</td></tr>
-    <tr><td>实验二</td><td>DFD</td><td>人脸裁剪 ×2.0</td><td class="dim">进行中</td><td class="n dim">—</td></tr>
-    <tr class="head"><td>实验三</td><td>CelebDF++</td><td>人脸裁剪 ×2.0</td><td>完成</td><td class="n key">0.5284</td></tr>
+    <tr><td>输入</td><td>片段，RGB</td><td class="n">3×8×256×256</td><td class="n">—</td></tr>
+    <tr><td>卷积段 1</td><td>Conv3d 3→16, k=3×5×5</td><td class="n">16×8×252×252</td><td class="n">3,616</td></tr>
+    <tr><td></td><td>AvgPool3d 1×4×4, 步长 1×2×2</td><td class="n">16×8×125×125</td><td class="n">—</td></tr>
+    <tr><td></td><td>BatchNorm3d → ReLU</td><td class="n">16×8×125×125</td><td class="n">32</td></tr>
+    <tr><td>卷积段 2</td><td>Conv3d 16→24, k=3×5×5</td><td class="n">24×8×121×121</td><td class="n">28,824</td></tr>
+    <tr><td></td><td>AvgPool3d → BatchNorm3d → ReLU</td><td class="n">24×8×59×59</td><td class="n">48</td></tr>
+    <tr><td>卷积段 3</td><td>Conv3d 24→32, k=3×5×5</td><td class="n">32×8×55×55</td><td class="n">57,632</td></tr>
+    <tr><td></td><td>AvgPool3d → BatchNorm3d → ReLU</td><td class="n">32×8×26×26</td><td class="n">64</td></tr>
+    <tr><td>时间池化</td><td>沿时间轴取均值</td><td class="n">32×26×26</td><td class="n">—</td></tr>
+    <tr><td>空间池化</td><td>AdaptiveAvgPool2d(22)</td><td class="n">32×22×22</td><td class="n">—</td></tr>
+    <tr><td>输出归一化</td><td>BatchNorm2d(32) → 展平</td><td class="n">15488</td><td class="n">64</td></tr>
+    <tr class="head"><td>提取器合计</td><td></td><td class="n">15488</td><td class="n">90,280</td></tr>
+    <tr><td>阶段 A 头</td><td>Linear 15488→512 → Dropout → Linear 512→1</td><td class="n">1</td><td class="n">7,930,881</td></tr>
+    <tr><td>阶段 B 头</td><td>同上形状，均值场贝叶斯</td><td class="n">1</td><td class="n">7,930,881 × 2</td></tr>
   </tbody>
 </table>
 </div>
 
-<div class="note">
-  <b>本稿的状态。</b>实验二的阶段 A 尚在训练。因此「失败随数据集变化还是随输入模式变化」这一问题在本稿中只能由第 3.5 节的冻结线性探针间接回答，而非由端到端结果直接回答。该格补齐后表 1 与第 6 节将相应更新。
-</div>
+<h2><span class="n">2</span>实验方法</h2>
 
-<h2><span class="n">2</span>模型与训练</h2>
+<h3>2.1 划分协议</h3>
 
-<p>特征提取器沿用 Leyva 等人 (2024) 的 fine-to-coarse 结构并沿时间轴膨胀为 3D：三层 5×5 卷积（16/24/32 通道），每层后接 4×4 步长 2 的均值池化，自适应平均池化至 22×22，特征维度 32×22×22 = 15488。相对原文的偏离见第 8 节。</p>
+<p><b>目的：</b>使测试集中的身份从未在训练中出现，且伪造视频的源真实视频不在训练集内。</p>
 
-<p>阶段 A 在提取器后接一个与贝叶斯头同构的确定性头（15488 → 512 → 1），以二元交叉熵监督训练 60 个 epoch，Adam，学习率 1×10⁻⁴，指数衰减 γ = 0.95，batch 4，每类每 epoch 采样 1000 个片段，片段长度 8 帧；训练结束后丢弃该头。阶段 B 冻结提取器（含 BatchNorm 统计量），仅以 Pyro SVI 训练均值场贝叶斯头，目标为 TraceGraph ELBO，SGD，仅使用 264 条真实训练视频，常数目标，异常分数取后验预测的负值。</p>
+<p>划分按身份不相交执行，并附加<b>供体约束</b>：一条伪造视频只有在其目标身份与供体身份<em>同时</em>落入该子集时才被纳入。DFD 的伪造视频命名遵循 <span class="m">&lt;target&gt;_&lt;source&gt;__&lt;scene&gt;__&lt;id&gt;</span>，两个身份均可从文件名恢复。若仅按视频划分，DFD 测试集中 73.2% 的伪造视频可在训练集中找到自己的源真实视频。该约束在 DFD 剔除 1103 条伪造视频（占 36%），在 CelebDF++ 剔除 14538 条（占 27.3%）。</p>
 
-<h2><span class="n">3</span>实验一：整帧输入的 DFD</h2>
+<h3>2.2 预处理</h3>
 
-<h3>3.1 数据集与划分协议</h3>
+<p><b>目的：</b>把变长视频转成定长片段；两种输入模式作为实验设计中的自变量。</p>
 
-<p>DFD 包含 363 条原始视频与 3068 条伪造视频，由 28 名演员在多个场景下录制。伪造视频的命名遵循 Google/Jigsaw 在 FaceForensics 仓库中公布的规则 <span class="m">&lt;target&gt;_&lt;source&gt;__&lt;scene&gt;__&lt;id&gt;</span>，因此每条伪造视频的<b>目标身份</b>与<b>供体身份</b>均可从文件名恢复。</p>
+<p><b>整帧模式（实验一）：</b>保持原生分辨率，沿两个空间轴各隔一个像素取一个（<span class="m">frame[::2, ::2]</span>），1920×1080 变为 960×540，长宽比不变，不含插值。</p>
 
-<p>划分严格按身份不相交执行，并附加<b>供体约束</b>：一条伪造视频只有在其目标身份与供体身份<em>同时</em>落入该子集时才被纳入。这一约束是必要的——若仅按视频划分，测试集中 73.2% 的伪造视频会在训练集中找到自己的源真实视频，检测器可以通过近重复匹配而非伪造痕迹取得高分。</p>
+<p><b>人脸裁剪模式（实验二、实验三）：</b>dlib HOG 检测器定位人脸，回归 81 个关键点，绕检测框中心旋转使两眼连线水平，按检测框外扩至 ×2.0 裁剪，缩放到 256×256，越界部分以边缘像素复制填充。检测在训练前离线执行一次并缓存为逐视频的坐标文件（<span class="m">frame_indices</span>、<span class="m">boxes</span>、<span class="m">landmarks</span>、<span class="m">detect_stride</span>），训练与评估只读取坐标。检测步长为 4 帧，中间帧由线性插值得到。</p>
+
+<p>两种模式的片段长度均为 8 帧。</p>
+
+<h3>2.3 两阶段训练</h3>
+
+<p><b>阶段 A 的目的：</b>用真伪两类标签，以确定性梯度把特征提取器训练到能区分真伪；训练结束后丢弃分类头，只保留提取器权重。</p>
+
+<p><b>阶段 B 的目的：</b>冻结提取器，只在真实视频上训练贝叶斯头，使其对真实视频给出高后验、对偏离该分布的输入给出低后验，异常分数取后验预测的负值。</p>
 
 <div class="tw">
 <table>
-  <caption><b>表 2.</b> DFD 划分统计。标签约定：1 = 真实，0 = 伪造。供体约束剔除了 1103 条伪造视频（占全部伪造视频的 36%），这是协议的直接代价。</caption>
+  <caption><b>表 2.</b> 两个阶段的训练配置。三个实验共用同一套设置，差异仅在数据集、输入模式与早停耐心（见表 3）。</caption>
+  <thead><tr><th>项</th><th>阶段 A</th><th>阶段 B</th></tr></thead>
+  <tbody>
+    <tr><td>目标函数</td><td>二元交叉熵</td><td>TraceGraph ELBO（Pyro SVI）</td></tr>
+    <tr><td>优化器</td><td>Adam</td><td>SGD</td></tr>
+    <tr><td>学习率</td><td>1×10⁻⁴，指数衰减 γ = 0.95</td><td>1×10⁻⁴，指数衰减 γ = 0.95</td></tr>
+    <tr><td>训练样本</td><td>真伪两类，每类每 epoch 采样 1000 个片段</td><td>仅真实视频</td></tr>
+    <tr><td>batch</td><td class="n">4</td><td class="n">4</td></tr>
+    <tr><td>epoch 上限</td><td class="n">60</td><td class="n">50</td></tr>
+    <tr><td>提取器</td><td>可训练</td><td>冻结，含 BatchNorm 统计量</td></tr>
+    <tr><td>checkpoint 选择</td><td>验证 AUROC 最高的一轮</td><td>验证 macro AUROC 最高的一轮</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>2.4 评估指标</h3>
+
+<p><b>目的：</b>在封存的测试子集上给出可与文献对照的视频级读数。</p>
+
+<p>每条视频取 8 个等距片段，分数取其均值，因此所有指标均为 <b>video-level</b>。主指标为 <b>AUROC</b>，次要指标为 AP、Accuracy、Balanced Accuracy、EER 与 TPR@5%FPR。判定阈值在验证集的真实视频上按 5% 假阳率校准，随 checkpoint 一同保存。</p>
+
+<p>AUROC 的置信区间由<b>按身份聚类的自助重采样</b>给出（2000 次抽样，重采样身份而非视频）：CelebDF++ 上一条真实片段平均衍生 84 条伪造视频，共享背景、服装、光照与镜头运动，按视频重采样会把它们当作独立观测。</p>
+
+<h3>2.5 实验设计</h3>
+
+<div class="tw">
+<table>
+  <caption><b>表 3.</b> 三组实验。实验一与实验二固定数据集、只变输入模式；实验二与实验三固定输入模式、只变数据集。网络结构、输入尺寸、片段长度、优化器与学习率调度三者一致。</caption>
+  <thead><tr><th>实验</th><th>数据集</th><th>输入模式</th><th class="n">阶段A 早停耐心</th><th>状态</th></tr></thead>
+  <tbody>
+    <tr><td>实验一</td><td>DFD</td><td>整帧，隔点抽样</td><td class="n">12</td><td>完成</td></tr>
+    <tr><td>实验二</td><td>DFD</td><td>人脸裁剪 ×2.0</td><td class="n">12</td><td class="dim">阶段 A 进行中</td></tr>
+    <tr><td>实验三</td><td>CelebDF++</td><td>人脸裁剪 ×2.0</td><td class="n">8</td><td>完成</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">3</span>实验一：DFD 整帧输入</h2>
+
+<p><b>目的：</b>在不做人脸检测的条件下，测量该两阶段检测器在 DFD 上的端到端性能。</p>
+
+<div class="tw">
+<table>
+  <caption><b>表 4.</b> DFD 划分统计。标签约定：1 = 真实，0 = 伪造。DFD 含 363 条原始视频与 3068 条伪造视频，由 28 名演员录制。</caption>
   <thead><tr><th>子集</th><th class="n">真实</th><th class="n">伪造</th><th class="n">身份数</th><th>用途</th></tr></thead>
   <tbody>
     <tr><td>训练</td><td class="n">264</td><td class="n">1894</td><td class="n">20</td><td>阶段 A / 阶段 B</td></tr>
@@ -143,12 +288,6 @@
   </tbody>
 </table>
 </div>
-
-<h3>3.2 预处理</h3>
-
-<p>整帧输入，保持原生分辨率，沿两个空间轴各隔一个像素取一个（<span class="m">frame[::2, ::2]</span>），1920×1080 变为 960×540，长宽比不变。<b>此操作不含任何插值</b>：存活像素保留原值。先前采用 <span class="m">cv2.INTER_AREA</span> 缩放的运行会将 4.6 个输入像素平均为 1 个输出像素，而伪造痕迹位于高频段，低通滤波会在第一层卷积之前就将证据抹除；隔点抽样使这些频率发生混叠而非被移除。</p>
-
-<h3>3.3 阶段 A 训练动态</h3>
 
 <figure>
   <div class="figbox" id="box-loss">
@@ -176,8 +315,8 @@
       <rect id="hit-loss" x="52" y="16" width="652" height="210" fill="transparent" style="cursor:crosshair"/>
     </svg>
     <div class="tip" id="tip-loss"></div>
-  </div>
-  <figcaption><b>图 1.</b> 阶段 A 的训练交叉熵。曲线自 1.5778 降至 0.6579，<b>在第 60 个 epoch 仍在下降</b>，60 个 epoch 中有 46 个位于 ln 2 之下。模型确实在拟合训练数据。</figcaption>
+</div>
+  <figcaption><b>图 2.</b> 实验一阶段 A 的训练交叉熵，60 个 epoch，自 1.5778 降至 0.6579；60 个 epoch 中有 46 个位于 ln 2 = 0.6931 之下。鼠标悬停可读取任一 epoch 的数值。</figcaption>
 </figure>
 
 <figure>
@@ -206,25 +345,23 @@
       <rect id="hit-auc" x="52" y="16" width="652" height="210" fill="transparent" style="cursor:crosshair"/>
     </svg>
     <div class="tip" id="tip-auc"></div>
-  </div>
-  <figcaption><b>图 2.</b> 同一次运行的验证 AUC，与图 1 反向。全程均值 <b>0.4477</b>；自第 24 个 epoch 起，37 个 epoch 中仅有 1 个高于 0.50。训练损失下降而验证指标稳定<em>低于</em>随机水平，说明在训练身份上学到的判别方向在留出身份上发生反转。（这 37 个 epoch 共享同一验证集，因此并非 37 次独立观测。）</figcaption>
+</div>
+  <figcaption><b>图 3.</b> 同一次运行的验证 AUROC，验证子集 62 条视频、4 个身份。首轮 0.4928，末轮 0.4248，最高 0.6039（第 14 轮），全程均值 0.4477；自第 24 个 epoch 起，37 个 epoch 中有 1 个高于 0.50。</figcaption>
 </figure>
-
-<h3>3.4 端到端检测性能</h3>
 
 <div class="tw">
 <table>
-  <caption><b>表 3.</b> 测试集结果（54 真 / 54 假，video-level）。阈值在验证集上按 5% 假阳率校准。作为对照，同一流水线改用一个较早的 33-epoch 提取器时，测试 AUC 为 0.5165，同样处于随机水平。</caption>
+  <caption><b>表 5.</b> 实验一测试集结果，54 真 / 54 假，video-level。阈值在验证集上按 5% 假阳率校准。阶段 B 在第 19 个 epoch 触发早停，验证 AUROC 最佳 0.6627、全程均值 0.6259。</caption>
   <thead><tr><th>指标</th><th class="n">数值</th><th>说明</th></tr></thead>
   <tbody>
-    <tr class="head"><td>Video-level AUC</td><td class="n key">0.4877</td><td>按身份聚类 95% 自助区间 <span class="m">[0.458, 0.531]</span></td></tr>
-    <tr><td>Average Precision</td><td class="n">0.4883</td><td>类别平衡，随机水平为 0.50</td></tr>
+    <tr class="head"><td>Video-level AUROC</td><td class="n key">0.4877</td><td>按身份聚类 95% 自助区间 <span class="m">[0.458, 0.531]</span>，4 个身份簇</td></tr>
+    <tr><td>Average Precision</td><td class="n">0.4883</td><td>类别平衡，基准率 0.50</td></tr>
     <tr><td>Accuracy</td><td class="n">0.4815</td><td>校准阈值下</td></tr>
     <tr><td>Balanced Accuracy</td><td class="n">0.4815</td><td></td></tr>
-    <tr><td>EER</td><td class="n">0.5093</td><td>随机水平为 0.50</td></tr>
-    <tr><td>TPR @ 5% FPR</td><td class="n key">0.0000</td><td>校准阈值下未标记出任何伪造视频</td></tr>
+    <tr><td>EER</td><td class="n">0.5093</td><td></td></tr>
+    <tr><td>TPR @ 5% FPR</td><td class="n">0.0000</td><td></td></tr>
     <tr><td>混淆矩阵</td><td class="n">[[52, 2], [54, 0]]</td><td>[真: TN, FP] / [假: FN, TP]</td></tr>
-    <tr><td class="dim">真实 / 伪造后验均值</td><td class="n dim">0.8330 / 0.8478</td><td class="dim">方向反转：伪造样本得分更高</td></tr>
+    <tr><td>真实 / 伪造后验均值</td><td class="n">0.8330 / 0.8478</td><td></td></tr>
   </tbody>
 </table>
 </div>
@@ -279,90 +416,39 @@
       <text x="404" y="140" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 404 140)">真阳率</text>
     </svg>
   </div>
-  <figcaption><b>图 3.</b> 测试集上的检测行为，由 108 条视频的逐视频异常分数绘制。<b>(a)</b> 两类分数分布几乎完全重叠，伪造样本的均值（−0.8478）甚至略低于真实样本（−0.8330），即模型认为伪造视频"更正常"；校准阈值落在分布右尾，因而未标记出任何伪造视频。<b>(b)</b> ROC 曲线全程贴着对角线，AUC 0.4877，按身份聚类的 95% 自助区间为 [0.458, 0.531]，覆盖随机水平。</figcaption>
+  <figcaption><b>图 4.</b> 实验一测试集，由 108 条逐视频异常分数绘制。<b>(a)</b> 分数分布，真实均值 −0.8330、伪造 −0.8478；黑色虚线为校准阈值。<b>(b)</b> ROC 曲线，AUC 0.4877，按身份聚类 95% 自助区间 [0.458, 0.531]。</figcaption>
 </figure>
 
-<p>阶段 B 在第 19 个 epoch 触发早停（patience 12），验证 AUC 最佳 0.6627、全程均值 0.6259。<b>验证与测试之间的落差是本节最值得记录的部分</b>：19 个 epoch 中验证 AUC 稳定在 0.62–0.66，看上去像是信号，而测试集读数为 0.4877。DFD 的验证子集仅有 45 真 / 17 假、覆盖 4 个身份，其 AUC 标准误约 0.08；这是该子集第三次给出未能在更换身份后存活的数字。</p>
+<h2><span class="n">4</span>实验二：DFD 人脸裁剪输入</h2>
 
-<h3>3.5 特征表征分析</h3>
+<p><b>目的：</b>与实验一固定同一数据集、只更换输入模式，与实验三固定同一输入模式、只更换数据集，从而把「数据集」与「输入模式」两个因子分开。</p>
 
-<p>阶段 A 交付的是提取器而非分类器，其分类头为 <span class="m">Linear → Dropout → Linear</span> 且两层之间不含激活函数，在数学上等价于一个线性泛函。「阶段 A 是否成功」于是等价于：<b>一个线性分类器能否从提取器输出中区分真伪，且在未见身份上成立</b>。我们用两种互补的方式检验。</p>
-
-<figure>
-  <div class="figbox">
-    <svg viewBox="0 0 720 300" role="img" aria-label="左：60 条训练视频特征的 t-SNE 投影，真实与伪造完全混杂；右：冻结线性探针结果，只有 CelebDFv3 加人脸裁剪的配置越出随机区间。">
-      <text x="40" y="14" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(a) 提取器特征的 t-SNE 投影</text>
-      <rect x="40" y="18" width="320" height="252" fill="none" stroke="var(--rule-soft)" stroke-width="1"/>
-      <g fill="var(--s3)" fill-opacity="0.85">
-        <circle cx="75.6" cy="66.7" r="4"/><circle cx="211.3" cy="153.3" r="4"/><circle cx="307.9" cy="100.5" r="4"/><circle cx="154.5" cy="112.4" r="4"/><circle cx="131.8" cy="20.4" r="4"/><circle cx="98.6" cy="77.6" r="4"/><circle cx="206.0" cy="265.9" r="4"/><circle cx="263.3" cy="93.0" r="4"/><circle cx="226.9" cy="143.7" r="4"/><circle cx="173.8" cy="244.7" r="4"/><circle cx="113.8" cy="18.0" r="4"/><circle cx="186.8" cy="54.0" r="4"/><circle cx="82.1" cy="81.7" r="4"/><circle cx="360.0" cy="146.7" r="4"/><circle cx="313.8" cy="243.3" r="4"/><circle cx="345.5" cy="153.0" r="4"/><circle cx="131.3" cy="33.7" r="4"/><circle cx="202.6" cy="239.3" r="4"/><circle cx="47.9" cy="149.1" r="4"/><circle cx="188.4" cy="270.0" r="4"/><circle cx="291.9" cy="85.7" r="4"/><circle cx="179.2" cy="131.4" r="4"/><circle cx="178.8" cy="72.6" r="4"/><circle cx="331.8" cy="241.4" r="4"/><circle cx="67.1" cy="142.8" r="4"/><circle cx="301.3" cy="226.9" r="4"/><circle cx="112.8" cy="31.5" r="4"/><circle cx="239.4" cy="174.3" r="4"/><circle cx="134.5" cy="153.7" r="4"/><circle cx="210.0" cy="119.4" r="4"/>
-      </g>
-      <g fill="none" stroke="var(--s2)" stroke-width="1.8">
-        <path d="M126.8 72.6 l8 8 M134.8 72.6 l-8 8"/><path d="M313.0 218.2 l8 8 M321.0 218.2 l-8 8"/><path d="M316.8 146.9 l8 8 M324.8 146.9 l-8 8"/><path d="M71.2 93.0 l8 8 M79.2 93.0 l-8 8"/><path d="M148.3 120.6 l8 8 M156.3 120.6 l-8 8"/><path d="M203.1 97.0 l8 8 M211.1 97.0 l-8 8"/><path d="M236.6 157.7 l8 8 M244.6 157.7 l-8 8"/><path d="M292.9 238.6 l8 8 M300.9 238.6 l-8 8"/><path d="M271.6 96.7 l8 8 M279.6 96.7 l-8 8"/><path d="M194.4 25.2 l8 8 M202.4 25.2 l-8 8"/><path d="M268.6 70.6 l8 8 M276.6 70.6 l-8 8"/><path d="M55.7 168.8 l8 8 M63.7 168.8 l-8 8"/><path d="M146.9 158.8 l8 8 M154.9 158.8 l-8 8"/><path d="M93.6 85.6 l8 8 M101.6 85.6 l-8 8"/><path d="M241.2 145.0 l8 8 M249.2 145.0 l-8 8"/><path d="M36.0 159.8 l8 8 M44.0 159.8 l-8 8"/><path d="M186.7 249.4 l8 8 M194.7 249.4 l-8 8"/><path d="M183.7 229.5 l8 8 M191.7 229.5 l-8 8"/><path d="M169.8 113.7 l8 8 M177.8 113.7 l-8 8"/><path d="M58.5 154.5 l8 8 M66.5 154.5 l-8 8"/><path d="M46.0 131.9 l8 8 M54.0 131.9 l-8 8"/><path d="M206.1 129.3 l8 8 M214.1 129.3 l-8 8"/><path d="M162.8 63.3 l8 8 M170.8 63.3 l-8 8"/><path d="M288.5 70.2 l8 8 M296.5 70.2 l-8 8"/><path d="M338.6 136.7 l8 8 M346.6 136.7 l-8 8"/><path d="M209.6 160.9 l8 8 M217.6 160.9 l-8 8"/><path d="M172.6 160.9 l8 8 M180.6 160.9 l-8 8"/><path d="M164.4 255.5 l8 8 M172.4 255.5 l-8 8"/><path d="M180.9 28.7 l8 8 M188.9 28.7 l-8 8"/><path d="M128.6 161.0 l8 8 M136.6 161.0 l-8 8"/>
-      </g>
-      <g font-family="Source Serif 4, serif" font-size="11.5">
-        <circle cx="66" cy="286" r="4" fill="var(--s3)"/><text x="76" y="290" fill="var(--muted)">真实 (30)</text>
-        <path d="M150 282 l8 8 M158 282 l-8 8" stroke="var(--s2)" stroke-width="1.8" fill="none"/>
-        <text x="166" y="290" fill="var(--muted)">伪造 (30)</text>
-        <text x="248" y="290" fill="var(--faint)">5-NN 按身份留一 0.375</text>
-      </g>
-
-      <text x="410" y="14" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(b) 冻结线性探针 vs 随机基线</text>
-      <g stroke="var(--rule-soft)" stroke-width="1">
-        <line x1="455" y1="30" x2="455" y2="200"/><line x1="510" y1="30" x2="510" y2="200"/>
-        <line x1="565" y1="30" x2="565" y2="200"/><line x1="620" y1="30" x2="620" y2="200"/><line x1="675" y1="30" x2="675" y2="200"/>
-      </g>
-      <line x1="510" y1="30" x2="510" y2="200" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
-      <text x="510" y="26" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--s2)" text-anchor="middle">0.50</text>
-      <g font-family="Source Serif 4, serif" font-size="11" fill="var(--ink)" text-anchor="start">
-        <text x="410" y="60">v9 · Celeb+脸</text>
-        <text x="410" y="112">v9arch · DFD+脸</text>
-        <text x="410" y="164">本文 · DFD+整帧</text>
-      </g>
-      <g stroke="var(--faint)" stroke-width="1.5">
-        <line x1="533" y1="72" x2="608" y2="72"/><line x1="463" y1="176" x2="567" y2="176"/>
-      </g>
-      <g fill="var(--faint)">
-        <circle cx="533" cy="72" r="3"/><circle cx="553" cy="72" r="3"/><circle cx="561" cy="72" r="3"/><circle cx="608" cy="72" r="3"/>
-        <circle cx="566" cy="124" r="3"/>
-        <circle cx="463" cy="176" r="3"/><circle cx="504" cy="176" r="3"/><circle cx="506" cy="176" r="3"/><circle cx="519" cy="176" r="3"/><circle cx="547" cy="176" r="3"/><circle cx="549" cy="176" r="3"/><circle cx="561" cy="176" r="3"/><circle cx="566" cy="176" r="3"/>
-      </g>
-      <g fill="var(--s1)" stroke="var(--surface)" stroke-width="1.8">
-        <path d="M 638 65 l 7 7 l -7 7 l -7 -7 z"/>
-        <path d="M 573 117 l 7 7 l -7 7 l -7 -7 z"/>
-        <path d="M 522 169 l 7 7 l -7 7 l -7 -7 z"/>
-      </g>
-      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--s1)" font-weight="500">
-        <text x="650" y="76">.7322</text><text x="585" y="128">.5956</text><text x="534" y="180">.5033</text>
-      </g>
-      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
-        <text x="455" y="215">0.40</text><text x="510" y="215">0.50</text><text x="565" y="215">0.60</text>
-        <text x="620" y="215">0.70</text><text x="675" y="215">0.80</text>
-      </g>
-      <text x="565" y="233" font-family="Source Serif 4, serif" font-size="11" fill="var(--muted)" text-anchor="middle">留出身份线性探针 AUC</text>
-      <g font-family="Source Serif 4, serif" font-size="11">
-        <circle cx="440" cy="256" r="3" fill="var(--faint)"/><text x="449" y="260" fill="var(--muted)">随机初始化抽样</text>
-        <path d="M 560 250 l 6 6 l -6 6 l -6 -6 z" fill="var(--s1)"/><text x="573" y="260" fill="var(--muted)">训练后</text>
-      </g>
-    </svg>
-  </div>
-  <figcaption><b>图 4.</b> <b>(a)</b> 60 条训练视频（30 真 / 30 假，覆盖 20 个身份）的提取器特征经 PCA 降至 30 维后的 t-SNE 投影。两类完全混杂，未形成任何可分结构；在该平面上按<em>身份</em>留一交叉验证的 5-NN 准确率为 <b>0.375</b>，低于随机。<b>(b)</b> 冻结线性探针（岭回归对偶闭式解，按身份分五折）。灰点为随机初始化提取器的独立抽样（自上而下 n = 4 / 1 / 8），蓝色菱形为训练后的值。<b>只有 CelebDFv3 + 人脸裁剪的配置越出了其随机区间</b>（z = +2.34）；DFD 的两个配置分别位于 z = +0.92 与 −0.40 之内。该探针在 v9 上读得 0.7322，而其端到端真实成绩为 0.7773，说明读数本身贴近真实性能。</figcaption>
-</figure>
-
-<div class="note">
-  <b>一个值得单独指出的观察。</b>随机基线并不位于 0.50，而是在 DFD 上约 0.53、在 CelebDFv3 上约 0.60。未经训练的卷积栈加池化所编码的是低层图像统计量——分辨率、压缩强度、色彩分布——而这些在本数据集上已足以部分区分两类。这与我们此前测得的分辨率捷径一致：CelebDF++ 的伪造视频中 61% 为方形 256/512，而真实视频全部为宽屏。因此 v9 提取器可归因于「学到的伪造证据」的增量约为 <b>+0.13 AUC</b>，而非其标称的 0.7773。
-</div>
-
-<h2><span class="n">4</span>实验三：人脸裁剪输入的 CelebDF++</h2>
-
-<p>实验三把输入模式换成人脸裁剪、数据集换成 CelebDF++（CelebDFv3），其余与实验一一致。CelebDF++ 是 2025 年发布的基准，覆盖 22 种伪造方法、三个家族：换脸（FaceSwap）、面部重演（FaceReenact）与语音驱动的说话人生成（TalkingFace）。</p>
-
-<h3>4.1 数据、划分与预处理</h3>
-
-<p>划分沿用同一套身份不相交加供体约束的规则。供体约束在此剔除 14538 条伪造视频，占全部伪造视频的 27.3%。</p>
+<p>划分与实验一相同（表 4）。人脸框缓存于训练前离线建立，DFD 的 2328 条视频中 2327 条成功检出。</p>
 
 <div class="tw">
 <table>
-  <caption><b>表 4.</b> CelebDF++ 划分统计。真实视频数量远小于伪造视频，测试集真假比约 1:32——这一比例决定了本实验中 Accuracy 与 Average Precision 不可读，理由见表 5。</caption>
+  <caption><b>表 6.</b> 实验二当前状态。首次运行因命令行 <span class="m">--max-epochs</span> 未显式指定而取了默认值 30，与另外两个实验的 60 不一致，正在以 60 个 epoch 重跑。下表为 30 轮那次运行的数据，仅作记录。</caption>
+  <thead><tr><th>项</th><th class="n">数值</th></tr></thead>
+  <tbody>
+    <tr><td>阶段 A 完成 epoch</td><td class="n">30 / 30</td></tr>
+    <tr><td>验证 AUROC 最高</td><td class="n">0.7516</td></tr>
+    <tr><td>验证 AUROC 末轮</td><td class="n">0.3294</td></tr>
+    <tr><td>末轮训练交叉熵</td><td class="n">1.1791</td></tr>
+    <tr><td>末轮 EER / TPR@5%FPR</td><td class="n">0.6052 / 0.0000</td></tr>
+    <tr class="dim"><td>60 epoch 重跑</td><td class="n">进行中</td></tr>
+    <tr class="dim"><td>阶段 B</td><td class="n">未开始</td></tr>
+    <tr class="dim"><td>测试评估</td><td class="n">未开始</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">5</span>实验三：CelebDF++ 人脸裁剪输入</h2>
+
+<p><b>目的：</b>在覆盖 22 种伪造方法的 2025 年基准上，测量同一流水线的端到端性能。CelebDF++ 的伪造方法分三个家族：换脸（FaceSwap）、面部重演（FaceReenact）、语音驱动的说话人生成（TalkingFace）。</p>
+
+<div class="tw">
+<table>
+  <caption><b>表 7.</b> CelebDF++ 划分统计。测试子集的真假比约为 1:32。</caption>
   <thead><tr><th>子集</th><th class="n">真实</th><th class="n">伪造</th><th class="n">身份数</th><th>用途</th></tr></thead>
   <tbody>
     <tr><td>训练</td><td class="n">554</td><td class="n">28150</td><td class="n">245</td><td>阶段 A / 阶段 B</td></tr>
@@ -373,13 +459,7 @@
 </table>
 </div>
 
-<p>预处理按 DeepfakeBench 的协议执行：dlib HOG 检测器定位人脸，81 点关键点回归，绕框中心旋转使两眼连线水平，随后按检测框<b>外扩至 ×2.0</b>裁剪并缩放到 256×256，越界部分以边缘像素复制填充。检测在训练前离线完成一次并缓存为逐视频的坐标文件，训练与评估只读取坐标——同一批框在所有运行中保持一致，且使检测不再占用训练时间。真实与伪造两类的人脸检出率分别为 99.3% 与 99.2%（训练集），检测环节本身不构成类别线索。</p>
-
-<div class="note">
-  <b>相对协议的一处有意偏离。</b>DeepfakeBench 的裁剪外扩系数为 ×1.3，本工作取 ×2.0，以便把融合边界与发际线一并纳入视野。该值在实验二与实验三之间保持一致，因此两者的比较不受影响；但与文献报告的数字不再严格可比。×1.3 的配置已作为消融保留。
-</div>
-
-<h3>4.2 阶段 A 训练动态</h3>
+<p>人脸检出率：训练集真实 99.3%、伪造 99.2%；验证集 99.2% / 99.4%；测试集 98.1% / 99.1%。检测框宽度中位数：测试集真实 138 px、伪造 156 px。</p>
 
 <figure>
   <div class="figbox" id="box-a3">
@@ -409,11 +489,9 @@
     </svg>
     <div class="tip" id="tip-a3"></div>
     <div class="tip" id="tip-b3"></div>
-  </div>
-  <figcaption><b>图 5.</b> 实验三阶段 A 的 60 个 epoch。<b>(a)</b> 训练交叉熵自 1.5420 降至 0.5618，最低 0.5279，全程持续下降。<b>(b)</b> 与实验一相反，验证 AUROC 与训练损失<em>同向</em>：自 0.5864 升至 0.6918，最高 0.6937（第 57 个 epoch），全程均值 0.6572，未见过拟合拐点。<b>阶段 A 在这个数据集上确实学到了在留出身份上成立的东西</b>——这是本工作中唯一一次出现该现象。</figcaption>
+</div>
+  <figcaption><b>图 5.</b> 实验三阶段 A 的 60 个 epoch。<b>(a)</b> 训练交叉熵自 1.5420 降至 0.5618，最低 0.5279。<b>(b)</b> 验证 AUROC 自 0.5864 升至 0.6918，最高 0.6937（第 57 轮），全程均值 0.6572。验证子集 5241 条视频、57 个身份。</figcaption>
 </figure>
-
-<h3>4.3 阶段 B 与测试结果</h3>
 
 <figure>
   <div class="figbox" id="box-c3">
@@ -437,23 +515,24 @@
       <rect id="hit-c3" x="62" y="34" width="458" height="180" fill="transparent" style="cursor:crosshair"/>
     </svg>
     <div class="tip" id="tip-c3"></div>
-  </div>
-  <figcaption><b>图 6.</b> 阶段 B 的 17 个 epoch（patience 8，第 9 个 epoch 触发早停时的最佳值）。验证 AUROC 在 0.58–0.66 之间，看上去稳定地高于随机水平；<b>同一 checkpoint 在测试集上读得 0.5284</b>。验证子集有 5241 条视频，但其中真实视频只有 166 条、身份 57 个——用它挑选 epoch 所付出的代价就是图中那条虚线。</figcaption>
+</div>
+  <figcaption><b>图 6.</b> 实验三阶段 B 的 17 个 epoch（早停耐心 8）。验证 AUROC 最高 0.6569（第 9 轮），全程均值 0.6198，末轮 0.6255。同一 checkpoint 在测试集上的读数以标记点给出。</figcaption>
 </figure>
 
 <div class="tw">
 <table>
-  <caption><b>表 5.</b> 实验三测试集结果（170 真 / 5433 假，其中 3 条因检测缺失或解码失败被跳过，实际计入 169 真 / 5431 假）。阈值取自 checkpoint，为同域评估。</caption>
+  <caption><b>表 8.</b> 实验三测试集结果，170 真 / 5433 假，其中 3 条因检测缺失或解码失败被跳过，实际计入 169 真 / 5431 假。阈值取自 checkpoint。测试子集基准率为 0.9698。</caption>
   <thead><tr><th>指标</th><th class="n">数值</th><th>说明</th></tr></thead>
   <tbody>
     <tr class="head"><td>Video-level AUROC</td><td class="n key">0.5284</td><td>按身份聚类 95% 自助区间 <span class="m">[0.502, 0.572]</span>，57 个身份簇</td></tr>
-    <tr><td>EER</td><td class="n">0.5019</td><td>随机水平为 0.50</td></tr>
-    <tr><td>Balanced Accuracy</td><td class="n">0.5094</td><td>类别不平衡下唯一可读的准确率</td></tr>
-    <tr><td>TPR @ 5% FPR</td><td class="n">0.0755</td><td>随机水平为 0.05</td></tr>
-    <tr><td>混淆矩阵</td><td class="n">[[159, 10], [5007, 424]]</td><td>5431 条伪造视频中 5007 条被判为真实</td></tr>
-    <tr><td class="dim">Accuracy</td><td class="n dim">0.1041</td><td class="dim">不可读：全判为伪造即得 0.9698</td></tr>
-    <tr><td class="dim">Average Precision</td><td class="n dim">0.9733</td><td class="dim">不可读：基准率本身即 0.9698，超出仅 0.0035</td></tr>
-    <tr><td class="dim">真实 / 伪造异常分数均值</td><td class="n dim">−0.8564 / −0.8173</td><td class="dim">方向正确但间距 0.039，远小于分布展宽</td></tr>
+    <tr><td>EER</td><td class="n">0.5019</td><td></td></tr>
+    <tr><td>Balanced Accuracy</td><td class="n">0.5094</td><td></td></tr>
+    <tr><td>TPR @ 5% FPR</td><td class="n">0.0755</td><td></td></tr>
+    <tr><td>Accuracy</td><td class="n">0.1041</td><td>基准率 0.9698</td></tr>
+    <tr><td>Average Precision</td><td class="n">0.9733</td><td>基准率 0.9698</td></tr>
+    <tr><td>混淆矩阵</td><td class="n">[[159, 10], [5007, 424]]</td><td>[真: TN, FP] / [假: FN, TP]</td></tr>
+    <tr><td>真实 / 伪造异常分数均值</td><td class="n">−0.8564 / −0.8173</td><td>标准差 0.2716 / 0.2261</td></tr>
+    <tr><td>后验预测标准差均值</td><td class="n">0.2086</td><td>16 次蒙特卡洛采样</td></tr>
   </tbody>
 </table>
 </div>
@@ -490,12 +569,8 @@
       <text x="404" y="140" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 404 140)">真阳率</text>
     </svg>
   </div>
-  <figcaption><b>图 7.</b> 实验三测试集上的检测行为，由 5600 条逐视频异常分数绘制。<b>(a)</b> 两类分数分布几乎完全重叠。因真假比为 1:32，纵轴取<em>密度</em>而非计数，否则真实一侧的 169 条会被压成一条贴地的线；伪造样本均值 −0.8173 高于真实样本 −0.8564，方向正确，但两者标准差分别为 0.2261 与 0.2716，效应量 Cohen's d ≈ 0.17。校准阈值落在两个分布的重叠区内，因而 5431 条伪造视频中有 5007 条被判为真实。<b>(b)</b> ROC 曲线全程贴着对角线，AUC 0.5284（由本图同一份分数文件独立重算，与表 5 一致），按身份聚类的 95% 自助区间 [0.502, 0.572] 的下界仅高出随机水平 0.002。</figcaption>
+  <figcaption><b>图 7.</b> 实验三测试集，由 5600 条逐视频异常分数绘制。<b>(a)</b> 分数分布；因真假比为 1:32，纵轴取密度而非计数。<b>(b)</b> ROC 曲线，AUC 0.5284，由同一份分数文件独立重算，与表 8 一致。</figcaption>
 </figure>
-
-<p>验证与测试之间的落差是本节的核心。阶段 A 的验证 AUROC 稳定在 0.69、阶段 B 稳定在 0.62–0.66，而测试读数为 0.5284。这与实验一是同一种失败：验证子集给出的数字未能在更换身份后存活。区别在于，实验三的验证子集有 5241 条视频，规模并不小——<b>真正稀缺的是其中的 166 条真实视频与 57 个身份</b>，而单类检测器的排序质量恰恰由真实一侧决定。</p>
-
-<h3>4.4 按伪造方法拆分</h3>
 
 <figure>
   <div class="figbox">
@@ -603,97 +678,130 @@
       <text x="475.0" y="481" font-family="Source Serif 4, serif" font-size="11.5" fill="var(--muted)" text-anchor="middle">测试集 video-level AUROC</text>
     </svg>
   </div>
-  <figcaption><b>图 8.</b> 测试集 AUROC 按伪造方法拆分，共 22 种方法、三个家族。<b>TalkingFace 家族整体位于随机水平之上</b>（7 种中 6 种，FLOAT 最高 0.5919），<b>FaceSwap 家族整体位于随机水平之下</b>（8 种全部 ≤ 0.4975，InSwapper 最低 0.4457，即模型系统性地认为换脸视频比真实视频更「正常」），FaceReenact 家族跨越随机水平。<b>这些数字不可单独引用</b>：22 行共用同一批 169 条真实视频，彼此不独立；FaceSwap 与 FaceReenact 每种方法仅 67–69 条伪造视频，单行的自助区间宽度超过 ±0.07。可以读的是家族之间的次序，不是任何单个数值。</figcaption>
+  <figcaption><b>图 8.</b> 实验三测试集 AUROC 按 22 种伪造方法拆分，分三个家族排列。TalkingFace 每种方法 590–625 条伪造视频，FaceReenact 每种 67 条，FaceSwap 每种 69 条（Celeb-DF-v2 为 201 条）；三个家族的真实视频均为同一批 169 条。</figcaption>
 </figure>
 
-<p>家族之间的次序本身是一条信息。TalkingFace 的伪造视频由语音或姿态驱动整段重新生成，帧间一致性与真实录像差异较大，一个时序模型对它有微弱的抓手；FaceSwap 只替换面部区域、保留原始背景与运动，本工作的模型不但抓不住，反而给出低于随机的排序。这与「所学不迁移」的整体判断一致：模型学到的并非融合痕迹，而是某种与生成流程整体相关的低层统计量。</p>
+<h2><span class="n">6</span>特征表征测量</h2>
 
-<h2><span class="n">5</span>消融与诊断</h2>
+<p><b>目的：</b>阶段 A 交付的是提取器而非分类器，其分类头两层之间不含激活函数，在数学上等价于一个线性泛函。因此直接测量：<b>一个线性分类器能否从提取器输出中区分真伪，且在未见身份上成立</b>。</p>
 
-<p>为区分「方法无效」与「实现或优化有缺陷」，我们在一个 4 身份、71 条视频的子集上运行了一组受控消融，并对数据与读取路径做了独立测量。平台值取最后 20 个 epoch 的训练交叉熵均值。</p>
+<p><b>方法：</b>冻结提取器，取其输出特征，用岭回归（对偶闭式解）按身份分五折做交叉验证，报告留出折上的 AUROC。同一测量对随机初始化的提取器重复多次，给出随机参照的取值范围。t-SNE 投影先经 PCA 降至 30 维，其上按身份留一做 5-NN 分类。</p>
+
+<figure>
+  <div class="figbox">
+    <svg viewBox="0 0 720 300" role="img" aria-label="左：60 条训练视频特征的 t-SNE 投影，真实与伪造完全混杂；右：冻结线性探针结果，只有 CelebDFv3 加人脸裁剪的配置越出随机区间。">
+      <text x="40" y="14" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(a) 提取器特征的 t-SNE 投影</text>
+      <rect x="40" y="18" width="320" height="252" fill="none" stroke="var(--rule-soft)" stroke-width="1"/>
+      <g fill="var(--s3)" fill-opacity="0.85">
+        <circle cx="75.6" cy="66.7" r="4"/><circle cx="211.3" cy="153.3" r="4"/><circle cx="307.9" cy="100.5" r="4"/><circle cx="154.5" cy="112.4" r="4"/><circle cx="131.8" cy="20.4" r="4"/><circle cx="98.6" cy="77.6" r="4"/><circle cx="206.0" cy="265.9" r="4"/><circle cx="263.3" cy="93.0" r="4"/><circle cx="226.9" cy="143.7" r="4"/><circle cx="173.8" cy="244.7" r="4"/><circle cx="113.8" cy="18.0" r="4"/><circle cx="186.8" cy="54.0" r="4"/><circle cx="82.1" cy="81.7" r="4"/><circle cx="360.0" cy="146.7" r="4"/><circle cx="313.8" cy="243.3" r="4"/><circle cx="345.5" cy="153.0" r="4"/><circle cx="131.3" cy="33.7" r="4"/><circle cx="202.6" cy="239.3" r="4"/><circle cx="47.9" cy="149.1" r="4"/><circle cx="188.4" cy="270.0" r="4"/><circle cx="291.9" cy="85.7" r="4"/><circle cx="179.2" cy="131.4" r="4"/><circle cx="178.8" cy="72.6" r="4"/><circle cx="331.8" cy="241.4" r="4"/><circle cx="67.1" cy="142.8" r="4"/><circle cx="301.3" cy="226.9" r="4"/><circle cx="112.8" cy="31.5" r="4"/><circle cx="239.4" cy="174.3" r="4"/><circle cx="134.5" cy="153.7" r="4"/><circle cx="210.0" cy="119.4" r="4"/>
+      </g>
+      <g fill="none" stroke="var(--s2)" stroke-width="1.8">
+        <path d="M126.8 72.6 l8 8 M134.8 72.6 l-8 8"/><path d="M313.0 218.2 l8 8 M321.0 218.2 l-8 8"/><path d="M316.8 146.9 l8 8 M324.8 146.9 l-8 8"/><path d="M71.2 93.0 l8 8 M79.2 93.0 l-8 8"/><path d="M148.3 120.6 l8 8 M156.3 120.6 l-8 8"/><path d="M203.1 97.0 l8 8 M211.1 97.0 l-8 8"/><path d="M236.6 157.7 l8 8 M244.6 157.7 l-8 8"/><path d="M292.9 238.6 l8 8 M300.9 238.6 l-8 8"/><path d="M271.6 96.7 l8 8 M279.6 96.7 l-8 8"/><path d="M194.4 25.2 l8 8 M202.4 25.2 l-8 8"/><path d="M268.6 70.6 l8 8 M276.6 70.6 l-8 8"/><path d="M55.7 168.8 l8 8 M63.7 168.8 l-8 8"/><path d="M146.9 158.8 l8 8 M154.9 158.8 l-8 8"/><path d="M93.6 85.6 l8 8 M101.6 85.6 l-8 8"/><path d="M241.2 145.0 l8 8 M249.2 145.0 l-8 8"/><path d="M36.0 159.8 l8 8 M44.0 159.8 l-8 8"/><path d="M186.7 249.4 l8 8 M194.7 249.4 l-8 8"/><path d="M183.7 229.5 l8 8 M191.7 229.5 l-8 8"/><path d="M169.8 113.7 l8 8 M177.8 113.7 l-8 8"/><path d="M58.5 154.5 l8 8 M66.5 154.5 l-8 8"/><path d="M46.0 131.9 l8 8 M54.0 131.9 l-8 8"/><path d="M206.1 129.3 l8 8 M214.1 129.3 l-8 8"/><path d="M162.8 63.3 l8 8 M170.8 63.3 l-8 8"/><path d="M288.5 70.2 l8 8 M296.5 70.2 l-8 8"/><path d="M338.6 136.7 l8 8 M346.6 136.7 l-8 8"/><path d="M209.6 160.9 l8 8 M217.6 160.9 l-8 8"/><path d="M172.6 160.9 l8 8 M180.6 160.9 l-8 8"/><path d="M164.4 255.5 l8 8 M172.4 255.5 l-8 8"/><path d="M180.9 28.7 l8 8 M188.9 28.7 l-8 8"/><path d="M128.6 161.0 l8 8 M136.6 161.0 l-8 8"/>
+      </g>
+      <g font-family="Source Serif 4, serif" font-size="11.5">
+        <circle cx="66" cy="286" r="4" fill="var(--s3)"/><text x="76" y="290" fill="var(--muted)">真实 (30)</text>
+        <path d="M150 282 l8 8 M158 282 l-8 8" stroke="var(--s2)" stroke-width="1.8" fill="none"/>
+        <text x="166" y="290" fill="var(--muted)">伪造 (30)</text>
+        <text x="248" y="290" fill="var(--faint)">5-NN 按身份留一 0.375</text>
+      </g>
+
+      <text x="410" y="14" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(b) 冻结线性探针 vs 随机基线</text>
+      <g stroke="var(--rule-soft)" stroke-width="1">
+        <line x1="455" y1="30" x2="455" y2="200"/><line x1="510" y1="30" x2="510" y2="200"/>
+        <line x1="565" y1="30" x2="565" y2="200"/><line x1="620" y1="30" x2="620" y2="200"/><line x1="675" y1="30" x2="675" y2="200"/>
+      </g>
+      <line x1="510" y1="30" x2="510" y2="200" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="510" y="26" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--s2)" text-anchor="middle">0.50</text>
+      <g font-family="Source Serif 4, serif" font-size="11" fill="var(--ink)" text-anchor="start">
+        <text x="410" y="60">v9 · Celeb+脸</text>
+        <text x="410" y="112">v9arch · DFD+脸</text>
+        <text x="410" y="164">本文 · DFD+整帧</text>
+      </g>
+      <g stroke="var(--faint)" stroke-width="1.5">
+        <line x1="533" y1="72" x2="608" y2="72"/><line x1="463" y1="176" x2="567" y2="176"/>
+      </g>
+      <g fill="var(--faint)">
+        <circle cx="533" cy="72" r="3"/><circle cx="553" cy="72" r="3"/><circle cx="561" cy="72" r="3"/><circle cx="608" cy="72" r="3"/>
+        <circle cx="566" cy="124" r="3"/>
+        <circle cx="463" cy="176" r="3"/><circle cx="504" cy="176" r="3"/><circle cx="506" cy="176" r="3"/><circle cx="519" cy="176" r="3"/><circle cx="547" cy="176" r="3"/><circle cx="549" cy="176" r="3"/><circle cx="561" cy="176" r="3"/><circle cx="566" cy="176" r="3"/>
+      </g>
+      <g fill="var(--s1)" stroke="var(--surface)" stroke-width="1.8">
+        <path d="M 638 65 l 7 7 l -7 7 l -7 -7 z"/>
+        <path d="M 573 117 l 7 7 l -7 7 l -7 -7 z"/>
+        <path d="M 522 169 l 7 7 l -7 7 l -7 -7 z"/>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--s1)" font-weight="500">
+        <text x="650" y="76">.7322</text><text x="585" y="128">.5956</text><text x="534" y="180">.5033</text>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
+        <text x="455" y="215">0.40</text><text x="510" y="215">0.50</text><text x="565" y="215">0.60</text>
+        <text x="620" y="215">0.70</text><text x="675" y="215">0.80</text>
+      </g>
+      <text x="565" y="233" font-family="Source Serif 4, serif" font-size="11" fill="var(--muted)" text-anchor="middle">留出身份线性探针 AUC</text>
+      <g font-family="Source Serif 4, serif" font-size="11">
+        <circle cx="440" cy="256" r="3" fill="var(--faint)"/><text x="449" y="260" fill="var(--muted)">随机初始化抽样</text>
+        <path d="M 560 250 l 6 6 l -6 6 l -6 -6 z" fill="var(--s1)"/><text x="573" y="260" fill="var(--muted)">训练后</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption><b>图 9.</b> <b>(a)</b> 60 条 DFD 训练视频（30 真 / 30 假，覆盖 20 个身份）提取器特征的 t-SNE 投影；该平面上按身份留一的 5-NN 准确率为 0.375。<b>(b)</b> 冻结线性探针结果。灰点为随机初始化提取器的独立抽样（自上而下 n = 4 / 1 / 8），蓝色菱形为训练后的值。该探针在 v9 checkpoint 上读得 0.7322，其端到端测试成绩为 0.7773。</figcaption>
+</figure>
+
+<h2><span class="n">7</span>消融与受控测量</h2>
+
+<p><b>目的：</b>把「方法本身的性质」与「实现或优化缺陷」分开，逐项给出可复核的数值。</p>
 
 <div class="tw">
 <table>
-  <caption><b>表 6.</b> 4 身份子集上的消融。该设置并非严格的过拟合测试——片段起点、步长、水平翻转与 dropout 每个 epoch 重新采样——但足以比较各变体的相对拟合能力。</caption>
-  <thead><tr><th>变体</th><th class="n">平台训练 BCE</th><th>结论</th></tr></thead>
+  <caption><b>表 9.</b> 4 身份、71 条视频子集上的消融。平台值取最后 20 个 epoch 的训练交叉熵均值。该设置并非严格的过拟合测试——片段起点、步长、水平翻转与 dropout 每个 epoch 重新采样。</caption>
+  <thead><tr><th>变体</th><th class="n">平台训练 BCE</th><th>备注</th></tr></thead>
   <tbody>
     <tr><td>基线（均值池化，γ = 0.95）</td><td class="n">0.5241</td><td>参照</td></tr>
-    <tr><td>最大池化替代均值池化</td><td class="n">0.5161</td><td>与基线无可辨差异</td></tr>
-    <tr><td><span class="m">spatial_output_size</span> 22 → 44</td><td class="n">0.9572</td><td>未收敛；分类头随之由 7.9M 增至 31.7M 而学习率未调，结论不成立</td></tr>
-    <tr><td>恒定学习率（γ = 1.0）</td><td class="n">0.6606</td><td>各阶段均劣于衰减调度</td></tr>
+    <tr><td>最大池化替代均值池化</td><td class="n">0.5161</td><td>仅替换三处 3D 池化，空间自适应池化与时间均值不变</td></tr>
+    <tr><td><span class="m">spatial_output_size</span> 22 → 44</td><td class="n">0.9572</td><td>分类头随之由 7.9M 增至 31.7M，学习率未同步调整</td></tr>
+    <tr><td>恒定学习率（γ = 1.0）</td><td class="n">0.6606</td><td>1–10 / 11–20 / 21–30 段分别高出基线 0.231 / 0.155 / 0.180</td></tr>
   </tbody>
 </table>
 </div>
 
 <div class="tw">
 <table>
-  <caption><b>表 7.</b> 逐一排除的候选解释。每一项均由一次受控测量关闭，而非由推断关闭。</caption>
-  <thead><tr><th>候选解释</th><th>判定</th><th class="n">测量证据</th></tr></thead>
+  <caption><b>表 10.</b> 独立受控测量清单。每一行是一次单独运行的测量及其读数。</caption>
+  <thead><tr><th>测量项</th><th>方法</th><th class="n">读数</th></tr></thead>
   <tbody>
-    <tr><td>学习率衰减过快</td><td>排除</td><td class="n">恒定 lr 在 1–10 / 11–20 / 21–30 段分别劣 0.231 / 0.155 / 0.180</td></tr>
-    <tr><td>特征塌缩</td><td>排除</td><td class="n">相对变异 0.970</td></tr>
-    <tr><td>特征可分但优化失败</td><td>排除</td><td class="n">留出探针 0.5033；t-SNE 5-NN 0.375</td></tr>
-    <tr><td>整帧输入稀释了人脸</td><td>排除</td><td class="n">DFD 改用人脸裁剪后探针 0.5956，仍在随机区间内</td></tr>
-    <tr><td>训练身份数量不足</td><td>排除</td><td class="n">CelebDFv3 削至 20 身份仅损失 0.03</td></tr>
-    <tr><td>人脸检测失败</td><td>排除</td><td class="n">Haar / MTCNN / RetinaFace 三者对比测量</td></tr>
-    <tr><td>视频文件损坏</td><td>排除</td><td class="n">2328 条 DFD 视频逐帧解码，两类均 0.0%</td></tr>
-    <tr><td>帧读取保真</td><td>排除</td><td class="n">单进程与 12 路并发下均 100% 命中、0% 冻结片段</td></tr>
+    <tr><td>特征离散程度</td><td>逐维标准差 ÷ √d</td><td class="n">0.970</td></tr>
+    <tr><td>留出线性可分性</td><td>按身份分五折的岭回归探针</td><td class="n">0.5033（实验一）</td></tr>
+    <tr><td>t-SNE 平面近邻一致性</td><td>按身份留一的 5-NN</td><td class="n">0.375</td></tr>
+    <tr><td>输入模式（DFD 改人脸裁剪）</td><td>同一探针，v9arch checkpoint</td><td class="n">0.5956</td></tr>
+    <tr><td>训练身份数量</td><td>CelebDF++ 削至 20 身份重训</td><td class="n">损失 0.03</td></tr>
+    <tr><td>人脸检测器</td><td>Haar / MTCNN / RetinaFace 三者对比</td><td class="n">见 <span class="m">results/diagnostics/</span></td></tr>
+    <tr><td>视频文件完整性</td><td>2328 条 DFD 视频逐帧 ffmpeg 解码</td><td class="n">两类均 0.0% 损坏</td></tr>
+    <tr><td>帧读取保真</td><td>32×32 灰度签名比对顺序解码</td><td class="n">1 路与 12 路并发均 100% 命中</td></tr>
   </tbody>
 </table>
 </div>
-
-<h2><span class="n">6</span>讨论</h2>
-
-<p>四条相互独立的证据指向同一结论。第一，训练交叉熵确实下降（1.5778 → 0.6579），模型并非无法学习。第二，验证 AUC 自第 24 个 epoch 起持续低于随机水平，说明在训练身份上习得的判别方向在留出身份上反转。第三，测试集的分数分布（图 3a）显示两类几乎完全重叠，且伪造样本均值略低。第四，冻结线性探针与 t-SNE（图 4）一致表明提取器输出在未见身份上不可分。</p>
-
-<p>因此实验一的失败模式并非「无法学习」，而是<b>所学不迁移</b>。这一区分很重要：前者指向实现或优化缺陷，后者指向数据集与任务本身。</p>
-
-<p>实验三换了数据集、换了输入模式、换了整套预处理协议，落到了同一个地方。两者的差别只在中间过程：实验一的验证 AUROC 自第 24 个 epoch 起低于随机水平，实验三则一路升到 0.69 并保持稳定——<b>阶段 A 在 CelebDF++ 上确实学到了在留出身份上成立的东西</b>。但这份收益没有活过阶段 B 与测试集：0.69 → 0.6569 → 0.5284。</p>
-
-<p>由于 DFD 在人脸裁剪流水线下同样失败（探针 0.5956，落在随机区间内），而该流水线在 CelebDFv3 上有效（0.7322，z = +2.34），我们认为失败随<b>数据集</b>而非<b>输入模式</b>变化。这与此前建立的跨数据集矩阵一致：仅 CelebDFv3 的自测试超过随机水平。实验二完成后该判断将由端到端结果直接检验。</p>
-
-<p>图 8 的家族次序给出了一个更具体的线索。若模型学到的是融合边界或重打光痕迹，最容易被抓住的应当是 FaceSwap；实际结果恰好相反——FaceSwap 八种方法全部位于随机水平之下，而整段重新生成的 TalkingFace 七种中有六种在其之上。这提示模型抓住的并非局部篡改证据，而是与生成流程整体相关的某种低层统计量，而这种统计量在换脸类伪造（保留原始背景与运动）上不成立甚至反号。</p>
-
-<h2><span class="n">7</span>局限</h2>
-
-<p><b>验证子集的有效规模过小。</b>DFD 的验证子集仅 62 条视频、4 个身份，本工作中它三次给出未能在测试集上存活的数字。CelebDF++ 的验证子集看似充裕（5241 条视频），但其中真实视频只有 166 条、身份 57 个，而单类检测器的排序质量由真实一侧决定；实验三据此选出的第 9 个 epoch 在测试集上损失 0.13。<b>两个实验都表明，用于 checkpoint 选择的应当是按身份聚类的区间，而非点估计。</b></p>
-
-<p><b>实验二尚未完成。</b>表 1 的 2×2 缺一格，因此「失败随数据集还是随输入模式变化」目前只有探针这一条间接证据。这是本稿最主要的空缺。</p>
-
-<p><b>实验三的两项指标不可读，已在表 5 中标注。</b>测试集真假比 1:32，使 Accuracy 与 Average Precision 由基准率主导。同类工作在类别不平衡的测试集上报告 AP 时若不同时给出基准率，该数字不具信息量——本工作的 AP 0.9733 对应的基准率是 0.9698。</p>
-
-<p><b>逐方法结果不独立。</b>图 8 的 22 行共用同一批 169 条真实视频；FaceSwap 与 FaceReenact 每种方法仅 67–69 条伪造视频。可引用的是家族次序，不是单行数值。</p>
-
-<p><b>测试集的聚类自助只有 4 个身份簇。</b>表 3 中 [0.458, 0.531] 这一区间由身份重采样得出，但 4 个簇能产生的不同重采样极少，该区间应作为指示性而非精确结果读取。朴素的 Hanley–McNeil 区间为 [0.38, 0.60]，两者同样覆盖 0.50。</p>
-
-<p><b>探针的随机参照抽样不足。</b>DFD 上 8 次、CelebDFv3 上 4 次。结论（训练值是否越出区间）在此样本量下成立，但区间端点本身仍有可观不确定性。</p>
-
-<p><b>t-SNE 仅覆盖 60 条训练视频。</b>受限于已保存的特征文件，图 4a 未包含测试集样本；其定量指标（5-NN 0.375）已按身份留一，但样本量小。</p>
-
-<p><b>缺少鲁棒性曲线。</b>同类工作常报告指标随 JPEG 压缩或噪声强度变化的曲线。在检测器本身处于随机水平时该图信息量有限，但若后续实验产出有效检测器，应补齐。</p>
-
-<p><b>供体约束的代价未做敏感性分析。</b>该约束剔除了 36% 的伪造视频。放宽约束会引入近重复泄漏，但两种设置下的数值差距尚未测量。</p>
 
 <h2><span class="n">8</span>相对原文的偏离</h2>
 
 <div class="tw">
 <table>
-  <caption><b>表 8.</b> 相对 Leyva 等人 (2024) 的实现差异。前两项为方法层面的有意扩展，其余为工程层面的调整。</caption>
+  <caption><b>表 11.</b> 相对 Leyva 等人 (2024) 的实现差异。前两项为方法层面的有意扩展，其余为工程层面的调整。裁剪外扩系数 ×2.0 亦偏离 DeepfakeBench 协议的 ×1.3，该值在实验二与实验三之间保持一致。</caption>
   <thead><tr><th>偏离</th><th>原文</th><th>本工作</th><th>依据</th></tr></thead>
   <tbody>
-    <tr><td>输入维度</td><td>2D 人脸图像</td><td>3D 时序片段</td><td>本课题的贡献本身</td></tr>
+    <tr><td>输入维度</td><td>2D 人脸图像</td><td>3D 时序片段</td><td>本课题的扩展方向</td></tr>
     <tr><td>训练流程</td><td>单阶段</td><td>两阶段（预训练后冻结）</td><td>联合训练时 KL 项占目标函数 95–99.9%</td></tr>
-    <tr><td>卷积激活</td><td>Sigmoid</td><td>ReLU</td><td>预激活幅度自 0.35 漂移至 8.4，91% 越过 |x| &gt; 4；ReLU 同样仅输出非负值，保留原文「MLP 只接收正值」的设计意图</td></tr>
-    <tr><td>归一化</td><td>FC1 前一处 BatchNorm</td><td>另在每层池化后各加一处</td><td>同上</td></tr>
+    <tr><td>卷积激活</td><td>Sigmoid</td><td>ReLU</td><td>预激活幅度自 0.35 漂移至 8.4，91% 越过 |x| &gt; 4</td></tr>
+    <tr><td>归一化</td><td>FC1 前一处 BatchNorm</td><td>另在每段池化后各加一处</td><td>同上</td></tr>
     <tr><td>学习率</td><td>10⁻³</td><td>10⁻⁴</td><td>经验设置，未做系统搜索</td></tr>
-    <tr><td>KL 权重</td><td>无额外缩放</td><td>×10⁻³</td><td>抑制 KL 主导；应在正式结果中说明或移除</td></tr>
+    <tr><td>KL 权重</td><td>无额外缩放</td><td>×10⁻³</td><td>抑制 KL 主导</td></tr>
+    <tr><td>裁剪外扩</td><td>—</td><td>×2.0（协议为 ×1.3）</td><td>纳入融合边界与发际线；×1.3 作为消融保留</td></tr>
   </tbody>
 </table>
 </div>
 
 <hr>
 <footer>
-  数据来源：<span class="m">results/curves.csv</span>（45 次运行、2180 个 epoch）、<span class="m">results/run_stage_a_dfd_decimate/reports/test_scores.csv</span>（实验一 108 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/report_test.json</span>（实验三指标与 22 种方法拆分）、<span class="m">.../report_test_scores.csv</span>（实验三 5600 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>（实验三阶段 A 曲线）、<span class="m">results/features_dfd_full60_ep60.npz</span>（60×15488 特征）、<span class="m">results/diagnostics/</span>。完整实验流水账见 <span class="m">docs/stage_a_experiment_log.md</span>。本页所有数值均自上述文件计算，未经转录。
+  数据来源：<span class="m">results/curves.csv</span>、<span class="m">results/summary.csv</span>、<span class="m">results/run_stage_a_dfd_decimate/reports/</span>（实验一 108 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span>（实验三指标、22 种方法拆分与 5600 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>、<span class="m">results/diagnostics/</span>。架构与参数量由 <span class="m">src/video_bcnn/model.py</span> 实例化后读出。完整流水账见 <span class="m">docs/stage_a_experiment_log.md</span>。
 </footer>
 
 </div>
