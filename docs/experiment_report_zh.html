@@ -83,7 +83,9 @@
     transform: translate(-50%, -125%); transition: opacity .1s;
   }
   hr { border: none; border-top: 1px solid var(--rule); margin: 36px 0 0; }
-  footer { color: var(--faint); font-size: 13px; margin-top: 18px; }
+  /* No rule above the footer: the table's own closing rule sits just above it,
+     and two parallel lines a row apart read as an empty final row. */
+  footer { color: var(--faint); font-size: 13px; margin-top: 34px; }
   a { color: var(--accent); }
 </style>
 
@@ -710,7 +712,6 @@
 </table>
 </div>
 
-<hr>
 <footer>
   数据来源：<span class="m">results/curves.csv</span>、<span class="m">results/summary.csv</span>、<span class="m">results/run_stage_a_dfd_decimate/reports/</span>（实验一 108 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span>（实验三指标、22 种方法拆分与 5600 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>、<span class="m">results/diagnostics/</span>。架构与参数量由 <span class="m">src/video_bcnn/model.py</span> 实例化后读出。完整流水账见 <span class="m">docs/stage_a_experiment_log.md</span>。
 </footer>

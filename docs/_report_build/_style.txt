@@ -79,6 +79,8 @@
     transform: translate(-50%, -125%); transition: opacity .1s;
   }
   hr { border: none; border-top: 1px solid var(--rule); margin: 36px 0 0; }
-  footer { color: var(--faint); font-size: 13px; margin-top: 18px; }
+  /* No rule above the footer: the table's own closing rule sits just above it,
+     and two parallel lines a row apart read as an empty final row. */
+  footer { color: var(--faint); font-size: 13px; margin-top: 34px; }
   a { color: var(--accent); }
 </style>

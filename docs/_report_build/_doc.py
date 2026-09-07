@@ -221,7 +221,6 @@ DOC = '''<title>3D-CNN 贝叶斯检测实验</title>
 </table>
 </div>
 
-<hr>
 <footer>
   数据来源：<span class="m">results/curves.csv</span>、<span class="m">results/summary.csv</span>、<span class="m">results/run_stage_a_dfd_decimate/reports/</span>（实验一 108 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span>（实验三指标、22 种方法拆分与 5600 条逐视频分数）、<span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>、<span class="m">results/diagnostics/</span>。架构与参数量由 <span class="m">src/video_bcnn/model.py</span> 实例化后读出。完整流水账见 <span class="m">docs/stage_a_experiment_log.md</span>。
 </footer>

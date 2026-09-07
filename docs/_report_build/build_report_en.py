@@ -359,7 +359,6 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
 </table>
 </div>
 
-<hr>
 <footer>
   Sources: <span class="m">results/curves.csv</span>, <span class="m">results/summary.csv</span>, <span class="m">results/run_stage_a_dfd_decimate/reports/</span> (108 per-video scores for experiment 1), <span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span> (experiment 3 metrics, the per-method breakdown, and 5600 per-video scores), <span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>, <span class="m">results/diagnostics/feature_probe_*.json</span>. Architecture and parameter counts are read from an instantiated model in <span class="m">src/video_bcnn/model.py</span>. The full running log is <span class="m">docs/stage_a_experiment_log.md</span>.
 </footer>
