@@ -349,18 +349,72 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
 
 <div class="tw">
 <table>
-  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor, one draw per row; <span class="m">difference</span> is the gap between the two. <b>The first row is the scale</b>: it measures an extractor whose end-to-end test AUROC is 0.7773, and shows how large a gain this probe reads when an extractor has in fact learned something linearly separable.</caption>
+  <caption><b>Table 8.</b> Held-out-identity linear probe readings, 60 videos per measurement. <span class="m">Random init</span> is a matched but untrained extractor, one draw per row; <span class="m">difference</span> is the gap between the two. <b>The first row is the scale</b>: it measures an extractor whose end-to-end test AUROC is 0.7773 and shows how large a gain this probe reads. <b>That extractor was trained before the donor constraint reached the CelebDF++ split</b>, so its training data contained donor identities that later fell in the test split; the same configuration produces no such gain on the donor-safe split (experiment 3). The row is a historical diagnostic, not a clean positive control.</caption>
   <thead><tr><th>Measured on</th><th class="n">Checkpoint epoch</th><th class="n">Random init</th><th class="n">Trained</th><th class="n">Difference</th></tr></thead>
   <tbody>
-    <tr><td class="dim">Scale: an extractor with an end-to-end test AUROC of 0.7773</td><td class="n dim">38</td><td class="n dim">0.5778</td><td class="n dim">0.7322</td><td class="n dim">+0.1544</td></tr>
+    <tr><td class="dim">Scale (historical diagnostic): an extractor with an end-to-end test AUROC of 0.7773</td><td class="n dim">38</td><td class="n dim">0.5778</td><td class="n dim">0.7322</td><td class="n dim">+0.1544</td></tr>
     <tr class="head"><td>Experiment 1 · DFD, whole frame</td><td class="n">60</td><td class="n">0.4900</td><td class="n">0.5033</td><td class="n">+0.0133</td></tr>
     <tr class="head"><td>Experiment 3 · CelebDF++, face crop</td><td class="n">57</td><td class="n">0.7552</td><td class="n">0.7149</td><td class="n">−0.0402</td></tr>
   </tbody>
 </table>
 </div>
 
+
+<h2><span class="n">6</span>Metadata baselines</h2>
+
+<p><b>Purpose:</b> to measure how far the two classes can be separated from container and encoding metadata alone, without decoding a single pixel. Such information carries no forgery evidence, so what it yields is a floor for how separable the dataset itself is.</p>
+
+<p><b>Method:</b> each video is reduced to one scalar (frame geometry, duration, file bitrate, bits per pixel), the videos are ranked by that scalar, and the ranking is scored as if it were a detector. AUROC is symmetric in direction — a reading of 0.2174 ranks as strongly as one of 0.7826 — so what matters is the distance from 0.50, not the sign. Intervals come from an identity-clustered bootstrap over 2000 draws.</p>
+
+<div class="tw">
+<table>
+  <caption><b>Table 9.</b> Single-scalar metadata controls on the two test subsets, with 95% identity-clustered intervals. <b>File bitrate reads 0.2174 on CelebDF++, an orientation-adjusted 0.7826</b>; the same control reads 0.5243 on DFD. The four geometry controls are exactly 0.5000 on DFD because both classes there are 1920×1080 throughout. Crop-scale controls require the per-video face-box cache and are not included here.</caption>
+  <thead><tr><th>Control</th><th>CelebDF++ test</th><th>DFD test</th></tr></thead>
+  <tbody>
+    <tr class="head"><td>File bitrate (MB/s)</td><td>0.2174 &nbsp;<span class="m">[0.187, 0.240]</span></td><td>0.5243 &nbsp;<span class="m">[0.454, 0.616]</span></td></tr>
+    <tr class="head"><td>Bits per pixel</td><td>0.6108 &nbsp;<span class="m">[0.568, 0.645]</span></td><td>0.5243 &nbsp;<span class="m">[0.454, 0.616]</span></td></tr>
+    <tr><td>Frame width</td><td>0.0759 &nbsp;<span class="m">[0.050, 0.098]</span></td><td>0.5000 &nbsp;<span class="m">[0.500, 0.500]</span></td></tr>
+    <tr><td>Frame pixels</td><td>0.0775 &nbsp;<span class="m">[0.050, 0.102]</span></td><td>0.5000 &nbsp;<span class="m">[0.500, 0.500]</span></td></tr>
+    <tr><td>Aspect ratio</td><td>0.1240 &nbsp;<span class="m">[0.084, 0.168]</span></td><td>0.5000 &nbsp;<span class="m">[0.500, 0.500]</span></td></tr>
+    <tr><td>Frame height</td><td>0.3940 &nbsp;<span class="m">[0.377, 0.410]</span></td><td>0.5000 &nbsp;<span class="m">[0.500, 0.500]</span></td></tr>
+    <tr><td>Frame count</td><td>0.1051 &nbsp;<span class="m">[0.068, 0.138]</span></td><td>0.3923 &nbsp;<span class="m">[0.325, 0.472]</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>To check whether the model output carries a monotonic association with the strongest of these, we computed the Spearman rank correlation between the anomaly score and both compression measures over the same 5600 test videos of experiment 3.</p>
+
+<div class="tw">
+<table>
+  <caption><b>Table 10.</b> Spearman rank correlation between the model anomaly score and the metadata measures, experiment 3 test set. The model's own AUROC on the same subset is 0.5284. A rank correlation detects monotonic association only; it does not rule out a non-linear dependence or an interaction with other quantities.</caption>
+  <thead><tr><th>Subset</th><th class="n">Videos</th><th class="n">ρ with bitrate</th><th class="n">ρ with bits per pixel</th></tr></thead>
+  <tbody>
+    <tr><td>All</td><td class="n">5600</td><td class="n">−0.0218</td><td class="n">−0.0049</td></tr>
+    <tr><td>Real only</td><td class="n">169</td><td class="n">−0.0866</td><td class="n">−0.0890</td></tr>
+    <tr><td>Fake only</td><td class="n">5431</td><td class="n">−0.0192</td><td class="n">−0.0040</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="n">7</span>The resampling unit and the interval</h2>
+
+<p><b>Purpose:</b> a bootstrap interval for AUROC depends on what is resampled. One real clip in CelebDF++ yields a median of 84 forgeries that share its background, wardrobe, lighting and camera motion; resampling videos treats those as independent observations, while resampling identities draws them as a block. This section measures what the two choices give on the same set of scores.</p>
+
+<p><b>Method:</b> the per-video test scores of each experiment are bootstrapped twice, 2000 draws each under the same seed — once with the single video as the unit, once with the target identity. Draws that end up with a single class are skipped rather than scored.</p>
+
+<div class="tw">
+<table>
+  <caption><b>Table 11.</b> The same test scores under two resampling units, 95% intervals. <b>On experiment 3 the per-video interval covers 0.50 and the identity-clustered interval does not.</b> Experiment 1's identity-clustered interval rests on 4 clusters, which admit very few distinct resamples, and should be read as indicative rather than exact.</caption>
+  <thead><tr><th>Run</th><th class="n">AUROC</th><th>Per-video 95% CI</th><th>Per-identity 95% CI</th><th class="n">Clusters</th></tr></thead>
+  <tbody>
+    <tr><td>Experiment 1 · DFD, whole frame</td><td class="n">0.4877</td><td><span class="m">[0.376, 0.600]</span> width 0.223</td><td><span class="m">[0.458, 0.531]</span> width 0.073</td><td class="n">4</td></tr>
+    <tr><td>Experiment 3 · CelebDF++, face crop</td><td class="n">0.5284</td><td><span class="m">[0.484, 0.573]</span> width 0.089</td><td><span class="m">[0.502, 0.572]</span> width 0.071</td><td class="n">57</td></tr>
+  </tbody>
+</table>
+</div>
+
 <footer>
-  Sources: <span class="m">results/curves.csv</span>, <span class="m">results/summary.csv</span>, <span class="m">results/run_stage_a_dfd_decimate/reports/</span> (108 per-video scores for experiment 1), <span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span> (experiment 3 metrics, the per-method breakdown, and 5600 per-video scores), <span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>, <span class="m">results/diagnostics/feature_probe_*.json</span>. Architecture and parameter counts are read from an instantiated model in <span class="m">src/video_bcnn/model.py</span>. The full running log is <span class="m">docs/stage_a_experiment_log.md</span>.
+  Sources: <span class="m">results/curves.csv</span>, <span class="m">results/summary.csv</span>, <span class="m">results/run_stage_a_dfd_decimate/reports/</span> (108 per-video scores for experiment 1), <span class="m">results/run_stage_a_celebdfv3_face_stageb_celeb/</span> (experiment 3 metrics, the per-method breakdown, and 5600 per-video scores), <span class="m">results/run_stage_a_celebdfv3_face_pretrain/history.csv</span>, <span class="m">results/diagnostics/feature_probe_*.json</span>, <span class="m">results/diagnostics/shortcut_controls_celeb_face.json</span> (Table 9), <span class="m">scripts/video_size_reports/video_sizes.csv</span> (Tables 9 and 10). Architecture and parameter counts are read from an instantiated model in <span class="m">src/video_bcnn/model.py</span>. The full running log is <span class="m">docs/stage_a_experiment_log.md</span>.
 </footer>
 
 </div>
