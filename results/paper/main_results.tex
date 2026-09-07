@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{Validation and held-out test AUROC under the target-and-donor-disjoint protocol. Validation is reported as the best epoch, which is the checkpoint selection criterion, and as the mean over the run. Each configuration was trained with a single seed.}
+\label{tab:main-results}
+\begin{tabular}{lccccc}
+\toprule
+ & \multicolumn{2}{c}{Stage A validation} & \multicolumn{2}{c}{Stage B validation} & Held-out \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Dataset & best & mean & best & mean & test \\
+\midrule
+DFD & 0.6039 & 0.4477 & 0.6627 & 0.6259 & 0.4877 \\
+CelebDF++ & 0.6937 & 0.6572 & 0.6569 & 0.6198 & 0.5284 \\
+\bottomrule
+\end{tabular}
+\end{table}
