@@ -264,7 +264,7 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
 </div>
 
 ''' + fig(EXP1_LOSS, 2,
-          'Stage A training cross-entropy over 60 epochs, from 1.5778 to 0.6579; 46 of the 60 epochs sit below ln 2 = 0.6931. Hover to read any epoch.') + '''
+          'Stage A training cross-entropy over 60 epochs, from 1.5778 to 0.6579. The dashed line marks <b>ln 2 = 0.6931</b>, the cross-entropy of a trivial predictor that outputs 0.5 for every input on class-balanced data; Stage A samples 1000 clips per class per epoch, so the classes are balanced and the reference applies. 46 of the 60 epochs sit below it. Hover to read any epoch.') + '''
 
 ''' + fig(EXP1_AUC, 3,
           'Validation AUROC for the same run, on a validation subset of 62 videos across 4 identities. First epoch 0.4928, last 0.4248, highest 0.6039 (epoch 14), mean 0.4477 over the run; from epoch 24 onward, 1 of 37 epochs exceeds 0.50.') + '''
@@ -309,7 +309,7 @@ DOC = '''<title>3D-CNN Bayesian Detection Experiments</title>
 <p>Face detection rates: train 99.3% real / 99.2% fake; validation 99.2% / 99.4%; test 98.1% / 99.1%. Median detection-box width on the test split: 138 px for real videos, 156 px for forgeries.</p>
 
 ''' + fig(EXP3_A, 5,
-          'Experiment 3, Stage A, over 60 epochs. <b>(a)</b> Training cross-entropy from 1.5420 to 0.5618, minimum 0.5279. <b>(b)</b> Validation AUROC from 0.5864 to 0.6918, highest 0.6937 (epoch 57), mean 0.6572 over the run. The validation subset holds 5241 videos across 57 identities.') + '''
+          'Experiment 3, Stage A, over 60 epochs. <b>(a)</b> Training cross-entropy from 1.5420 to 0.5618, minimum 0.5279; the dashed ln 2 line carries the same meaning as in Figure 2. <b>(b)</b> Validation AUROC from 0.5864 to 0.6918, highest 0.6937 (epoch 57), mean 0.6572 over the run. The validation subset holds 5241 videos across 57 identities.') + '''
 
 ''' + fig(EXP3_B, 6,
           'Experiment 3, Stage B, over 17 epochs (early-stopping patience 8). Validation AUROC peaks at 0.6569 (epoch 9), with a run mean of 0.6198 and a last epoch of 0.6255. The reading of the same checkpoint on the test set is marked separately.') + '''

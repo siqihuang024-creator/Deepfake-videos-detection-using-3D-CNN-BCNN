@@ -324,7 +324,7 @@
     </svg>
     <div class="tip" id="tip-loss"></div>
 </div>
-  <figcaption><b>图 2.</b> 实验一阶段 A 的训练交叉熵，60 个 epoch，自 1.5778 降至 0.6579；60 个 epoch 中有 46 个位于 ln 2 = 0.6931 之下。鼠标悬停可读取任一 epoch 的数值。</figcaption>
+  <figcaption><b>图 2.</b> 实验一阶段 A 的训练交叉熵，60 个 epoch，自 1.5778 降至 0.6579。虚线为 <b>ln 2 = 0.6931</b>，即在类别平衡的数据上对所有输入恒定输出 0.5 的平凡预测器所得的交叉熵；阶段 A 每类每 epoch 各采样 1000 个片段，两类平衡，故该参照适用。60 个 epoch 中有 46 个位于该线之下。鼠标悬停可读取任一 epoch 的数值。</figcaption>
 </figure>
 
 <figure>
@@ -452,6 +452,8 @@
       <text x="52" y="16" font-family="Source Serif 4, serif" font-size="13" fill="var(--ink)" font-weight="600">(a) 训练交叉熵</text>
       <g stroke="var(--rule-soft)" stroke-width="1"><line x1="52" y1="240.0" x2="345" y2="240.0"/><line x1="52" y1="192.3" x2="345" y2="192.3"/><line x1="52" y1="144.5" x2="345" y2="144.5"/><line x1="52" y1="96.8" x2="345" y2="96.8"/><line x1="52" y1="49.1" x2="345" y2="49.1"/></g>
       <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="end"><text x="46" y="243.5">0.50</text><text x="46" y="195.8">0.75</text><text x="46" y="148.0">1.00</text><text x="46" y="100.3">1.25</text><text x="46" y="52.6">1.50</text></g>
+      <line x1="52" y1="203.1" x2="345" y2="203.1" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="341" y="198.1" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--s2)" text-anchor="end">ln 2 = 0.6931</text>
       <polyline fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="52.0,41.1 57.0,164.9 61.9,194.5 66.9,200.6 71.9,208.5 76.8,207.4 81.8,212.2 86.8,210.0 91.7,211.5 96.7,212.1 101.7,214.6 106.6,215.4 111.6,214.2 116.6,215.8 121.5,215.5 126.5,216.8 131.5,217.8 136.4,221.0 141.4,216.7 146.4,221.6 151.3,220.5 156.3,220.5 161.3,220.9 166.2,219.5 171.2,224.0 176.2,220.6 181.1,222.2 186.1,223.6 191.1,223.9 196.0,225.6 201.0,224.7 205.9,225.9 210.9,227.2 215.9,222.2 220.8,230.2 225.8,224.6 230.8,225.0 235.7,226.2 240.7,229.9 245.7,227.1 250.6,228.6 255.6,228.2 260.6,227.1 265.5,229.1 270.5,232.0 275.5,227.2 280.4,229.8 285.4,232.7 290.4,230.9 295.3,230.8 300.3,234.1 305.3,234.3 310.2,228.0 315.2,234.7 320.2,231.0 325.1,229.2 330.1,231.0 335.1,230.1 340.0,233.8 345.0,228.2"/>
       <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" text-anchor="middle">
         <text x="52" y="256">1</text><text x="150.7" y="256">21</text><text x="249.3" y="256">41</text><text x="345" y="256">60</text>
@@ -475,7 +477,7 @@
     <div class="tip" id="tip-a3"></div>
     <div class="tip" id="tip-b3"></div>
 </div>
-  <figcaption><b>图 5.</b> 实验三阶段 A 的 60 个 epoch。<b>(a)</b> 训练交叉熵自 1.5420 降至 0.5618，最低 0.5279。<b>(b)</b> 验证 AUROC 自 0.5864 升至 0.6918，最高 0.6937（第 57 轮），全程均值 0.6572。验证子集 5241 条视频、57 个身份。</figcaption>
+  <figcaption><b>图 5.</b> 实验三阶段 A 的 60 个 epoch。<b>(a)</b> 训练交叉熵自 1.5420 降至 0.5618，最低 0.5279；虚线 ln 2 含义同图 2。<b>(b)</b> 验证 AUROC 自 0.5864 升至 0.6918，最高 0.6937（第 57 轮），全程均值 0.6572。验证子集 5241 条视频、57 个身份。</figcaption>
 </figure>
 
 <figure>
