@@ -52,7 +52,7 @@
   figure svg { display: block; width: 100%; height: auto; min-width: 560px; }
   figcaption { font-size: 13.5px; color: var(--muted); margin-top: 11px; line-height: 1.6; }
   figcaption b { color: var(--ink); font-weight: 600; }
-  .tw { overflow-x: auto; margin: 20px 0; }
+  .tw { overflow-x: auto; margin: 20px 0 24px; }
   table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 480px; }
   caption { caption-side: top; text-align: left; font-size: 13.5px; color: var(--muted); padding-bottom: 8px; }
   caption b { color: var(--ink); font-weight: 600; }
@@ -62,7 +62,10 @@
     color: var(--faint); font-weight: 500; border-bottom: 1px solid var(--rule);
   }
   td.n, th.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
-  tbody tr:last-child td { border-bottom: none; }
+  /* Close the table under its last row: without a bottom rule the trailing
+     padding reads as an extra, empty row. Matches the booktabs convention of
+     a top rule, thin rules between rows, and a bottom rule. */
+  tbody tr:last-child td { border-bottom: 1px solid var(--rule); }
   tr.head td { font-weight: 600; }
   .key { color: var(--s2); font-weight: 600; }
   .dim { color: var(--faint); }
