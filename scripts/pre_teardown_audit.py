@@ -42,14 +42,25 @@ def sha256(path, chunk=1 << 20):
 
 
 def git(*args, timeout=120):
+    # stderr is kept apart so warnings (line endings, hints) never pass as output.
     try:
-        return subprocess.check_output(["git"] + list(args), cwd=str(ROOT),
-                                       stderr=subprocess.STDOUT,
-                                       timeout=timeout).decode("utf-8", "replace").strip()
-    except subprocess.CalledProcessError as exc:
-        return "ERROR: " + exc.output.decode("utf-8", "replace").strip()
+        done = subprocess.run(["git"] + list(args), cwd=str(ROOT), timeout=timeout,
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.TimeoutExpired:
         return "ERROR: timed out"
+    if done.returncode != 0:
+        return "ERROR: " + done.stderr.decode("utf-8", "replace").strip()
+    return done.stdout.decode("utf-8", "replace").strip()
+
+
+def on_github(rel):
+    """True if origin/main already holds this exact file content.
+
+    A fix patched by hand on the pod and later committed from the laptop shows
+    up as a local modification here, yet nothing about it would be lost.
+    """
+    remote = git("rev-parse", "origin/main:" + rel)
+    return not remote.startswith("ERROR") and git("hash-object", rel) == remote
 
 
 def size_of(path):
@@ -88,14 +99,28 @@ def audit(output):
     print("origin/main :", git("log", "--oneline", "-1", "origin/main"))
     ahead = git("log", "--oneline", "origin/main..HEAD")
     print("local commits not on GitHub:", ahead if ahead else "none")
-    modified = git("status", "--short", "--untracked-files=no")
-    print("modified tracked files:", "\n" + modified if modified else "none")
+    # results/ is harvested here and downloaded, never committed from the pod;
+    # section 4 accounts for it by hash, so it is left out of the git checks.
+    changed = git("diff", "--name-only", "HEAD").splitlines()
+    changed = [rel for rel in changed if rel and not rel.startswith("results/")]
+    same_as_github = [rel for rel in changed if on_github(rel)]
+    modified = [rel for rel in changed if rel not in same_as_github]
+    print("modified tracked files identical to GitHub (nothing to save):",
+          "\n  " + "\n  ".join(same_as_github) if same_as_github else "none")
+    print("modified tracked files that DIFFER from GitHub (exist ONLY here):",
+          "\n  " + "\n  ".join(modified) if modified else "none")
+    if modified:
+        diff = git("diff", "origin/main", "--", *modified)
+        patch = ROOT / "results" / "diagnostics" / "pod_only_changes.diff"
+        patch.parent.mkdir(parents=True, exist_ok=True)
+        patch.write_text(diff + "\n", encoding="utf-8")
+        print("  full diff against GitHub saved to", patch.relative_to(ROOT).as_posix())
+        print(git("diff", "--stat", "origin/main", "--", *modified))
     untracked = git("ls-files", "--others", "--exclude-standard").splitlines()
-    # results/ is harvested here and downloaded, never committed from the pod,
-    # so its files are always untracked; section 4 accounts for them instead.
     untracked = [line for line in untracked if not line.startswith("results/")]
-    code_like = [line for line in untracked if line.endswith(CODE_SUFFIXES)]
-    other = [line for line in untracked if line not in code_like]
+    code_like = [line for line in untracked
+                 if line.endswith(CODE_SUFFIXES) and not on_github(line)]
+    other = [line for line in untracked if not line.endswith(CODE_SUFFIXES)]
     print("untracked code/config (exists ONLY here):",
           "\n  " + "\n  ".join(code_like) if code_like else "none")
     print("untracked other files outside results/: {}".format(len(other)))
@@ -193,12 +218,15 @@ def compare(path):
 
     banner("CODE")
     local_head = git("rev-parse", "HEAD")
+    # The pod may lag behind; what matters is that it has nothing the laptop lacks.
+    contained = not git("merge-base", "--is-ancestor", record["head"], "HEAD").startswith("ERROR")
     print("pod HEAD   :", record["head"])
-    print("local HEAD :", local_head, "(same)" if local_head == record["head"] else "(DIFFERENT)")
-    for label, key in (("unpushed commits on the pod", "unpushed"),
-                       ("modified tracked files on the pod", "modified")):
-        if record.get(key):
-            print(label + ":\n" + record[key])
+    print("local HEAD :", local_head,
+          "(contains the pod's HEAD)" if contained else "(does NOT contain the pod's HEAD)")
+    if record.get("unpushed"):
+        print("unpushed commits on the pod:\n" + record["unpushed"])
+    for name in record.get("modified", []):
+        print("  changed only on the pod:", name)
     for name in record.get("untracked_code", []):
         print("  only on the pod:", name)
 
@@ -226,7 +254,7 @@ def compare(path):
         print("  {:<9} {:>9}  {}".format("backed up" if found else "POD ONLY",
                                          human(meta["size"]), run))
 
-    code_clean = local_head == record["head"] and not record.get("unpushed") \
+    code_clean = contained and not record.get("unpushed") \
         and not record.get("modified") and not record.get("untracked_code")
     results_clean = not missing and not different and not record.get("unharvested_runs") \
         and not record.get("unharvested_reports")
