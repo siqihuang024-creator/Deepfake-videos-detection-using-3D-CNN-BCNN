@@ -1,0 +1,49 @@
+{
+  "checkpoint": "artifacts/run_stage_a_dfd_face_exp2_pretrain/checkpoints/last.pt",
+  "checkpoint_epoch": 30,
+  "recorded_validation_auroc": 0.32941176470588235,
+  "split": "train",
+  "videos": 60,
+  "identities": 20,
+  "clips_per_video": 2,
+  "architecture": {
+    "activation": "relu",
+    "norm": "batch",
+    "conv_channels": [
+      16,
+      24,
+      32
+    ],
+    "spatial_output_size": null,
+    "feature_dim": 15488
+  },
+  "trained": {
+    "videos": 60,
+    "real": 30,
+    "fake": 30,
+    "mean_feature_norm": 123.06209330076184,
+    "per_dimension_rms": 0.9888413713634125,
+    "between_video_std": 0.9574353982387188,
+    "relative_variation": 0.9682396246413202,
+    "centroid_l2": 29.765308566214003,
+    "within_class_radius": 116.72663763653185,
+    "separation_ratio": 0.2550001368059485,
+    "centroid_cosine_distance": 0.20068744401700678,
+    "held_out_probe": 0.5811111111111111
+  },
+  "random_init": {
+    "videos": 60,
+    "real": 30,
+    "fake": 30,
+    "mean_feature_norm": 16.659778849516474,
+    "per_dimension_rms": 0.1338663931541059,
+    "between_video_std": 0.04953438940133122,
+    "relative_variation": 0.3700285653047187,
+    "centroid_l2": 2.3231397696340954,
+    "within_class_radius": 7.795785297566103,
+    "separation_ratio": 0.2979994549566925,
+    "centroid_cosine_distance": 0.012072809656179517,
+    "held_out_probe": 0.5633333333333334
+  },
+  "probe_change": 0.01777777777777778
+}
